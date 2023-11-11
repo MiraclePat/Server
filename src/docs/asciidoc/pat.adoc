@@ -1,0 +1,44 @@
+= PatController API
+notification-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== PatController
+
+=== 맵화면 팟 리스트 조회 getMapPatList
+
+
+.http-request 예시
+include::{snippets}/pat-getMapPatList/http-request.adoc[]
+
+.쿼리 파라미터
+include::{snippets}/pat-getMapPatList/request-parameters.adoc[]
+
+.http-response 예시
+include::{snippets}/pat-getMapPatList/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/pat-getMapPatList/response-fields.adoc[]
+
+
+=== 팟 상세 정보 조회(홈과 맵에서 클릭시 보여주는 페이지) getPatDetail
+
+.http-request 예시
+include::{snippets}/pat-getPatDetail/http-request.adoc[]
+
+.쿼리 파라미터
+** X **
+
+.http-response 예시
+include::{snippets}/pat-getPatDetail/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/pat-getPatDetail/response-fields.adoc[]

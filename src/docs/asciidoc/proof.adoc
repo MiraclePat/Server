@@ -1,0 +1,43 @@
+= ProofController API
+notification-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== ProofController
+
+=== 내 인증사진 조회 getMyProof
+
+.http-request 예시
+include::{snippets}/proof-getMyProof/http-request.adoc[]
+
+.쿼리 파라미터
+include::{snippets}/proof-getMyProof/request-parameters.adoc[]
+
+.http-response 예시
+include::{snippets}/proof-getMyProof/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/proof-getMyProof/response-fields.adoc[]
+
+
+===다른 사람 인증사진 조회 getAnotherProof
+
+.http-request 예시
+include::{snippets}/proof-getAnotherProof/http-request.adoc[]
+
+.쿼리 파라미터
+include::{snippets}/proof-getAnotherProof/request-parameters.adoc[]
+
+.http-response 예시
+include::{snippets}/proof-getAnotherProof/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/proof-getAnotherProof/response-fields.adoc[]

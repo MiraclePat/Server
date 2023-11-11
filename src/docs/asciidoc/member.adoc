@@ -1,0 +1,84 @@
+= MemberController API
+notification-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== MemberController
+
+=== 회원 프로필 정보 조회(프사, 닉네임, 개설팟 수, 종료팟 수) getProfile
+
+.http-request 예시
+include::{snippets}/member-getProfile/http-request.adoc[]
+
+.쿼리 파라미터
+** X **
+
+.http-response 예시
+include::{snippets}/member-getProfile/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/member-getProfile/response-fields.adoc[]
+
+=== 내가 참여한 팟 리스트 조회 getJoinPatList
+
+.http-request 예시
+include::{snippets}/member-getJoinPatList/http-request.adoc[]
+
+.쿼리 파라미터
+include::{snippets}/member-getJoinPatList/request-parameters.adoc[]
+
+.http-response 예시
+include::{snippets}/member-getJoinPatList/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/member-getJoinPatList/response-fields.adoc[]
+
+=== 내가 개설한 팟 리스트 조회 getOpenPatList
+
+.http-request 예시
+include::{snippets}/member-getOpenPatList/http-request.adoc[]
+
+.쿼리 파라미터
+include::{snippets}/member-getOpenPatList/request-parameters.adoc[]
+
+.http-response 예시
+include::{snippets}/member-getOpenPatList/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/member-getOpenPatList/response-fields.adoc[]
+
+=== 참여 완료한 팟 리스트 조회 getFinishPatList
+
+.http-request 예시
+include::{snippets}/member-getFinishPatList/http-request.adoc[]
+
+.쿼리 파라미터
+include::{snippets}/member-getFinishPatList/request-parameters.adoc[]
+
+.http-response 예시
+include::{snippets}/member-getFinishPatList/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/member-getFinishPatList/response-fields.adoc[]
+
+=== 내가 참여한 팟 상세 조회 getJoinPatDetail
+
+.http-request 예시
+include::{snippets}/member-getJoinPatDetail/http-request.adoc[]
+
+.쿼리 파라미터
+include::{snippets}/member-getJoinPatDetail/request-parameters.adoc[]
+
+.http-response 예시
+include::{snippets}/member-getJoinPatDetail/http-response.adoc[]
+
+.response-fields 설명
+include::{snippets}/member-getJoinPatDetail/response-fields.adoc[]
