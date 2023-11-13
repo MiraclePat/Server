@@ -1,0 +1,12 @@
+= MiraclePat TEST API DOCS
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+include::member.adoc[]
+include::home.adoc[]
+include::pat.adoc[]
+include::proof.adoc[]

@@ -13,18 +13,15 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ProofListDto {
 
-    private List<ProofDto> proofDtoList = new ArrayList<>();
+    private List<ProofDto> content = new ArrayList<>();
 
-    private Long totalPages;
-
-    private Long totalCount;
+    private Boolean hasNext;
 
     @Builder
-    public ProofListDto(List<Proof> proofList, Long totalPages, Long totalCount){
-        this.proofDtoList = proofList.stream()
+    public ProofListDto(List<Proof> proofList){
+        this.content = proofList.stream()
                 .map(ProofDto::new).collect(Collectors.toList());
-        this.totalPages = totalPages;
-        this.totalCount = totalCount;
+        this.hasNext = true;
 
     }
 }

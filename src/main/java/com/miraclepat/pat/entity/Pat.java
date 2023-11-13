@@ -32,7 +32,7 @@ public class Pat extends BaseEntity {
     @Column(name = "pat_id")
     private Long id;
 
-    private String leader;
+    private String leader; //작성자의 닉네임 넣기
 
     //챌린지 제목
     @Column(nullable = false)

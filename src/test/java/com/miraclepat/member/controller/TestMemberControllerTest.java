@@ -52,17 +52,16 @@ class TestMemberControllerTest {
                                 parameterWithName("sort").description("정렬 조건").optional()
                         ),
                         responseFields(
-                                fieldWithPath("myPatDtoList[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
-                                fieldWithPath("myPatDtoList[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
-                                fieldWithPath("myPatDtoList[].patName").type(JsonFieldType.STRING).description("팟 제목"),
-                                fieldWithPath("myPatDtoList[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
-                                fieldWithPath("myPatDtoList[].category").type(JsonFieldType.STRING).description("카테고리 명"),
-                                fieldWithPath("myPatDtoList[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
-                                fieldWithPath("myPatDtoList[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
-                                fieldWithPath("myPatDtoList[].location").type(JsonFieldType.STRING).description("주소"),
-                                fieldWithPath("myPatDtoList[].days").type(JsonFieldType.STRING).description("참여 가능 요일"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
-                                fieldWithPath("totalCount").type(JsonFieldType.NUMBER).description("총 항목 수")
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
+                                fieldWithPath("content[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
+                                fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
+                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
+                                fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
+                                fieldWithPath("content[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
+                                fieldWithPath("content[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
+                                fieldWithPath("content[].location").type(JsonFieldType.STRING).description("주소"),
+                                fieldWithPath("content[].days").type(JsonFieldType.STRING).description("참여 가능 요일"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
     }
@@ -80,17 +79,16 @@ class TestMemberControllerTest {
                                 parameterWithName("sort").description("정렬 조건").optional()
                         ),
                         responseFields(
-                                fieldWithPath("myPatDtoList[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
-                                fieldWithPath("myPatDtoList[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
-                                fieldWithPath("myPatDtoList[].patName").type(JsonFieldType.STRING).description("팟 제목"),
-                                fieldWithPath("myPatDtoList[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
-                                fieldWithPath("myPatDtoList[].category").type(JsonFieldType.STRING).description("카테고리 명"),
-                                fieldWithPath("myPatDtoList[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
-                                fieldWithPath("myPatDtoList[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
-                                fieldWithPath("myPatDtoList[].location").type(JsonFieldType.STRING).description("주소"),
-                                fieldWithPath("myPatDtoList[].days").type(JsonFieldType.STRING).description("참여 가능 요일"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
-                                fieldWithPath("totalCount").type(JsonFieldType.NUMBER).description("총 항목 수")
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
+                                fieldWithPath("content[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
+                                fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
+                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
+                                fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
+                                fieldWithPath("content[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
+                                fieldWithPath("content[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
+                                fieldWithPath("content[].location").type(JsonFieldType.STRING).description("주소"),
+                                fieldWithPath("content[].days").type(JsonFieldType.STRING).description("참여 가능 요일"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
     }
@@ -108,17 +106,16 @@ class TestMemberControllerTest {
                                 parameterWithName("sort").description("정렬 조건").optional()
                         ),
                         responseFields(
-                                fieldWithPath("myPatDtoList[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
-                                fieldWithPath("myPatDtoList[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
-                                fieldWithPath("myPatDtoList[].patName").type(JsonFieldType.STRING).description("팟 제목"),
-                                fieldWithPath("myPatDtoList[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
-                                fieldWithPath("myPatDtoList[].category").type(JsonFieldType.STRING).description("카테고리 명"),
-                                fieldWithPath("myPatDtoList[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
-                                fieldWithPath("myPatDtoList[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
-                                fieldWithPath("myPatDtoList[].location").type(JsonFieldType.STRING).description("주소"),
-                                fieldWithPath("myPatDtoList[].days").type(JsonFieldType.STRING).description("참여 가능 요일"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
-                                fieldWithPath("totalCount").type(JsonFieldType.NUMBER).description("총 항목 수")
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
+                                fieldWithPath("content[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
+                                fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
+                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
+                                fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
+                                fieldWithPath("content[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
+                                fieldWithPath("content[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
+                                fieldWithPath("content[].location").type(JsonFieldType.STRING).description("주소"),
+                                fieldWithPath("content[].days").type(JsonFieldType.STRING).description("참여 가능 요일"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
     }

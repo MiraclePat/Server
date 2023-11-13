@@ -13,7 +13,7 @@ endif::[]
 
 == ProofController
 
-=== 내 인증사진 조회 getMyProof
+=== 내 인증사진 조회
 
 .http-request 예시
 include::{snippets}/proof-getMyProof/http-request.adoc[]
@@ -28,7 +28,7 @@ include::{snippets}/proof-getMyProof/http-response.adoc[]
 include::{snippets}/proof-getMyProof/response-fields.adoc[]
 
 
-===다른 사람 인증사진 조회 getAnotherProof
+=== 다른 사람 인증사진 조회
 
 .http-request 예시
 include::{snippets}/proof-getAnotherProof/http-request.adoc[]

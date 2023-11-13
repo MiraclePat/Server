@@ -22,7 +22,7 @@ public class TestHomeController {
     @GetMapping
     //홈 화면
     public ResponseEntity<HomePatListDto> getPatList(
-            @RequestParam(name = "page", required = false, defaultValue = "1")
+            @RequestParam(name = "page", required = false, defaultValue = "0")
             Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "10")
             Integer size,
@@ -59,7 +59,7 @@ public class TestHomeController {
             list.add(pat);
         }
 
-        HomePatListDto homePatListDto = new HomePatListDto(list, 3L, 15L);
+        HomePatListDto homePatListDto = new HomePatListDto(list);
 
         return ResponseEntity.ok().body(homePatListDto);
     }

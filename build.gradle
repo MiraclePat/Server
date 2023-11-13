@@ -53,6 +53,9 @@ dependencies {
 	implementation 'com.querydsl:querydsl-spatial'
 	// ========================================
 
+	//WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	// (4) rest docs 의존성 추가
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	// (5)  asciidoctor 의존성 추가 configration에서 지정한 의존 설정을 사용
@@ -73,6 +76,7 @@ tasks.named('test') {
 
 // (7):asciidoctor task 실행 시, Asciidoctor 기능을 사용하기 위해 :asciidoctor task에 asciidoctorExtensions을 설정
 tasks.named('asciidoctor') {
+	baseDirFollowsSourceFile()
 	configurations "asciidoctorExtensions"
 	inputs.dir snippetsDir
 	dependsOn test

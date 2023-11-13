@@ -118,7 +118,7 @@ public class TestMemberController {
             list.add(pat);
         }
 
-        MyPatListDto myPatListDto = new MyPatListDto(list, 2L, 15L);
+        MyPatListDto myPatListDto = new MyPatListDto(list);
 
         return ResponseEntity.ok().body(myPatListDto);
     }
@@ -201,7 +201,7 @@ public class TestMemberController {
             list.add(pat);
         }
 
-        MyPatListDto myPatListDto = new MyPatListDto(list, 1L, 1L);
+        MyPatListDto myPatListDto = new MyPatListDto(list);
 
         return ResponseEntity.ok().body(myPatListDto);
 
@@ -245,7 +245,7 @@ public class TestMemberController {
             list.add(pat);
         }
 
-        MyPatListDto myPatListDto = new MyPatListDto(list, 1L, 1L);
+        MyPatListDto myPatListDto = new MyPatListDto(list);
 
         return ResponseEntity.ok().body(myPatListDto);
 

@@ -70,7 +70,7 @@ public class TestPatController {
             list.add(pat);
         }
 
-        PatListDto patListResponse = new PatListDto(list, 1L, 1L);
+        PatListDto patListResponse = new PatListDto(list);
 
         return ResponseEntity.ok().body(patListResponse);
     }

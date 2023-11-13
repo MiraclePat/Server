@@ -13,18 +13,16 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class HomePatListDto {
 
-    private List<HomePatDto> homePatDtoList = new ArrayList<>();
+    private List<HomePatDto> content = new ArrayList<>();
 
-    private Long totalPages;
+    private boolean hasNext;
 
-    private Long totalCount;
 
     @Builder
-    public HomePatListDto(List<Pat> patList, Long totalPages, Long totalCount){
-        this.homePatDtoList = patList.stream()
+    public HomePatListDto(List<Pat> patList){
+        this.content = patList.stream()
                 .map(HomePatDto::new).collect(Collectors.toList());
-        this.totalPages = totalPages;
-        this.totalCount = totalCount;
+        this.hasNext = true;
 
     }
 }

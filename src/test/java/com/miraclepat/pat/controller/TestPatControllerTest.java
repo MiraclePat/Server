@@ -1,5 +1,7 @@
 package com.miraclepat.pat.controller;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miraclepat.home.controller.TestHomeController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,11 @@ class TestPatControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
-    void 지도_팟리스트_조회() throws Exception {
+    void 지도_팟_리스트_조회() throws Exception {
 
         mockMvc.perform(get("/api/test/pats/map?leftLongitude=0.0&rightLongitude=0.0&bottomLatitude=0.0&topLatitude=0.0"))
                 .andExpect(status().isOk())
@@ -44,15 +49,14 @@ class TestPatControllerTest {
                                 parameterWithName("topLatitude").description("상단 위도")
                         ),
                         responseFields(
-                                fieldWithPath("patDtoList[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
-                                fieldWithPath("patDtoList[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
-                                fieldWithPath("patDtoList[].patName").type(JsonFieldType.STRING).description("팟 제목"),
-                                fieldWithPath("patDtoList[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
-                                fieldWithPath("patDtoList[].category").type(JsonFieldType.STRING).description("카테고리 명"),
-                                fieldWithPath("patDtoList[].latitude").type(JsonFieldType.NUMBER).description("위도"),
-                                fieldWithPath("patDtoList[].longitude").type(JsonFieldType.NUMBER).description("경도"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
-                                fieldWithPath("totalCount").type(JsonFieldType.NUMBER).description("총 항목 수")
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
+                                fieldWithPath("content[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
+                                fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
+                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
+                                fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
+                                fieldWithPath("content[].latitude").type(JsonFieldType.NUMBER).description("위도"),
+                                fieldWithPath("content[].longitude").type(JsonFieldType.NUMBER).description("경도"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
 
@@ -60,6 +64,8 @@ class TestPatControllerTest {
 
     @Test
     void 팟_신청_상세페이지() throws Exception {
+        objectMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
+
         mockMvc.perform(get("/api/test/pats/{pat-id}", 1))
                 .andExpect(status().isOk())
                 .andDo(document("pat-getPatDetail",
@@ -84,7 +90,9 @@ class TestPatControllerTest {
 
                                 fieldWithPath("patDetail").type(JsonFieldType.STRING).description("팟 상세 설명"),
                                 fieldWithPath("nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원"),
-                                fieldWithPath("maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원")
+                                fieldWithPath("maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원"),
+
+                                fieldWithPath("isWriter").type(JsonFieldType.BOOLEAN).description("해당 팟 작성자인지?")
                         )
                 ));
     }

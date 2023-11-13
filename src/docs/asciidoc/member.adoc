@@ -13,13 +13,13 @@ endif::[]
 
 == MemberController
 
-=== 회원 프로필 정보 조회(프사, 닉네임, 개설팟 수, 종료팟 수) getProfile
+=== 회원 프로필 정보 조회(프사, 닉네임, 개설팟 수, 종료팟 수)
 
 .http-request 예시
 include::{snippets}/member-getProfile/http-request.adoc[]
 
 .쿼리 파라미터
-** X **
+** X
 
 .http-response 예시
 include::{snippets}/member-getProfile/http-response.adoc[]
@@ -27,7 +27,7 @@ include::{snippets}/member-getProfile/http-response.adoc[]
 .response-fields 설명
 include::{snippets}/member-getProfile/response-fields.adoc[]
 
-=== 내가 참여한 팟 리스트 조회 getJoinPatList
+=== 내가 참여한 팟 리스트 조회
 
 .http-request 예시
 include::{snippets}/member-getJoinPatList/http-request.adoc[]
@@ -41,7 +41,7 @@ include::{snippets}/member-getJoinPatList/http-response.adoc[]
 .response-fields 설명
 include::{snippets}/member-getJoinPatList/response-fields.adoc[]
 
-=== 내가 개설한 팟 리스트 조회 getOpenPatList
+=== 내가 개설한 팟 리스트 조회
 
 .http-request 예시
 include::{snippets}/member-getOpenPatList/http-request.adoc[]
@@ -55,7 +55,7 @@ include::{snippets}/member-getOpenPatList/http-response.adoc[]
 .response-fields 설명
 include::{snippets}/member-getOpenPatList/response-fields.adoc[]
 
-=== 참여 완료한 팟 리스트 조회 getFinishPatList
+=== 참여 완료한 팟 리스트 조회
 
 .http-request 예시
 include::{snippets}/member-getFinishPatList/http-request.adoc[]
@@ -69,13 +69,13 @@ include::{snippets}/member-getFinishPatList/http-response.adoc[]
 .response-fields 설명
 include::{snippets}/member-getFinishPatList/response-fields.adoc[]
 
-=== 내가 참여한 팟 상세 조회 getJoinPatDetail
+=== 내가 참여한 팟 상세 조회
 
 .http-request 예시
 include::{snippets}/member-getJoinPatDetail/http-request.adoc[]
 
 .쿼리 파라미터
-include::{snippets}/member-getJoinPatDetail/request-parameters.adoc[]
+** X
 
 .http-response 예시
 include::{snippets}/member-getJoinPatDetail/http-response.adoc[]

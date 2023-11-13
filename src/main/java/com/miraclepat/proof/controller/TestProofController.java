@@ -41,7 +41,7 @@ public class TestProofController {
 
         }
 
-        ProofListDto proofListDto = new ProofListDto(list, 1L, 1L);
+        ProofListDto proofListDto = new ProofListDto(list);
 
         return ResponseEntity.ok().body(proofListDto);
     }
@@ -67,7 +67,7 @@ public class TestProofController {
 
         }
 
-        ProofListDto proofListDto = new ProofListDto(list, 5L, 50L);
+        ProofListDto proofListDto = new ProofListDto(list);
 
         return ResponseEntity.ok().body(proofListDto);
     }

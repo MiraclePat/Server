@@ -34,20 +34,19 @@ class TestHomeControllerTest {
                         requestParameters(  //쿼리 파라미터 설명
                                 parameterWithName("page").description("페이지 번호").optional(),
                                 parameterWithName("size").description("몇 개씩 받을지").optional(),
-                                parameterWithName("sort").description("정렬 기준-createdTime or nowPerson (필수)"),
+                                parameterWithName("sort").description("정렬 기준-createdTime, nowPerson"),
                                 parameterWithName("search").description("검색어").optional(),
-                                parameterWithName("category").description("카테고리")
+                                parameterWithName("category").description("카테고리").optional()
                         ),
                         responseFields(
-                                fieldWithPath("homePatDtoList[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
-                                fieldWithPath("homePatDtoList[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
-                                fieldWithPath("homePatDtoList[].patName").type(JsonFieldType.STRING).description("팟 제목"),
-                                fieldWithPath("homePatDtoList[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
-                                fieldWithPath("homePatDtoList[].category").type(JsonFieldType.STRING).description("카테고리 명"),
-                                fieldWithPath("homePatDtoList[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
-                                fieldWithPath("homePatDtoList[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
-                                fieldWithPath("totalCount").type(JsonFieldType.NUMBER).description("총 항목 수")
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
+                                fieldWithPath("content[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
+                                fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
+                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
+                                fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
+                                fieldWithPath("content[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
+                                fieldWithPath("content[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
 

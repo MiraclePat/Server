@@ -1,5 +1,6 @@
 package com.miraclepat.pat.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.miraclepat.pat.entity.Pat;
 import com.miraclepat.utils.Constants;
 import lombok.Getter;
@@ -54,6 +55,9 @@ public class PatDetailDto {
 
     private int maxPerson;
 
+    @JsonProperty("isWriter")
+    private boolean isWriter; //작성자인지 아닌지.->createdBy로.
+
     public PatDetailDto(Pat pat){
         this.patId = pat.getId();
         this.patName = pat.getPatName();
@@ -81,5 +85,8 @@ public class PatDetailDto {
         }
         correctImg=Constants.CORRECT_IMG;
         //this.maxProof = pat.getMaxProof();
+
+        this.isWriter = true;
+
     }
 }

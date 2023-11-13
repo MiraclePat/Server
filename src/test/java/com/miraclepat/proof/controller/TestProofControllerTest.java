@@ -27,7 +27,7 @@ class TestProofControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void getMyProofList() throws Exception {
+    void 내_인증사진_조회() throws Exception {
 
         mockMvc.perform(get("/api/test/members/pats/{pat-id}/proofs", 1))
                 .andExpect(status().isOk())
@@ -39,17 +39,16 @@ class TestProofControllerTest {
                                 parameterWithName("size").description("한 페이지당 보낼 항목 수").optional()
                         ),
                         responseFields(
-                                fieldWithPath("proofDtoList[].id").type(JsonFieldType.NUMBER).description("인증 사진 Id(임시)"),
-                                fieldWithPath("proofDtoList[].proofImg").type(JsonFieldType.STRING).description("인증 이미지 URL"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
-                                fieldWithPath("totalCount").type(JsonFieldType.NUMBER).description("총 항목 수")
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("인증 사진 Id"),
+                                fieldWithPath("content[].proofImg").type(JsonFieldType.STRING).description("인증 이미지 URL"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
 
     }
 
     @Test
-    void getAnotherProofList() throws Exception {
+    void 다른사람_인증사진_조회() throws Exception {
 
         mockMvc.perform(get("/api/test/members/pats/{pat-id}/proofs/another", 1))
                 .andExpect(status().isOk())
@@ -61,10 +60,9 @@ class TestProofControllerTest {
                                 parameterWithName("size").description("한 페이지당 보낼 항목 수").optional()
                         ),
                         responseFields(
-                                fieldWithPath("proofDtoList[].id").type(JsonFieldType.NUMBER).description("인증 사진 Id(임시)"),
-                                fieldWithPath("proofDtoList[].proofImg").type(JsonFieldType.STRING).description("인증 이미지 URL"),
-                                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 수"),
-                                fieldWithPath("totalCount").type(JsonFieldType.NUMBER).description("총 항목 수")
+                                fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("인증 사진 Id"),
+                                fieldWithPath("content[].proofImg").type(JsonFieldType.STRING).description("인증 이미지 URL"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
 
