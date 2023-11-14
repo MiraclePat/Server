@@ -2,6 +2,7 @@ package com.miraclepat.pat.controller;
 
 import com.miraclepat.category.entity.Category;
 import com.miraclepat.pat.dto.CreatePatDto;
+import com.miraclepat.pat.dto.HomePatListDto;
 import com.miraclepat.pat.dto.PatDetailDto;
 import com.miraclepat.pat.dto.PatListDto;
 import com.miraclepat.pat.entity.Pat;
@@ -23,6 +24,52 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/test/pats")
 public class TestPatController {
+    //홈화면 리스트, 맵화면 리스트, 팟 상세보기, 팟 생성, 수정, 삭제, 참여, 삭제, 팟 탈퇴
+
+    @GetMapping("/home")
+    //홈 화면
+    public ResponseEntity<HomePatListDto> getPatList(
+            @RequestParam(name = "page", required = false, defaultValue = "0")
+            Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "10")
+            Integer size,
+            @RequestParam(name = "sort", defaultValue = "createdTime")
+            String sort,
+            @RequestParam(name = "search", required = false)
+            String search,
+            @RequestParam(name = "category", required = false)
+            String category
+    ) {
+        Category category1 = new Category();
+        category1.setCategoryName("환경");
+
+        List<Pat> list = new ArrayList<>();
+
+        for(int i = 0;i<5;i++){
+            Pat pat = new Pat();
+            pat.setId(Long.valueOf(i));
+            pat.setPatDetail("디테일"+i);
+            pat.setPatName("제목입니다.홈화면"+i);
+            pat.setDays("월,화,수");
+            pat.setCategory(category1);
+            pat.setLeader("윈터");
+            pat.setEndDate(LocalDate.now().plusDays(i*2));
+            pat.setStartDate(LocalDate.now().plusDays(i));
+            pat.setStartTime(new Time(System.currentTimeMillis()).toLocalTime());
+            pat.setEndTime(new Time(System.currentTimeMillis()).toLocalTime().plusHours(i));
+            pat.setPosition(pat.createPoint(37.482778-(0.002*i),126.927592-(0.002*i)));
+            pat.setLocation("서울특별시 관악구 신림동");
+            pat.setNowPerson(8);
+            pat.setMaxPerson(10);
+            pat.setRealtime("Y");
+            pat.setProofDetail("쓰레기 줍고 다니기");
+            list.add(pat);
+        }
+
+        HomePatListDto homePatListDto = new HomePatListDto(list);
+
+        return ResponseEntity.ok().body(homePatListDto);
+    }
 
     @GetMapping("/map")
     //맵 화면

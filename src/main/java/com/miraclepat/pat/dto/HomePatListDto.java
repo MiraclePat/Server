@@ -1,4 +1,4 @@
-package com.miraclepat.home.dto;
+package com.miraclepat.pat.dto;
 
 import com.miraclepat.pat.entity.Pat;
 import lombok.Builder;
