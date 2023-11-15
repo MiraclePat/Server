@@ -40,7 +40,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -53,8 +53,11 @@ dependencies {
 	implementation 'com.querydsl:querydsl-spatial'
 	// ========================================
 
-	//WebClient
+	//WebClient->카카오 서버에서 정보 받기 위해
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	//파이어베이스 auth
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 
 	// (4) rest docs 의존성 추가
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
@@ -65,7 +68,7 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	//testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 // (6) test 할 때 snippetsDir에 생성된 응답을 asciidoctor로 변환하여 .adoc 파일 생성
