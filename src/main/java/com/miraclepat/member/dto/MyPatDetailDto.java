@@ -49,7 +49,7 @@ public class MyPatDetailDto {
     //틀린 예시 이미지
     private List<String> incorrectImg = new ArrayList<>();
 
-    private String realtime; //실시간으로 제한? 아니면 상관 없음?
+    private boolean realtime; //실시간으로 제한? 아니면 상관 없음?
 
     //----
 
@@ -77,7 +77,7 @@ public class MyPatDetailDto {
         this.endDate = pat.getEndDate();
         this.days = pat.getDays();
         this.proofDetail = pat.getProofDetail();
-        this.realtime = pat.getRealtime();
+        this.realtime = pat.isRealtime();
         this.maxProof = 15;
         this.allMaxProof = pat.getMaxProof()*pat.getNowPerson();
 

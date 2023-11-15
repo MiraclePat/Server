@@ -1,11 +1,13 @@
 package com.miraclepat.pat.entity;
 
 import com.miraclepat.category.entity.Category;
+import com.miraclepat.pat.constant.State;
 import com.miraclepat.utils.entity.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.type.descriptor.sql.TinyIntTypeDescriptor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -85,13 +87,16 @@ public class Pat extends BaseEntity {
     @Column(nullable = false)
     private String proofDetail;
 
-    private String realtime; //실시간으로 제한? 아니면 상관 없음?
+    private boolean realtime; //실시간으로 제한? 아니면 상관 없음?
 
     @Column(nullable = false)
     private int maxProof; //인증 기간 * 횟수로 미리 계산
 
     @Column(nullable = false)
     private String repImg;
+
+    @Enumerated(EnumType.STRING)
+    private State state; //진행 상태
 
     public Point createPoint(double latitude, double longitude) {
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);

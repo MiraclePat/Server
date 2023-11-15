@@ -2,9 +2,13 @@ package com.miraclepat.member.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -14,9 +18,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TestMemberController.class)
+@WebMvcTest(value = TestMemberController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class
+)
 @AutoConfigureRestDocs
 class TestMemberControllerTest {
 
@@ -41,15 +48,21 @@ class TestMemberControllerTest {
 
     @Test
     void 참여한_팟_리스트_조회() throws Exception {
-        mockMvc.perform(get("/api/test/members/pats?page=1"))
+        mockMvc.perform(get("/api/test/members/pats?lastId=1"))
                 .andExpect(status().isOk())
                 .andDo(document("member-getJoinPatList",
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3)
                         requestParameters(  //쿼리 파라미터 설명
-                                parameterWithName("page").description("페이지 번호").optional(),
-                                parameterWithName("size").description("한 페이지당 보낼 항목 수").optional(),
+                                parameterWithName("lastId").description("페이지 번호").optional()
+                                        .attributes(key("타입").value("Long"),
+                                                key("예시").value("1")),
+                                parameterWithName("size").description("한 페이지당 보낼 항목 수").optional()
+                                        .attributes(key("타입").value("int"),
+                                                key("예시").value("1")),
                                 parameterWithName("sort").description("정렬 조건").optional()
+                                        .attributes(key("타입").value("String"),
+                                                key("예시").value("혹시 몰라서 넣었습니다."))
                         ),
                         responseFields(
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
@@ -68,15 +81,21 @@ class TestMemberControllerTest {
 
     @Test
     void 내가_개설한_팟_리스트_조회() throws Exception {
-        mockMvc.perform(get("/api/test/members/pats/open?page=1"))
+        mockMvc.perform(get("/api/test/members/pats/open?lastId=1"))
                 .andExpect(status().isOk())
                 .andDo(document("member-getOpenPatList",
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3)
                         requestParameters(  //쿼리 파라미터 설명
-                                parameterWithName("page").description("페이지 번호").optional(),
-                                parameterWithName("size").description("한 페이지당 보낼 항목 수").optional(),
+                                parameterWithName("lastId").description("페이지 번호").optional()
+                                        .attributes(key("타입").value("Long"),
+                                                key("예시").value("1")),
+                                parameterWithName("size").description("한 페이지당 보낼 항목 수")
+                                        .attributes(key("타입").value("int"),
+                                                key("예시").value("1")).optional(),
                                 parameterWithName("sort").description("정렬 조건").optional()
+                                        .attributes(key("타입").value("String"),
+                                                key("예시").value("혹시 몰라서 넣었습니다."))
                         ),
                         responseFields(
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
@@ -95,15 +114,21 @@ class TestMemberControllerTest {
 
     @Test
     void 종료한_팟_리스트_조회() throws Exception {
-        mockMvc.perform(get("/api/test/members/pats/finish?page=1"))
+        mockMvc.perform(get("/api/test/members/pats/finish?lastId=1"))
                 .andExpect(status().isOk())
                 .andDo(document("member-getFinishPatList",
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3)
                         requestParameters(  //쿼리 파라미터 설명
-                                parameterWithName("page").description("페이지 번호").optional(),
-                                parameterWithName("size").description("한 페이지당 보낼 항목 수").optional(),
-                                parameterWithName("sort").description("정렬 조건").optional()
+                                parameterWithName("lastId").description("페이지 번호").optional()
+                                        .attributes(key("타입").value("Long"),
+                                                key("예시").value("1")),
+                                parameterWithName("size").description("한 페이지당 보낼 항목 수").optional()
+                                        .attributes(key("타입").value("int"),
+                                                key("예시").value("1")),
+                                parameterWithName("sort").description("정렬 조건")
+                                        .attributes(key("타입").value("String"),
+                                                key("예시").value("혹시 몰라서 넣었습니다.")).optional()
                         ),
                         responseFields(
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
@@ -142,7 +167,7 @@ class TestMemberControllerTest {
                                 fieldWithPath("bodyImg[]").type(JsonFieldType.ARRAY).description("본문 이미지 URL 리스트"),
                                 fieldWithPath("correctImg").type(JsonFieldType.STRING).description("정답 예시 이미지 URL"),
                                 fieldWithPath("incorrectImg[]").type(JsonFieldType.ARRAY).description("오답 예시 이미지 URL 리스트"),
-                                fieldWithPath("realtime").type(JsonFieldType.STRING).description("실시간 제한 여부"),
+                                fieldWithPath("realtime").type(JsonFieldType.BOOLEAN).description("실시간 제한 여부"),
                                 fieldWithPath("maxProof").type(JsonFieldType.NUMBER).description("최대 인증 수"),
                                 fieldWithPath("myProof").type(JsonFieldType.NUMBER).description("내 인증 수"),
                                 fieldWithPath("allProof").type(JsonFieldType.NUMBER).description("전체 인증 수"),

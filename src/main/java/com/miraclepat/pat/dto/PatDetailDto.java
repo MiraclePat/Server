@@ -46,7 +46,8 @@ public class PatDetailDto {
     //틀린 예시 이미지
     private List<String> incorrectImg = new ArrayList<>();
 
-    private String realtime; //실시간으로 제한? 아니면 상관 없음?
+    @JsonProperty("realtime") //안붙이면 rest docs 오류
+    private boolean realtime; //실시간으로 제한? 아니면 상관 없음?
 
     //------------
     private String patDetail;
@@ -74,7 +75,7 @@ public class PatDetailDto {
         this.endDate = pat.getEndDate();
         this.days = pat.getDays();
         this.proofDetail = pat.getProofDetail();
-        this.realtime = pat.getRealtime();
+        this.realtime = pat.isRealtime();
 
         for(int i=0; i<4; i++){
             bodyImg.add(Constants.BODY_IMG);

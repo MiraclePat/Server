@@ -24,8 +24,10 @@ public class TestProofController {
     //참여중인 팟에서 내 인증 보기
     @GetMapping
     public ResponseEntity getMyProofList(
-            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "1") Integer size
+            @RequestParam(name = "lastId", required = false)
+            Long lastId,
+            @RequestParam(name = "size", required = false, defaultValue = "10")
+            int size
             ){
 
         List<Proof> list = new ArrayList<>();
@@ -49,8 +51,10 @@ public class TestProofController {
     //참여중인 팟에서 다른 사람들 인증 사진 보기
     @GetMapping("/another")
     public ResponseEntity getAnotherProofList(
-            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "1") Integer size
+            @RequestParam(name = "lastId", required = false)
+            Long lastId,
+            @RequestParam(name = "size", required = false, defaultValue = "10")
+            int size
     ){
 
 

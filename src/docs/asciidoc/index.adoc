@@ -7,6 +7,5 @@
 :sectlinks:
 
 include::member.adoc[]
-include::home.adoc[]
 include::pat.adoc[]
 include::proof.adoc[]

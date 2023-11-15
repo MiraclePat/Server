@@ -3,9 +3,9 @@ package com.miraclepat.member.controller;
 import com.miraclepat.category.entity.Category;
 import com.miraclepat.member.dto.MyPatDetailDto;
 import com.miraclepat.member.dto.MyPatListDto;
-import com.miraclepat.member.dto.SignupDto;
+import com.miraclepat.auth.dto.SignupDto;
 import com.miraclepat.member.dto.ProfileDto;
-import com.miraclepat.member.dto.TokenDto;
+import com.miraclepat.auth.dto.TokenDto;
 import com.miraclepat.pat.entity.Pat;
 import com.miraclepat.utils.Constants;
 import org.springframework.http.HttpStatus;
@@ -29,16 +29,14 @@ public class TestMemberController {
     //회원가입
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody @Valid SignupDto SignupDto){
-        TokenDto tr = new TokenDto();
-        tr.setToken("token");
+        TokenDto tr = new TokenDto("");
         return ResponseEntity.status(HttpStatus.CREATED).body(tr);
     }
 
     //로그인
     @PostMapping("/login")
     public ResponseEntity login(){
-        TokenDto tr = new TokenDto();
-        tr.setToken("token");
+        TokenDto tr = new TokenDto("");
         return ResponseEntity.ok().body(tr);
     }
 
@@ -82,10 +80,10 @@ public class TestMemberController {
     //내가 참여한 팟 리스트
     @GetMapping("/pats")
     public ResponseEntity getJoinPatList(
-            @RequestParam(name = "page", required = false, defaultValue = "1")
-            Integer page,
+            @RequestParam(name = "lastId", required = false)
+            Long lastId,
             @RequestParam(name = "size", required = false, defaultValue = "10")
-            Integer size,
+            int size,
             @RequestParam(name = "sort", required = false)
             String sort
     ){
@@ -113,7 +111,7 @@ public class TestMemberController {
             pat.setLocation("서울특별시 관악구 신림동");
             pat.setNowPerson(8);
             pat.setMaxPerson(10);
-            pat.setRealtime("Y");
+            pat.setRealtime(true);
             pat.setProofDetail("쓰레기 줍고 다니기");
             list.add(pat);
         }
@@ -136,6 +134,7 @@ public class TestMemberController {
         Category category1 = new Category();
         category1.setCategoryName("습관");
 
+
         Pat pat = new Pat();
         pat.setId(0L);
         pat.setPatDetail("디테일");
@@ -151,7 +150,7 @@ public class TestMemberController {
         pat.setLocation("서울특별시 관악구 신림동");
         pat.setNowPerson(8);
         pat.setMaxPerson(10);
-        pat.setRealtime("Y");
+        pat.setRealtime(true);
         pat.setProofDetail("쓰레기 줍고 다니기");
         pat.setMaxProof(30);
 
@@ -166,10 +165,10 @@ public class TestMemberController {
     //내가 개설한 팟 리스트 -> 내가 참여한 팟 목록 내용과 같음
     @GetMapping("/pats/open")
     public ResponseEntity getOpenPatList(
-            @RequestParam(name = "page", required = false, defaultValue = "1")
-            Integer page,
+            @RequestParam(name = "lastId", required = false)
+            Long lastId,
             @RequestParam(name = "size", required = false, defaultValue = "10")
-            Integer size,
+            int size,
             @RequestParam(name = "sort", required = false)
             String sort
     ){
@@ -196,7 +195,7 @@ public class TestMemberController {
             pat.setLocation("서울특별시 관악구 신림동");
             pat.setNowPerson(8);
             pat.setMaxPerson(10);
-            pat.setRealtime("Y");
+            pat.setRealtime(true);
             pat.setProofDetail("쓰레기 줍고 다니기");
             list.add(pat);
         }
@@ -210,10 +209,10 @@ public class TestMemberController {
     //내가 참여하고 완료한 팟 리스트 -> 내가 참여~~
     @GetMapping("/pats/finish")
     public ResponseEntity getFinishPatList(
-            @RequestParam(name = "page", required = false, defaultValue = "1")
-            Integer page,
+            @RequestParam(name = "lastId", required = false)
+            Long lastId,
             @RequestParam(name = "size", required = false, defaultValue = "10")
-            Integer size,
+            int size,
             @RequestParam(name = "sort", required = false)
             String sort
     ){
@@ -240,7 +239,7 @@ public class TestMemberController {
             pat.setLocation("서울특별시 관악구 신림동");
             pat.setNowPerson(8);
             pat.setMaxPerson(10);
-            pat.setRealtime("Y");
+            pat.setRealtime(true);
             pat.setProofDetail("쓰레기 줍고 다니기");
             list.add(pat);
         }

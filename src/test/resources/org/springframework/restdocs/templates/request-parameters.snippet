@@ -1,8 +1,10 @@
 |===
-|파라미터|필수여부|설명
+|파라미터|필수여부|설명|타입|예시
 {{#parameters}}
 |{{#tableCellContent}}`+{{name}}+`{{/tableCellContent}}
 |{{#tableCellContent}}{{^optional}}true{{/optional}}{{#optional}}false{{/optional}}{{/tableCellContent}}
 |{{#tableCellContent}}{{description}}{{/tableCellContent}}
+|{{#tableCellContent}}{{타입}}{{/tableCellContent}}
+|{{#tableCellContent}}{{예시}}{{/tableCellContent}}
 {{/parameters}}
 |===

@@ -1,11 +1,11 @@
 package com.miraclepat.pat.controller;
 
 import com.miraclepat.category.entity.Category;
-import com.miraclepat.pat.dto.CreatePatDto;
-import com.miraclepat.pat.dto.HomePatListDto;
-import com.miraclepat.pat.dto.PatDetailDto;
-import com.miraclepat.pat.dto.PatListDto;
+import com.miraclepat.pat.constant.State;
+import com.miraclepat.pat.dto.*;
 import com.miraclepat.pat.entity.Pat;
+import com.miraclepat.pat.repository.PatRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,21 +29,26 @@ public class TestPatController {
     @GetMapping("/home")
     //홈 화면
     public ResponseEntity<HomePatListDto> getPatList(
-            @RequestParam(name = "page", required = false, defaultValue = "0")
-            Integer page,
+            @RequestParam(name = "lastId", required = false)
+            Long lastId,
             @RequestParam(name = "size", required = false, defaultValue = "10")
-            Integer size,
-            @RequestParam(name = "sort", defaultValue = "createdTime")
+            int size,
+            @RequestParam(name = "sort", required = false, defaultValue = "createdTime")
             String sort,
-            @RequestParam(name = "search", required = false)
-            String search,
+            @RequestParam(name = "query", required = false)
+            String query,
             @RequestParam(name = "category", required = false)
-            String category
+            String category,
+            @RequestParam(name = "showFull", required = false, defaultValue = "false")
+            boolean showFull,
+            @RequestParam(name = "state", required = false)
+            State state
     ) {
         Category category1 = new Category();
         category1.setCategoryName("환경");
 
         List<Pat> list = new ArrayList<>();
+
 
         for(int i = 0;i<5;i++){
             Pat pat = new Pat();
@@ -61,7 +66,7 @@ public class TestPatController {
             pat.setLocation("서울특별시 관악구 신림동");
             pat.setNowPerson(8);
             pat.setMaxPerson(10);
-            pat.setRealtime("Y");
+            pat.setRealtime(false);
             pat.setProofDetail("쓰레기 줍고 다니기");
             list.add(pat);
         }
@@ -74,12 +79,12 @@ public class TestPatController {
     @GetMapping("/map")
     //맵 화면
     public ResponseEntity<PatListDto> getPatList(
-            @RequestParam(name = "page", required = false, defaultValue = "1")
-            Integer page,
+            @RequestParam(name = "lastId", required = false)
+            Long lastId,
             @RequestParam(name = "size", required = false, defaultValue = "10")
-            Integer size,
-            @RequestParam(name = "search", required = false)
-            String search,
+            int size,
+            @RequestParam(name = "query", required = false)
+            String query,
             @RequestParam(name = "category", required = false)
             String category,
             @RequestParam(name = "leftLongitude", defaultValue = "0.0")
@@ -112,7 +117,7 @@ public class TestPatController {
             pat.setLocation("서울특별시 관악구 신림동");
             pat.setNowPerson(8);
             pat.setMaxPerson(10);
-            pat.setRealtime("Y");
+            pat.setRealtime(false);
             pat.setProofDetail("쓰레기 줍고 다니기");
             list.add(pat);
         }
@@ -166,7 +171,7 @@ public class TestPatController {
         pat.setLocation("서울특별시 관악구 신림동");
         pat.setNowPerson(8);
         pat.setMaxPerson(10);
-        pat.setRealtime("Y");
+        pat.setRealtime(false);
         pat.setMaxProof(10);
         pat.setProofDetail("쓰레기 줍고 다니기");
 
