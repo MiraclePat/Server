@@ -1,0 +1,39 @@
+= AuthController API
+notification-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== AuthController
+
+=== 로그인
+
+.http-request
+include::{snippets}/auth-login/http-request.adoc[]
+
+.Request-field
+include::{snippets}/auth-login/request-fields.adoc[]
+
+.Response-field
+include::{snippets}/auth-login/response-fields.adoc[]
+
+.http-response
+include::{snippets}/auth-login/http-response.adoc[]
+
+=== 회원 가입
+
+.http-request
+include::{snippets}/auth-signup/http-request.adoc[]
+
+.Request-field
+include::{snippets}/auth-signup/request-fields.adoc[]
+
+.http-response
+include::{snippets}/auth-signup/http-response.adoc[]

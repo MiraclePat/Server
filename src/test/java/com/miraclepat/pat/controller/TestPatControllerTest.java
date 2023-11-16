@@ -2,24 +2,40 @@ package com.miraclepat.pat.controller;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miraclepat.pat.dto.CreatePatDto;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 @WebMvcTest(value = TestPatController.class,
         excludeAutoConfiguration = SecurityAutoConfiguration.class
 )
@@ -128,6 +144,53 @@ class TestPatControllerTest {
     }
 
     @Test
+    void 팟_생성() throws Exception{
+        objectMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
+
+        MockMultipartFile repImg = new MockMultipartFile("repImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+        MockMultipartFile correctImg = new MockMultipartFile("correctImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+        MockMultipartFile incorrectImg = new MockMultipartFile("incorrectImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+        MockMultipartFile incorrectImg2 = new MockMultipartFile("incorrectImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+        MockMultipartFile bodyImg = new MockMultipartFile("bodyImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+        MockMultipartFile bodyImg2 = new MockMultipartFile("bodyImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+
+        CreatePatDto createPatDto = 팟생성();
+
+        String createPatDtoJson = objectMapper.writeValueAsString(createPatDto);
+        MockMultipartFile pat = new MockMultipartFile("pat", "", "application/json", createPatDtoJson.getBytes(StandardCharsets.UTF_8));
+
+        ResultActions result = mockMvc.perform(multipart("/api/test/pats")
+                        .file(repImg)
+                        .file(correctImg)
+                        .file(incorrectImg)
+                        .file(incorrectImg2)
+                        .file(bodyImg)
+                        .file(bodyImg2)
+                        .file(pat)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .characterEncoding("UTF-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"));
+
+        result.andExpect(status().isNoContent())
+                .andDo(document("pat-createPat",
+                        preprocessRequest(prettyPrint()),   // (2)
+                        preprocessResponse(prettyPrint()),  // (3),,
+                        requestHeaders(
+                                headerWithName("Authorization").description("유효한 토큰")
+                        ),
+                        requestParts(
+                                partWithName("repImg").description("이 필드는 MultipartFile 타입의 대표 이미지 파일을 받습니다."),
+                                partWithName("correctImg").description("이 필드는 MultipartFile 타입의 옳은 예시 이미지 파일을 받습니다."),
+                                partWithName("incorrectImg").description("이 필드는 MultipartFile 타입의 틀린 예시 이미지 파일 리스트 받습니다."),
+                                partWithName("bodyImg").description("이 필드는 MultipartFile 타입의 본문 이미지 파일 리스트를 받습니다."),
+                                partWithName("pat").description("팟 설정 내용")
+                        )
+                ));
+
+    }
+
+    @Test
     void 팟_신청_상세페이지() throws Exception {
         objectMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
 
@@ -160,5 +223,156 @@ class TestPatControllerTest {
                                 fieldWithPath("isWriter").type(JsonFieldType.BOOLEAN).description("해당 팟 작성자인지?")
                         )
                 ));
+    }
+
+    //참여하기
+
+    @Test
+    void 팟_참여하기() throws Exception{
+
+        ResultActions result = mockMvc.perform(post("/api/test/pats/{pat-id}",1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                );
+
+        result.andExpect(status().isNoContent())
+                .andDo(document("pat-join",
+                        preprocessRequest(prettyPrint()),   // (2)
+                        preprocessResponse(prettyPrint()),  // (3),,
+                        requestHeaders(
+                                headerWithName("Authorization").description("유효한 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("pat-id").description("id")
+                        )
+                ));
+    }
+
+    //수정하기
+    @Test
+    void 팟_내용_수정() throws Exception{
+        MockMultipartFile file1 = new MockMultipartFile("image", "filename-1.txt", "text/plain", "some text".getBytes());
+        MockMultipartFile nickname = new MockMultipartFile("nickname", "", "text/plain", "닉네임".getBytes());
+
+        MockMultipartHttpServletRequestBuilder builder =
+                RestDocumentationRequestBuilders.
+                        multipart("/api/test/pats/{pat-id}", 1);
+
+        builder.with(new RequestPostProcessor() {
+            @Override
+            public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+                request.setMethod("PATCH");
+                return request;
+            }
+        });
+
+        MockMultipartFile repImg = new MockMultipartFile("repImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+        MockMultipartFile correctImg = new MockMultipartFile("correctImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+        MockMultipartFile incorrectImg = new MockMultipartFile("incorrectImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+        MockMultipartFile bodyImg = new MockMultipartFile("bodyImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
+
+        CreatePatDto createPatDto = 팟생성();
+
+        String createPatDtoJson = objectMapper.writeValueAsString(createPatDto);
+        MockMultipartFile pat = new MockMultipartFile("pat", "", "application/json", createPatDtoJson.getBytes(StandardCharsets.UTF_8));
+
+        ResultActions result = mockMvc.perform(builder
+                .file(repImg)
+                .file(correctImg)
+                .file(incorrectImg)
+                .file(bodyImg)
+                .file(pat)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .characterEncoding("UTF-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"));
+
+        result.andExpect(status().isNoContent())
+                .andDo(document("pat-updatePat",
+                        preprocessRequest(prettyPrint()),   // (2)
+                        preprocessResponse(prettyPrint()),  // (3),,
+                        requestHeaders(
+                                headerWithName("Authorization").description("유효한 토큰")
+                        ),
+                        requestParts(
+                                partWithName("repImg").description("이 필드는 MultipartFile 타입의 대표 이미지 파일을 받습니다."),
+                                partWithName("correctImg").description("이 필드는 MultipartFile 타입의 옳은 예시 이미지 파일을 받습니다."),
+                                partWithName("incorrectImg").description("이 필드는 MultipartFile 타입의 틀린 예시 이미지 파일 리스트 받습니다."),
+                                partWithName("bodyImg").description("이 필드는 MultipartFile 타입의 본문 이미지 파일 리스트를 받습니다."),
+                                partWithName("pat").description("팟 내용")
+                        )
+                ));
+
+    }
+
+    //팟 삭제
+    @Test
+    void 팟_삭제() throws Exception{
+        ResultActions result = mockMvc.perform(delete("/api/test/pats/{pat-id}",1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+        );
+
+        result.andExpect(status().isNoContent())
+                .andDo(document("pat-delete",
+                        preprocessRequest(prettyPrint()),   // (2)
+                        preprocessResponse(prettyPrint()),  // (3),,
+                        requestHeaders(
+                                headerWithName("Authorization").description("유효한 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("pat-id").description("id")
+                        )
+                ));
+    }
+
+    //팟 가입 신청 취소
+    @Test
+    void 팟_가입_취소() throws Exception{
+
+        ResultActions result = mockMvc.perform(delete("/api/test/pats/{pat-id}/withdraw",1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+        );
+
+        result.andExpect(status().isNoContent())
+                .andDo(document("pat-withdraw",
+                        preprocessRequest(prettyPrint()),   // (2)
+                        preprocessResponse(prettyPrint()),  // (3),,
+                        requestHeaders(
+                                headerWithName("Authorization").description("유효한 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("pat-id").description("id")
+                        )
+                ));
+
+    }
+
+    CreatePatDto 팟생성(){
+
+        CreatePatDto createPatDto = new CreatePatDto();
+        createPatDto.setPatName("팟 이름");
+        createPatDto.setPatDetail("팟 상세 내용 이런 너무 짧아");
+        createPatDto.setMaxPerson(10);
+        createPatDto.setLatitude(37.5665);
+        createPatDto.setLongitude(126.9780);
+        createPatDto.setLocation("서울특별시 중구 세종대로 110");
+        createPatDto.setCategory("카테고리");
+        createPatDto.setStartTime("10:00");
+        createPatDto.setEndTime("18:00");
+        createPatDto.setStartDate("2023-01-01");
+        createPatDto.setEndDate("2023-12-31");
+        createPatDto.setProofDetail("인증 방법 상세");
+        createPatDto.setDays("월,수,금");
+        createPatDto.setRealtime(true);
+
+        return createPatDto;
     }
 }

@@ -26,32 +26,18 @@ import java.util.List;
 public class TestMemberController {
 
 
-    //회원가입
-    @PostMapping("/signup")
-    public ResponseEntity signup(@RequestBody @Valid SignupDto SignupDto){
-        TokenDto tr = new TokenDto("");
-        return ResponseEntity.status(HttpStatus.CREATED).body(tr);
-    }
-
-    //로그인
-    @PostMapping("/login")
-    public ResponseEntity login(){
-        TokenDto tr = new TokenDto("");
-        return ResponseEntity.ok().body(tr);
-    }
-
     //내 정보 가져오기
     @GetMapping("/me")
     public ResponseEntity getProfile(){
         ProfileDto ps=new ProfileDto(Constants.REP_IMG,"칸타타",1,3);
-        return ResponseEntity.ok().body(ps);
+        return ResponseEntity.ok(ps);
     }
 
     //내 정보 업데이트
     @PatchMapping("/me")
     public ResponseEntity updateProfile(
             @RequestPart(name = "image", required = false) MultipartFile image,
-            @RequestParam(name = "nickname", required = false) String nickname){
+            @RequestPart(name = "nickname", required = false) String nickname){
 
         if (image!=null){
             System.out.println("들어온 이미지 이름 : "+image.getName());
@@ -61,12 +47,12 @@ public class TestMemberController {
 
         System.out.println("들어온 닉네임: "+nickname);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     //내 알람 정보 업데이트 -> 쿼리 파라미터로 받는다.
     @PatchMapping("/me/push")
-    public ResponseEntity updatePush(@RequestParam("push") String push){
+    public ResponseEntity updatePush(@RequestParam("push") boolean push){
         System.out.println(push);
         return ResponseEntity.noContent().build();
     }
@@ -85,7 +71,9 @@ public class TestMemberController {
             @RequestParam(name = "size", required = false, defaultValue = "10")
             int size,
             @RequestParam(name = "sort", required = false)
-            String sort
+            String sort,
+            @RequestParam(name = "state", required = false)
+            String state
     ){
         //내가 참여한 리스트를 보내줘야함
         //id, 타이틀, 카테고리, 주소, 현재 인원, 최대 인원, 시작일, 인증 빈도, 대표 이미지 url
@@ -203,51 +191,6 @@ public class TestMemberController {
         MyPatListDto myPatListDto = new MyPatListDto(list);
 
         return ResponseEntity.ok().body(myPatListDto);
-
-    }
-
-    //내가 참여하고 완료한 팟 리스트 -> 내가 참여~~
-    @GetMapping("/pats/finish")
-    public ResponseEntity getFinishPatList(
-            @RequestParam(name = "lastId", required = false)
-            Long lastId,
-            @RequestParam(name = "size", required = false, defaultValue = "10")
-            int size,
-            @RequestParam(name = "sort", required = false)
-            String sort
-    ){
-        //내가 참여하고 종료일, 종료 시간이 지난 팟 리스트 반환
-
-        Category category1 = new Category();
-        category1.setCategoryName("생활");
-
-        List<Pat> list = new ArrayList<>();
-
-        for(int i = 0;i<5;i++){
-            Pat pat = new Pat();
-            pat.setId(Long.valueOf(i));
-            pat.setPatDetail("디테일"+i);
-            pat.setPatName("종료한 팟 목록"+i);
-            pat.setDays("월,화,수");
-            pat.setCategory(category1);
-            pat.setLeader("윈터");
-            pat.setEndDate(LocalDate.now().minusDays(i));
-            pat.setStartDate(LocalDate.now().minusDays(3*i));
-            pat.setStartTime(LocalTime.of(10+i, 0));
-            pat.setEndTime(LocalTime.of(15+i, 0));
-            pat.setPosition(pat.createPoint(37.482778-(0.002*i),126.927592-(0.002*i)));
-            pat.setLocation("서울특별시 관악구 신림동");
-            pat.setNowPerson(8);
-            pat.setMaxPerson(10);
-            pat.setRealtime(true);
-            pat.setProofDetail("쓰레기 줍고 다니기");
-            list.add(pat);
-        }
-
-        MyPatListDto myPatListDto = new MyPatListDto(list);
-
-        return ResponseEntity.ok().body(myPatListDto);
-
 
     }
 

@@ -1,6 +1,9 @@
 package com.miraclepat.pat.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -8,6 +11,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Setter
+@Getter
+@ToString
 public class CreatePatDto {
 
     //팟 제목
@@ -54,12 +59,12 @@ public class CreatePatDto {
     @Size(min = 5, max = 300,message = "5-300자 사이로 작성해주세요.")
     String proofDetail;
 
-
     //인증 요일
     @NotBlank(message = "인증 요일을 지정해주세요.")
     String days;
 
     //실시간 인증? or 사진 인증도 가능?
-    @NotBlank(message = "인증 수단을 지정해주세요.")
-    String realtime;
+    @NotNull(message = "인증 수단을 지정해주세요.")
+    @JsonProperty("realtime") //안붙이면 rest docs 오류
+    boolean realtime;
 }

@@ -15,70 +15,101 @@ endif::[]
 
 === 회원 프로필 정보 조회(프사, 닉네임, 개설팟 수, 종료팟 수)
 
-.http-request 예시
+.http-request
 include::{snippets}/member-getProfile/http-request.adoc[]
 
-.쿼리 파라미터
-** X
+.Request-headers
+include::{snippets}/member-getProfile/request-headers.adoc[]
 
-.http-response 예시
-include::{snippets}/member-getProfile/http-response.adoc[]
-
-.response-fields 설명
+.Response-field
 include::{snippets}/member-getProfile/response-fields.adoc[]
 
-=== 내가 참여한 팟 리스트 조회
+.http-response
+include::{snippets}/member-getProfile/http-response.adoc[]
 
-.http-request 예시
+=== 내 프로필 업데이트
+
+.http-request
+include::{snippets}/member-updateProfile/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/member-updateProfile/request-headers.adoc[]
+
+.Request-parts
+include::{snippets}/member-updateProfile/request-parts.adoc[]
+
+.Request-field
+include::{snippets}/member-updateProfile/request-fields.adoc[]
+
+.http-response
+include::{snippets}/member-updateProfile/http-response.adoc[]
+
+=== 알람 정보 업데이트
+
+.http-request
+include::{snippets}/member-updatePush/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/member-updatePush/request-headers.adoc[]
+
+.http-response
+include::{snippets}/member-updatePush/http-response.adoc[]
+
+=== 회원 탈퇴
+
+.http-request
+include::{snippets}/member-deleteMember/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/member-deleteMember/request-headers.adoc[]
+
+.http-response
+include::{snippets}/member-deleteMember/http-response.adoc[]
+
+=== 내가 참여한_진행예정_or_진행중인_or_완료한_팟_리스트_조회
+
+.http-request
 include::{snippets}/member-getJoinPatList/http-request.adoc[]
 
-.쿼리 파라미터
+.Request-headers
+include::{snippets}/member-getJoinPatList/request-headers.adoc[]
+
+.Request-parameters
 include::{snippets}/member-getJoinPatList/request-parameters.adoc[]
 
-.http-response 예시
-include::{snippets}/member-getJoinPatList/http-response.adoc[]
-
-.response-fields 설명
+.Response-field
 include::{snippets}/member-getJoinPatList/response-fields.adoc[]
+
+.http-response
+include::{snippets}/member-getJoinPatList/http-response.adoc[]
 
 === 내가 개설한 팟 리스트 조회
 
-.http-request 예시
+.http-request
 include::{snippets}/member-getOpenPatList/http-request.adoc[]
 
-.쿼리 파라미터
+.Request-headers
+include::{snippets}/member-getOpenPatList/request-headers.adoc[]
+
+.Request-parameters
 include::{snippets}/member-getOpenPatList/request-parameters.adoc[]
 
-.http-response 예시
-include::{snippets}/member-getOpenPatList/http-response.adoc[]
-
-.response-fields 설명
+.Response-field
 include::{snippets}/member-getOpenPatList/response-fields.adoc[]
 
-=== 참여 완료한 팟 리스트 조회
+.http-response
+include::{snippets}/member-getOpenPatList/http-response.adoc[]
 
-.http-request 예시
-include::{snippets}/member-getFinishPatList/http-request.adoc[]
+=== 내가 참여한 팟 상세조회(인증페이지)
 
-.쿼리 파라미터
-include::{snippets}/member-getFinishPatList/request-parameters.adoc[]
-
-.http-response 예시
-include::{snippets}/member-getFinishPatList/http-response.adoc[]
-
-.response-fields 설명
-include::{snippets}/member-getFinishPatList/response-fields.adoc[]
-
-=== 내가 참여한 팟 상세 조회
-
-.http-request 예시
+.http-request
 include::{snippets}/member-getJoinPatDetail/http-request.adoc[]
 
-.쿼리 파라미터
-** X
+.Request-headers
+include::{snippets}/member-getJoinPatDetail/request-headers.adoc[]
 
-.http-response 예시
-include::{snippets}/member-getJoinPatDetail/http-response.adoc[]
-
-.response-fields 설명
+.Response-field
 include::{snippets}/member-getJoinPatDetail/response-fields.adoc[]
+
+.http-response
+include::{snippets}/member-getJoinPatDetail/http-response.adoc[]

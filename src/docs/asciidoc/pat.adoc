@@ -15,44 +15,103 @@ endif::[]
 
 === 홈화면 팟 리스트 조회
 
-.http-request 예시
+.http-request
 include::{snippets}/pat-getHomePatList/http-request.adoc[]
 
-.쿼리 파라미터
+.Request-parameters
 include::{snippets}/pat-getHomePatList/request-parameters.adoc[]
 
-.http-response 예시
-include::{snippets}/pat-getHomePatList/http-response.adoc[]
-
-.response-fields 설명
+.Response-field
 include::{snippets}/pat-getHomePatList/response-fields.adoc[]
+
+.http-response
+include::{snippets}/pat-getHomePatList/http-response.adoc[]
 
 === 맵화면 팟 리스트 조회
 
-
-.http-request 예시
+.http-request
 include::{snippets}/pat-getMapPatList/http-request.adoc[]
 
-.쿼리 파라미터
+.Request-parameters
 include::{snippets}/pat-getMapPatList/request-parameters.adoc[]
 
-.http-response 예시
-include::{snippets}/pat-getMapPatList/http-response.adoc[]
-
-.response-fields 설명
+.Response-field
 include::{snippets}/pat-getMapPatList/response-fields.adoc[]
 
+.http-response
+include::{snippets}/pat-getMapPatList/http-response.adoc[]
 
-=== 팟 상세 정보 조회(홈과 맵에서 클릭시 보여주는 페이지)
+=== 팟 생성하기
 
-.http-request 예시
+.http-request
+include::{snippets}/pat-createPat/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/pat-createPat/request-headers.adoc[]
+
+.Request-parts
+include::{snippets}/pat-createPat/request-parts.adoc[]
+
+.Response-field
+include::{snippets}/pat-createPat/response-fields.adoc[]
+
+.http-response
+include::{snippets}/pat-createPat/http-response.adoc[]
+
+=== 팟 상세페이지(홈과 맵에서 누를 때)
+
+.http-request
 include::{snippets}/pat-getPatDetail/http-request.adoc[]
 
-.쿼리 파라미터
-** X
+.Response-field
+include::{snippets}/pat-getPatDetail/response-fields.adoc[]
 
-.http-response 예시
+.http-response
 include::{snippets}/pat-getPatDetail/http-response.adoc[]
 
-.response-fields 설명
-include::{snippets}/pat-getPatDetail/response-fields.adoc[]
+=== 팟 참여하기
+
+.http-request
+include::{snippets}/pat-join/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/pat-join/request-headers.adoc[]
+
+.http-response
+include::{snippets}/pat-join/http-response.adoc[]
+
+=== 팟 내용 수정
+
+.http-request
+include::{snippets}/pat-updatePat/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/pat-updatePat/request-headers.adoc[]
+
+.Request-parts
+include::{snippets}/pat-updatePat/request-parts.adoc[]
+
+.http-response
+include::{snippets}/pat-updatePat/http-response.adoc[]
+
+=== 팟 삭제
+
+.http-request
+include::{snippets}/pat-delete/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/pat-delete/request-headers.adoc[]
+
+.http-response
+include::{snippets}/pat-delete/http-response.adoc[]
+
+=== 팟 가입 신청 취소
+
+.http-request
+include::{snippets}/pat-withdraw/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/pat-withdraw/request-headers.adoc[]
+
+.http-response
+include::{snippets}/pat-withdraw/http-response.adoc[]

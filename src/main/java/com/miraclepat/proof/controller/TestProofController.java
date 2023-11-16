@@ -6,7 +6,9 @@ import com.miraclepat.utils.Constants;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,18 @@ public class TestProofController {
 
     //인증하기
     @PostMapping
-    public ResponseEntity proof(){
+    public ResponseEntity proof(
+            @PathVariable("pat-id") Long patId,
+            @NotNull(message = "proofImg는 필수입니다.")
+            @RequestPart("proofImg")MultipartFile proofImg
+            ){
+
+        System.out.println("잘 들어옴");
+        //이미지 받아서 저장
+        if (proofImg.isEmpty()) {
+            throw new IllegalArgumentException("proofImg 파일이 비어있습니다.");
+        }
+
         return ResponseEntity.noContent().build();
     }
 

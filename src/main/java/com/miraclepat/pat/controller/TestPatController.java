@@ -16,7 +16,9 @@ import javax.validation.constraints.Size;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 ;
 
@@ -135,9 +137,8 @@ public class TestPatController {
             CreatePatDto createPatDto,
             @RequestPart("repImg")
             MultipartFile repImg ,
-            @Size(min = 1, max = 1, message = "옳은 예제 이미지는 1개까지 업로드할 수 있습니다.")
             @RequestPart("correctImg")
-            List<MultipartFile> correctImg,
+            MultipartFile correctImg,
             @Size(max = 3, message = "틀린 예제 이미지는 최대 3개까지 업로드할 수 있습니다.")
             @RequestPart(value = "incorrectImg", required = false)
             List<MultipartFile> incorrectImg,
@@ -145,6 +146,7 @@ public class TestPatController {
             @RequestPart(value = "bodyImg", required = false)
             List<MultipartFile> bodyImg
     ){
+
 
         return ResponseEntity.noContent().build();
     }
@@ -188,7 +190,21 @@ public class TestPatController {
 
     //수정하기 -> leader만 가능~
     @PatchMapping("/{pat-id}")
-    public ResponseEntity updatePat(){
+    public ResponseEntity updatePat(
+            @Valid
+            @RequestPart("pat")
+            CreatePatDto createPatDto,
+            @RequestPart("repImg")
+            MultipartFile repImg ,
+            @RequestPart("correctImg")
+            MultipartFile correctImg,
+            @Size(max = 3, message = "틀린 예제 이미지는 최대 3개까지 업로드할 수 있습니다.")
+            @RequestPart(value = "incorrectImg", required = false)
+            List<MultipartFile> incorrectImg,
+            @Size(max = 5, message = "본문 이미지는 최대 5개까지 업로드할 수 있습니다.")
+            @RequestPart(value = "bodyImg", required = false)
+            List<MultipartFile> bodyImg
+    ){
         return ResponseEntity.noContent().build();
     }
 

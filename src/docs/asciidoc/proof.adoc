@@ -13,31 +13,51 @@ endif::[]
 
 == ProofController
 
+=== 인증하기
+
+.http-request
+include::{snippets}/proof-proof/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/proof-proof/request-headers.adoc[]
+
+.Request-parts
+include::{snippets}/proof-proof/request-parts.adoc[]
+
+.http-response
+include::{snippets}/proof-proof/http-response.adoc[]
+
 === 내 인증사진 조회
 
-.http-request 예시
+.http-request
 include::{snippets}/proof-getMyProof/http-request.adoc[]
 
-.쿼리 파라미터
+.Request-headers
+include::{snippets}/proof-getMyProof/request-headers.adoc[]
+
+.Request-parameters
 include::{snippets}/proof-getMyProof/request-parameters.adoc[]
 
-.http-response 예시
-include::{snippets}/proof-getMyProof/http-response.adoc[]
-
-.response-fields 설명
+.Response-field
 include::{snippets}/proof-getMyProof/response-fields.adoc[]
+
+.http-response
+include::{snippets}/proof-getMyProof/http-response.adoc[]
 
 
 === 다른 사람 인증사진 조회
 
-.http-request 예시
+.http-request
 include::{snippets}/proof-getAnotherProof/http-request.adoc[]
 
-.쿼리 파라미터
+.Request-headers
+include::{snippets}/proof-getAnotherProof/request-headers.adoc[]
+
+.Request-parameters
 include::{snippets}/proof-getAnotherProof/request-parameters.adoc[]
 
-.http-response 예시
-include::{snippets}/proof-getAnotherProof/http-response.adoc[]
-
-.response-fields 설명
+.Response-field
 include::{snippets}/proof-getAnotherProof/response-fields.adoc[]
+
+.http-response
+include::{snippets}/proof-getAnotherProof/http-response.adoc[]

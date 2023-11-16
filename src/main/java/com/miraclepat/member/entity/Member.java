@@ -40,7 +40,7 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private String push;
+    private boolean push;
 
     private String fcmToken;
 
