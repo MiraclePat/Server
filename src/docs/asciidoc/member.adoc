@@ -108,6 +108,9 @@ include::{snippets}/member-getJoinPatDetail/http-request.adoc[]
 .Request-headers
 include::{snippets}/member-getJoinPatDetail/request-headers.adoc[]
 
+.Path-parameters
+include::{snippets}/member-getJoinPatDetail/path-parameters.adoc[]
+
 .Response-field
 include::{snippets}/member-getJoinPatDetail/response-fields.adoc[]
 

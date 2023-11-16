@@ -52,9 +52,6 @@ include::{snippets}/pat-createPat/request-headers.adoc[]
 .Request-parts
 include::{snippets}/pat-createPat/request-parts.adoc[]
 
-.Response-field
-include::{snippets}/pat-createPat/response-fields.adoc[]
-
 .http-response
 include::{snippets}/pat-createPat/http-response.adoc[]
 
@@ -62,6 +59,9 @@ include::{snippets}/pat-createPat/http-response.adoc[]
 
 .http-request
 include::{snippets}/pat-getPatDetail/http-request.adoc[]
+
+.Path-parameters
+include::{snippets}/pat-getPatDetail/path-parameters.adoc[]
 
 .Response-field
 include::{snippets}/pat-getPatDetail/response-fields.adoc[]
@@ -77,6 +77,9 @@ include::{snippets}/pat-join/http-request.adoc[]
 .Request-headers
 include::{snippets}/pat-join/request-headers.adoc[]
 
+.Path-parameters
+include::{snippets}/pat-join/path-parameters.adoc[]
+
 .http-response
 include::{snippets}/pat-join/http-response.adoc[]
 
@@ -87,6 +90,9 @@ include::{snippets}/pat-updatePat/http-request.adoc[]
 
 .Request-headers
 include::{snippets}/pat-updatePat/request-headers.adoc[]
+
+.Path-parameters
+include::{snippets}/pat-updatePat/path-parameters.adoc[]
 
 .Request-parts
 include::{snippets}/pat-updatePat/request-parts.adoc[]
@@ -102,6 +108,9 @@ include::{snippets}/pat-delete/http-request.adoc[]
 .Request-headers
 include::{snippets}/pat-delete/request-headers.adoc[]
 
+.Path-parameters
+include::{snippets}/pat-delete/path-parameters.adoc[]
+
 .http-response
 include::{snippets}/pat-delete/http-response.adoc[]
 
@@ -112,6 +121,9 @@ include::{snippets}/pat-withdraw/http-request.adoc[]
 
 .Request-headers
 include::{snippets}/pat-withdraw/request-headers.adoc[]
+
+.Path-parameters
+include::{snippets}/pat-withdraw/path-parameters.adoc[]
 
 .http-response
 include::{snippets}/pat-withdraw/http-response.adoc[]

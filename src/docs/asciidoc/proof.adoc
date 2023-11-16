@@ -21,6 +21,9 @@ include::{snippets}/proof-proof/http-request.adoc[]
 .Request-headers
 include::{snippets}/proof-proof/request-headers.adoc[]
 
+.Path-parameters
+include::{snippets}/proof-proof/path-parameters.adoc[]
+
 .Request-parts
 include::{snippets}/proof-proof/request-parts.adoc[]
 
@@ -34,6 +37,9 @@ include::{snippets}/proof-getMyProof/http-request.adoc[]
 
 .Request-headers
 include::{snippets}/proof-getMyProof/request-headers.adoc[]
+
+.Path-parameters
+include::{snippets}/proof-getMyProof/path-parameters.adoc[]
 
 .Request-parameters
 include::{snippets}/proof-getMyProof/request-parameters.adoc[]
@@ -52,6 +58,9 @@ include::{snippets}/proof-getAnotherProof/http-request.adoc[]
 
 .Request-headers
 include::{snippets}/proof-getAnotherProof/request-headers.adoc[]
+
+.Path-parameters
+include::{snippets}/proof-getAnotherProof/path-parameters.adoc[]
 
 .Request-parameters
 include::{snippets}/proof-getAnotherProof/request-parameters.adoc[]

@@ -199,6 +199,9 @@ class TestPatControllerTest {
                 .andDo(document("pat-getPatDetail",
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3),
+                        pathParameters(
+                                parameterWithName("pat-id").description("id")
+                        ),
                         responseFields(
                                 fieldWithPath("patId").type(JsonFieldType.NUMBER).description("팟 ID"),
                                 fieldWithPath("repImg").type(JsonFieldType.STRING).description("대표 이미지"),
@@ -295,6 +298,9 @@ class TestPatControllerTest {
                         preprocessResponse(prettyPrint()),  // (3),,
                         requestHeaders(
                                 headerWithName("Authorization").description("유효한 토큰")
+                        ),
+                        pathParameters(
+                                parameterWithName("pat-id").description("id")
                         ),
                         requestParts(
                                 partWithName("repImg").description("이 필드는 MultipartFile 타입의 대표 이미지 파일을 받습니다."),
