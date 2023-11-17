@@ -2,14 +2,11 @@ package com.miraclepat.member.entity;
 
 import com.miraclepat.member.constant.Role;
 import com.miraclepat.auth.dto.SignupDto;
-import com.miraclepat.pat.entity.Pat;
 import com.miraclepat.utils.Constants;
 import com.miraclepat.utils.entity.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -44,16 +41,12 @@ public class Member extends BaseTimeEntity {
 
     private String fcmToken;
 
-    @OneToMany(mappedBy = "leader", fetch = FetchType.LAZY)
-    private List<Pat> pats = new ArrayList<Pat>();
-
     public static Member createMember(SignupDto signupDto){
 
         Member member = new Member();
 
-        member.setRole(Role.USER);
+        member.setRole(Role.ROLE_USER);
         member.userCode = signupDto.getUserCode();
-        member.setRole(Role.USER);
         member.setProfileImg(Constants.REP_IMG);
 
         return member;
