@@ -88,6 +88,7 @@ class TestPatControllerTest {
                                 fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
                                 fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
                                 fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
+                                fieldWithPath("content[].location").type(JsonFieldType.STRING).description("주소"),
                                 fieldWithPath("content[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
                                 fieldWithPath("content[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
                                 fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")

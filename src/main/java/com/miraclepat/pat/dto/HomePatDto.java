@@ -1,6 +1,5 @@
 package com.miraclepat.pat.dto;
 
-import com.miraclepat.category.entity.Category;
 import com.miraclepat.pat.entity.Pat;
 import com.miraclepat.utils.Constants;
 import lombok.Getter;
@@ -23,6 +22,8 @@ public class HomePatDto {
 
     String category;
 
+    String location;
+
     int nowPerson;
 
     int maxPerson;
@@ -32,6 +33,7 @@ public class HomePatDto {
         this.id = pat.getId();
         this.patName = pat.getPatName();
         this.category = pat.getCategory().getCategoryName();
+        this.location = pat.getLocation();
         this.repImg = Constants.REP_IMG;
         this.startDate = pat.getStartDate();
         this.nowPerson = pat.getNowPerson();

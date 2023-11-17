@@ -3,18 +3,14 @@ package com.miraclepat.member.controller;
 import com.miraclepat.category.entity.Category;
 import com.miraclepat.member.dto.MyPatDetailDto;
 import com.miraclepat.member.dto.MyPatListDto;
-import com.miraclepat.auth.dto.SignupDto;
 import com.miraclepat.member.dto.ProfileDto;
-import com.miraclepat.auth.dto.TokenDto;
 import com.miraclepat.pat.entity.Pat;
 import com.miraclepat.utils.Constants;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;

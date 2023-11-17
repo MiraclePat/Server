@@ -62,9 +62,7 @@ class TestAuthControllerTest {
     void 회원가입_성공() throws Exception {
 
         Map<String, Object> map = new HashMap<>();
-        map.put("userCode", "1234");
-        map.put("age", "20대");
-        map.put("email", "test@gmail.com");
+        map.put("id", "1234");
 
         ResultActions result = mockMvc.perform(post("/api/test/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -77,9 +75,7 @@ class TestAuthControllerTest {
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3),,
                         requestFields(
-                                fieldWithPath("userCode").description("카카오 유저 고유 code").type(JsonFieldType.STRING),
-                                fieldWithPath("age").description("연령대").type(JsonFieldType.STRING),
-                                fieldWithPath("email").description("유저 이메일").type(JsonFieldType.STRING)
+                                fieldWithPath("id").description("카카오 유저 고유 code").type(JsonFieldType.STRING)
                         )
                 ));
     }

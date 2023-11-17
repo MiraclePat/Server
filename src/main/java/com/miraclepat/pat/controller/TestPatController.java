@@ -2,10 +2,11 @@ package com.miraclepat.pat.controller;
 
 import com.miraclepat.category.entity.Category;
 import com.miraclepat.pat.constant.State;
-import com.miraclepat.pat.dto.*;
+import com.miraclepat.pat.dto.CreatePatDto;
+import com.miraclepat.pat.dto.HomePatListDto;
+import com.miraclepat.pat.dto.PatDetailDto;
+import com.miraclepat.pat.dto.PatListDto;
 import com.miraclepat.pat.entity.Pat;
-import com.miraclepat.pat.repository.PatRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,7 @@ import javax.validation.constraints.Size;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 ;
 
@@ -46,19 +45,41 @@ public class TestPatController {
             @RequestParam(name = "state", required = false)
             State state
     ) {
+        List<Category> c = new ArrayList<>();
+
+        Category category0 = new Category();
+        category0.setCategoryName("환경");
+
         Category category1 = new Category();
-        category1.setCategoryName("환경");
+        category1.setCategoryName("건강");
+
+        Category category2 = new Category();
+        category2.setCategoryName("식습관");
+
+        Category category3 = new Category();
+        category3.setCategoryName("취미");
+
+        Category category4 = new Category();
+        category4.setCategoryName("생활");
+
+        c.add(category0);
+        c.add(category1);
+        c.add(category2);
+        c.add(category3);
+        c.add(category4);
 
         List<Pat> list = new ArrayList<>();
 
 
         for(int i = 0;i<5;i++){
+            String s = "category";
+
             Pat pat = new Pat();
             pat.setId(Long.valueOf(i));
-            pat.setPatDetail("디테일"+i);
+            pat.setPatDetail("홈화면 디테일 내용입니다."+i);
             pat.setPatName("제목입니다.홈화면"+i);
             pat.setDays("월,화,수");
-            pat.setCategory(category1);
+            pat.setCategory(c.get(i));
             pat.setLeader("윈터");
             pat.setEndDate(LocalDate.now().plusDays(i*2));
             pat.setStartDate(LocalDate.now().plusDays(i));
@@ -98,18 +119,38 @@ public class TestPatController {
             @RequestParam(name = "topLatitude", defaultValue = "0.0")
             Double topLatitude
     ) {
+        List<Category> c = new ArrayList<>();
+
+        Category category0 = new Category();
+        category0.setCategoryName("환경");
+
         Category category1 = new Category();
-        category1.setCategoryName("환경");
+        category1.setCategoryName("건강");
+
+        Category category2 = new Category();
+        category2.setCategoryName("식습관");
+
+        Category category3 = new Category();
+        category3.setCategoryName("취미");
+
+        Category category4 = new Category();
+        category4.setCategoryName("생활");
+
+        c.add(category0);
+        c.add(category1);
+        c.add(category2);
+        c.add(category3);
+        c.add(category4);
 
         List<Pat> list = new ArrayList<>();
 
         for(int i = 0;i<5;i++){
             Pat pat = new Pat();
             pat.setId(Long.valueOf(i));
-            pat.setPatDetail("디테일"+i);
+            pat.setPatDetail("디테일 내용이 들어가는 부분입니다."+i);
             pat.setPatName("제목 들어가는 곳.조회"+i);
             pat.setDays("월,화,수");
-            pat.setCategory(category1);
+            pat.setCategory(c.get(i));
             pat.setLeader("윈터");
             pat.setEndDate(LocalDate.now());
             pat.setStartDate(LocalDate.now());
@@ -161,7 +202,7 @@ public class TestPatController {
         Pat pat = new Pat();
         pat.setId(Long.valueOf(id));
         pat.setPatDetail("상세조회 본문");
-        pat.setPatName("상세조회 성공!!!!");
+        pat.setPatName("상세조회 성공!!!!!!!!!!!!!!");
         pat.setDays("월,화,수,목,금");
         pat.setCategory(category1);
         pat.setLeader("윈터");

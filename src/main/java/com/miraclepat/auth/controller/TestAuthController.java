@@ -20,7 +20,6 @@ public class TestAuthController {
     //회원가입
     @PostMapping("/signup")
     public ResponseEntity signup(@RequestBody @Valid SignupDto SignupDto){
-        TokenDto tr = new TokenDto("");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
