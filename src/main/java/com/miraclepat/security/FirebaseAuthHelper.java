@@ -3,21 +3,19 @@ package com.miraclepat.security;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
-public class FirebaseAuthService {
+public class FirebaseAuthHelper {
     //파이어베이스에 유저 추가, 삭제
     //커스텀 토큰 생성
     //getUid
 
-    FirebaseAuth firebaseAuth;
-
-    public FirebaseAuthService(FirebaseAuth firebaseAuth) {
-        this.firebaseAuth = firebaseAuth;
-    }
+    private final FirebaseAuth firebaseAuth;
 
     public void createFirebaseUser(String userCode) {
         try {
@@ -58,4 +56,11 @@ public class FirebaseAuthService {
         }
     }
 
+    public void deleteMember(String userCode) {
+        try{
+            firebaseAuth.deleteUser(userCode);
+        }catch (FirebaseAuthException e){
+            log.error("탈퇴 불가");
+        }
+    }
 }

@@ -24,12 +24,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        UnAuthorizedResponse unAuthorizedResponse = new UnAuthorizedResponse();
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getOutputStream(), unAuthorizedResponse);
-    }
-
-    private static class UnAuthorizedResponse {
-        private final String errorMessage = "권한 없음";
+        objectMapper.writeValue(response.getOutputStream(), "인증 에러");
     }
 }

@@ -36,9 +36,6 @@ public class SecurityConfig{
     @Autowired
     private FirebaseAuth firebaseAuth;
 
-    @Autowired
-    CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -58,6 +55,8 @@ public class SecurityConfig{
 
                 .antMatchers("/api/test/**").permitAll()
 
+                //.antMatchers("/**").permitAll()
+
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()
@@ -68,7 +67,7 @@ public class SecurityConfig{
 
                 .exceptionHandling()
                 //인증되지 않은 사용자가 보호된 리소스에 접근하려고 할 때
-                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 
                 .and()
                 .build();

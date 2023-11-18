@@ -86,6 +86,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             return false;
         } else if (request.getRequestURI().startsWith("/api/test/") |
                 request.getRequestURI().startsWith("/api/v1/auth/")) {
+            log.info("NOT GET - 통과");
             return true;
         } else {
             System.out.println("GET 도 아님 불통");
@@ -98,14 +99,9 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
         response.setStatus(HttpStatus.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        //errorMessage를 담아 JSON 형식으로 보낸다.
-        TokenInvalidErrorResponse errorResponse = new TokenInvalidErrorResponse();
+        //errorMessage를 담아 보낸다.
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getOutputStream(), errorResponse);
-    }
-
-    private static class TokenInvalidErrorResponse {
-        private final String errorMessage = "회원 인증 실패";
+        objectMapper.writeValue(response.getOutputStream(), "예외처리 이후 추가");
     }
 
 }
