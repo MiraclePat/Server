@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -173,7 +175,7 @@ class TestPatControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"));
 
-        result.andExpect(status().isNoContent())
+        result.andExpect(status().isCreated())
                 .andDo(document("pat-createPat",
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3),,
@@ -241,7 +243,7 @@ class TestPatControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
                 );
 
-        result.andExpect(status().isNoContent())
+        result.andExpect(status().isCreated())
                 .andDo(document("pat-join",
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3),,
@@ -377,7 +379,11 @@ class TestPatControllerTest {
         createPatDto.setStartDate("2023-01-01");
         createPatDto.setEndDate("2023-12-31");
         createPatDto.setProofDetail("인증 방법 상세");
-        createPatDto.setDays("월,수,금");
+        List<String> day = new ArrayList<>();
+        day.add("월요일");
+        day.add("수요일");
+        day.add("금요일");
+        createPatDto.setDays(day);
         createPatDto.setRealtime(true);
 
         return createPatDto;

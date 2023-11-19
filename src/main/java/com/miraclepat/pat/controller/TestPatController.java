@@ -7,6 +7,7 @@ import com.miraclepat.pat.dto.HomePatListDto;
 import com.miraclepat.pat.dto.PatDetailDto;
 import com.miraclepat.pat.dto.PatListDto;
 import com.miraclepat.pat.entity.Pat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -80,7 +81,7 @@ public class TestPatController {
             pat.setPatName("제목입니다.홈화면"+i);
             pat.setDays("월,화,수");
             pat.setCategory(c.get(i));
-            pat.setLeader("윈터");
+            //pat.setLeader("윈터");
             pat.setEndDate(LocalDate.now().plusDays(i*2));
             pat.setStartDate(LocalDate.now().plusDays(i));
             pat.setStartTime(new Time(System.currentTimeMillis()).toLocalTime());
@@ -151,7 +152,7 @@ public class TestPatController {
             pat.setPatName("제목 들어가는 곳.조회"+i);
             pat.setDays("월,화,수");
             pat.setCategory(c.get(i));
-            pat.setLeader("윈터");
+            //pat.setLeader("윈터");
             pat.setEndDate(LocalDate.now());
             pat.setStartDate(LocalDate.now());
             pat.setStartTime(new Time(System.currentTimeMillis()).toLocalTime());
@@ -189,7 +190,7 @@ public class TestPatController {
     ){
 
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     //상세보기
@@ -205,7 +206,7 @@ public class TestPatController {
         pat.setPatName("상세조회 성공!!!!!!!!!!!!!!");
         pat.setDays("월,화,수,목,금");
         pat.setCategory(category1);
-        pat.setLeader("윈터");
+        //pat.setLeader("윈터");
         pat.setEndDate(LocalDate.now().plusDays(2));
         pat.setStartDate(LocalDate.now());
         pat.setStartTime(new Time(System.currentTimeMillis()).toLocalTime());
@@ -226,7 +227,7 @@ public class TestPatController {
     //참여하기
     @PostMapping("/{pat-id}")
     public ResponseEntity joinPat(){
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     //수정하기 -> leader만 가능~
