@@ -1,6 +1,7 @@
 package com.miraclepat.pat.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.miraclepat.pat.entity.Pat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -59,12 +62,25 @@ public class CreatePatDto {
     @Size(min = 5, max = 300,message = "5-300자 사이로 작성해주세요.")
     String proofDetail;
 
-    //인증 요일
-    @NotBlank(message = "인증 요일을 지정해주세요.")
-    String days;
+    @NotNull(message = "인증 요일을 지정해주세요.")
+    List<String>days = new ArrayList<>();
 
     //실시간 인증? or 사진 인증도 가능?
     @NotNull(message = "인증 수단을 지정해주세요.")
     @JsonProperty("realtime") //안붙이면 rest docs 오류
     boolean realtime;
+
+    /*
+    *     //modelMapper를 이용하여 엔티티 객체와 DTO 객체 간의 데이터를 복사하여 복사한 객체를 반환해주는 메소드
+    //DTO -> Entity
+    public Item createItem() { //DTO->Entity
+        return modelMapper.map(this, Item.class);
+    }
+
+    //modelMapper를 이용하여 엔티티 객체와 DTO 객체 간의 데이터를 복사하여 복사한 객체를 반환해주는 메소드
+    public static ItemFormDto of(Item item){ //Entity->DTO
+
+        return modelMapper.map(item, ItemFormDto.class);
+    }*/
+
 }

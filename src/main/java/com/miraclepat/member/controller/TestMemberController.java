@@ -86,7 +86,7 @@ public class TestMemberController {
             pat.setPatName("내가 참여한, 참여할 챌린지"+i);
             pat.setDays("월,화,수,목,금");
             pat.setCategory(category1);
-            pat.setLeader("윈터");
+            //pat.setLeader("윈터");
             pat.setEndDate(LocalDate.now().plusDays(i*2));
             pat.setStartDate(LocalDate.now().plusDays(2-i));
             pat.setStartTime(LocalTime.of(10+i, 0));
@@ -118,14 +118,13 @@ public class TestMemberController {
         Category category1 = new Category();
         category1.setCategoryName("습관");
 
-
         Pat pat = new Pat();
         pat.setId(0L);
         pat.setPatDetail("디테일");
         pat.setPatName("내가 참여한 팟 상세");
         pat.setDays("월,목,금");
         pat.setCategory(category1);
-        pat.setLeader("윈터");
+        //pat.setLeader("윈터");
         pat.setEndDate(LocalDate.now().plusDays(5));
         pat.setStartDate(LocalDate.now());
         pat.setStartTime(LocalTime.of(10, 0));
@@ -170,7 +169,7 @@ public class TestMemberController {
             pat.setPatName("내가 개설한 팟 목록"+i);
             pat.setDays("월,화,수");
             pat.setCategory(category1);
-            pat.setLeader("윈터");
+            //pat.setLeader("윈터");
             pat.setEndDate(LocalDate.now().plusDays(i*2));
             pat.setStartDate(LocalDate.now().plusDays(2-i));
             pat.setStartTime(LocalTime.of(10+i, 0));

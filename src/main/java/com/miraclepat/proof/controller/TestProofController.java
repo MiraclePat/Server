@@ -3,6 +3,7 @@ package com.miraclepat.proof.controller;
 import com.miraclepat.proof.dto.ProofListDto;
 import com.miraclepat.proof.entity.Proof;
 import com.miraclepat.utils.Constants;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class TestProofController {
             throw new IllegalArgumentException("proofImg 파일이 비어있습니다.");
         }
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     //참여중인 팟에서 내 인증 보기

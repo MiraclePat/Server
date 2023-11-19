@@ -44,7 +44,7 @@ class TestProofControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
         );
 
-        result.andExpect(status().isNoContent())
+        result.andExpect(status().isCreated())
                 .andDo(document("proof-proof",
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3),,
