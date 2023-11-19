@@ -2,11 +2,14 @@ package com.miraclepat.member.entity;
 
 import com.miraclepat.member.constant.Role;
 import com.miraclepat.auth.dto.SignupDto;
+import com.miraclepat.pat.entity.Pat;
 import com.miraclepat.utils.Constants;
 import com.miraclepat.utils.entity.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,8 +33,6 @@ public class Member extends BaseTimeEntity {
     @Column(unique = true)
     private String nickname;
 
-    private String email;
-
     private String profileImg;
 
     @Enumerated(EnumType.STRING)
@@ -41,16 +42,33 @@ public class Member extends BaseTimeEntity {
 
     private String fcmToken;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pat_id")
+    private List<Pat> openPatList = new ArrayList<>();
+
     public static Member createMember(SignupDto signupDto){
 
         Member member = new Member();
 
         member.setRole(Role.ROLE_USER);
         member.userCode = signupDto.getUserCode();
-        member.setProfileImg(Constants.REP_IMG);
+        //member.setProfileImg(Constants.REP_IMG);
+        //프로필 조회할 때 값이 null이면 기본 이미지를 주는 것으로.
 
         return member;
 
+    }
+
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImg(String profileImg){
+        this.profileImg = profileImg;
+    }
+
+    public void updatePush(boolean push){
+        this.push = push;
     }
 
 }
