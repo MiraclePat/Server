@@ -3,7 +3,10 @@ package com.miraclepat.member.entity;
 import com.miraclepat.member.constant.Role;
 import com.miraclepat.auth.dto.SignupDto;
 import com.miraclepat.pat.entity.Pat;
+import com.miraclepat.pat.entity.PatMember;
+import com.miraclepat.proof.entity.Proof;
 import com.miraclepat.utils.Constants;
+import com.miraclepat.utils.entity.BaseModifiableEntity;
 import com.miraclepat.utils.entity.BaseTimeEntity;
 import lombok.*;
 
@@ -12,12 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
 @Getter
-@Setter
+@Setter //삭제
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member extends BaseTimeEntity {
+public class Member extends BaseModifiableEntity {
     //멤버 엔티티
     //닉네임, 프로필, 이메일, role, 알람 설정, fcm토큰, 오픈 팟
 
@@ -41,10 +45,6 @@ public class Member extends BaseTimeEntity {
     private boolean push;
 
     private String fcmToken;
-
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pat_id")
-    private List<Pat> openPatList = new ArrayList<>();
 
     public static Member createMember(SignupDto signupDto){
 

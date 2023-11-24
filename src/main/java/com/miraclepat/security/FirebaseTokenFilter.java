@@ -25,73 +25,62 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
     //비회원은 조회(GET)만 가능하다.
     public static List<String> PERMIT_URI= Arrays.asList(
-            "/api/v1/auth/", "/api/v1/pats/", "/api/test/", "/docs/");
-    private UserDetailsServiceImpl userDetailsService;
-    private FirebaseAuth firebaseAuth;
+            "/api/v1/auth", "/api/v1/pats/home", "/api/v1/pats/map",
+            "/api/test/", "/docs/", "/");
+    private static final String BEARER = "Bearer ";
 
-    public FirebaseTokenFilter(UserDetailsServiceImpl userDetailsService, FirebaseAuth firebaseAuth) {
+    private UserDetailsServiceImpl userDetailsService;
+    private FirebaseAuthHelper firebaseAuthHelper;
+
+    public FirebaseTokenFilter(UserDetailsServiceImpl userDetailsService, FirebaseAuthHelper firebaseAuthHelper) {
         this.userDetailsService = userDetailsService;
-        this.firebaseAuth = firebaseAuth;
+        this.firebaseAuthHelper = firebaseAuthHelper;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        if(!permitUri(request)){
-            //헤더에서 토큰을 가져온다.
-            log.info("FirebaseTokenFilter Start====");
-            FirebaseToken decodedToken;
-
-            // verify IdToken
-            try{
-                String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-                if (header == null || !header.startsWith("Bearer ")) {
-                    log.info("유효한 토큰이 없어요.");
-                    throw new IllegalArgumentException("Bearer 형식의 토큰이 아닙니다.");
+        if (!permitUri(request)) {
+            //신청 페이지를 로그인 상태로 보면 유저임을 검증한다.
+            if (request.getMethod().equals("GET")
+                    && request.getRequestURI().startsWith("/api/v1/pats/")
+                    && request.getHeader(HttpHeaders.AUTHORIZATION) !=null ){
+                try {
+                    String firebaseToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+                    String idToken = getIdTokenByFirebaseToken(firebaseToken);
+                    String userCode = firebaseAuthHelper.getUid(idToken);
+                    UserDetails user = userDetailsService.loadUserByUsername(userCode);
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } catch (RuntimeException ex) {
+                    log.info("토큰 에러: "+ex);
+                    setErrorResponse(response, ex);
+                    return;
                 }
-                String token = header.substring(7);
-
-                log.info("토큰검증");
-                decodedToken = firebaseAuth.verifyIdToken(token);
-
-            } catch (Exception e) {
-                log.info("유효하지 않은 토큰");
-                log.info("에러 : "+e);
-                setErrorResponse(response, e);
-                return;
             }
-
-            // User를 가져와 SecurityContext에 저장한다.
-                UserDetails user = userDetailsService.loadUserByUsername(decodedToken.getUid());
-
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        user, "", user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
     }
 
     private boolean permitUri(HttpServletRequest request){
-        if (request.getMethod().equals("GET")){
-            for (String patterns : PERMIT_URI) {
-                if (request.getRequestURI().startsWith(patterns)) {
-                    log.info("허용된 URI");
-                    return true;
-                }
+        for (String patterns : PERMIT_URI) {
+            if (request.getRequestURI().startsWith(patterns)) {
+                log.info("허용된 URI");
+                return true;
             }
-            log.info("GET - 허용되지 않은 URI");
-            return false;
-        } else if (request.getRequestURI().startsWith("/api/test/") |
-                request.getRequestURI().startsWith("/api/v1/auth/")) {
-            log.info("NOT GET - 통과");
-            return true;
-        } else {
-            System.out.println("GET 도 아님 불통");
-            return false;
         }
+        log.info("허용되지 않은 URI");
+        return false;
+    }
+
+    private String getIdTokenByFirebaseToken(String firebaseToken) {
+        if (!firebaseToken.startsWith(BEARER)) {
+            throw new IllegalArgumentException(firebaseToken + ": Bearer 형식의 토큰이 아닙니다");
+        }
+        return firebaseToken.split(" ")[1];
     }
 
     private void setErrorResponse(HttpServletResponse response, Exception ex) throws IOException {

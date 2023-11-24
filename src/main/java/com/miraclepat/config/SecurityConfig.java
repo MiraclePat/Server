@@ -2,6 +2,7 @@ package com.miraclepat.config;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.miraclepat.security.CustomAuthenticationEntryPoint;
+import com.miraclepat.security.FirebaseAuthHelper;
 import com.miraclepat.security.FirebaseTokenFilter;
 import com.miraclepat.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class SecurityConfig{
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    private FirebaseAuth firebaseAuth;
+    private FirebaseAuthHelper firebaseAuthHelper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -55,14 +56,14 @@ public class SecurityConfig{
 
                 .antMatchers("/api/test/**").permitAll()
 
-                //.antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
 
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()
 
                 .and()
-                .addFilterBefore(new FirebaseTokenFilter(userDetailsService, firebaseAuth),
+                .addFilterBefore(new FirebaseTokenFilter(userDetailsService, firebaseAuthHelper),
                         UsernamePasswordAuthenticationFilter.class)
 
                 .exceptionHandling()
