@@ -3,7 +3,10 @@ package com.miraclepat.member.entity;
 import com.miraclepat.member.constant.Role;
 import com.miraclepat.auth.dto.SignupDto;
 import com.miraclepat.pat.entity.Pat;
+import com.miraclepat.pat.entity.PatMember;
+import com.miraclepat.proof.entity.Proof;
 import com.miraclepat.utils.Constants;
+import com.miraclepat.utils.entity.BaseModifiableEntity;
 import com.miraclepat.utils.entity.BaseTimeEntity;
 import lombok.*;
 
@@ -12,12 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
 @Getter
-@Setter
+@Setter //삭제
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member extends BaseTimeEntity {
+public class Member extends BaseModifiableEntity {
     //멤버 엔티티
     //닉네임, 프로필, 이메일, role, 알람 설정, fcm토큰, 오픈 팟
 
@@ -33,8 +37,6 @@ public class Member extends BaseTimeEntity {
     @Column(unique = true)
     private String nickname;
 
-    private String email;
-
     private String profileImg;
 
     @Enumerated(EnumType.STRING)
@@ -44,20 +46,29 @@ public class Member extends BaseTimeEntity {
 
     private String fcmToken;
 
-    @OneToMany(mappedBy = "leader", fetch = FetchType.LAZY)
-    private List<Pat> pats = new ArrayList<Pat>();
-
     public static Member createMember(SignupDto signupDto){
 
         Member member = new Member();
 
-        member.setRole(Role.USER);
+        member.setRole(Role.ROLE_USER);
         member.userCode = signupDto.getUserCode();
-        member.setRole(Role.USER);
-        member.setProfileImg(Constants.REP_IMG);
+        //member.setProfileImg(Constants.REP_IMG);
+        //프로필 조회할 때 값이 null이면 기본 이미지를 주는 것으로.
 
         return member;
 
+    }
+
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    public void updateProfileImg(String profileImg){
+        this.profileImg = profileImg;
+    }
+
+    public void updatePush(boolean push){
+        this.push = push;
     }
 
 }
