@@ -1,19 +1,19 @@
 package com.miraclepat.proof.dto;
 
-import com.miraclepat.proof.entity.Proof;
 import lombok.Getter;
 
 @Getter
 public class ProofDto {
 
     Long id;
-
     String proofImg;
 
+    public ProofDto(Long id, String proofImg) {
+        this.id = id;
+        this.proofImg = proofImg;
+    }
 
-    public ProofDto(Proof proof){
-        this.id = proof.getId();
-        this.proofImg = proof.getProofImg();
-
+    public void setProofImg(String url) {
+        this.proofImg = proofImg;
     }
 }
