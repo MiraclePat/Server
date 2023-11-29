@@ -1,5 +1,6 @@
 package com.miraclepat.member.repository;
 
+import com.miraclepat.member.dto.ProfileDto;
 import com.miraclepat.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,8 +19,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     boolean existsByNickname(String nickname);
 
-    @Query("select m.nickname, m.profileImg from Member m where m.id = :id")
-    Optional<Object[]> findNicknameAndProfileImgById(@Param("id") Long id);
+    @Query("SELECT new com.miraclepat.member.dto.ProfileDto(m.profileImg, m.nickname) " +
+            "FROM Member m WHERE m.id = :id")
+    Optional<ProfileDto> findNicknameAndProfileImgById(@Param("id") Long id);
+
+    @Query("SELECT m.userCode FROM Member m WHERE m.id = :id")
+    String findUserCodeById(@Param("id") Long id);
 
 
 }

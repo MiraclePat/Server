@@ -1,9 +1,9 @@
 package com.miraclepat.pat.dto;
 
-import com.miraclepat.pat.entity.Pat;
-import com.miraclepat.utils.Constants;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
 
@@ -18,6 +18,7 @@ public class PatDto {
 
     String patName;
 
+    @JsonFormat(pattern = "M월 d일(E)")
     LocalDate startDate;
 
     String category;
@@ -29,13 +30,29 @@ public class PatDto {
     double longitude;
 
 
-    public PatDto(Pat pat){
-        this.id = pat.getId();
-        this.patName = pat.getPatName();
-        this.category = pat.getCategory().getCategoryName();
-        this.repImg = Constants.REP_IMG;
-        this.startDate = pat.getStartDate();
-        this.latitude = pat.getPosition().getX();
-        this.longitude = pat.getPosition().getY();
+    //testController
+    public PatDto(Long id, String repImg, String patName, LocalDate startDate, String category, double latitude, double longitude) {
+        this.id = id;
+        this.repImg = repImg;
+        this.patName = patName;
+        this.startDate = startDate;
+        this.category = category;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public PatDto(Long id, String repImg, String patName, LocalDate startDate,
+                  String category, Point position) {
+        this.id = id;
+        this.repImg = repImg;
+        this.patName = patName;
+        this.startDate = startDate;
+        this.category = category;
+        this.latitude = position.getY();
+        this.longitude = position.getX();
+    }
+
+    public void setRepImg(String url){
+        this.repImg = url;
     }
 }

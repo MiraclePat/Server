@@ -1,28 +1,16 @@
 package com.miraclepat.pat.dto;
 
-import com.miraclepat.pat.entity.Pat;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class HomePatListDto {
-
     private List<HomePatDto> content = new ArrayList<>();
-
-    private boolean hasNext;
-
-
-    @Builder
-    public HomePatListDto(List<Pat> patList){
-        this.content = patList.stream()
-                .map(HomePatDto::new).collect(Collectors.toList());
-        this.hasNext = true;
-
-    }
+    private Boolean hasNext;
 }
