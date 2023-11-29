@@ -1,4 +1,4 @@
-package com.miraclepat.pat.entity;
+package com.miraclepat.days.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,10 +8,7 @@ import lombok.ToString;
 import javax.persistence.*;
 
 @Entity
-@Getter //필수
-@Setter //선택
-@ToString //나중에 나오는 필드들에 대해 문자열을 자동으로 만들어줌
-@NoArgsConstructor//빈생성자
+@Getter
 public class Days {
 
     @Id
@@ -19,5 +16,6 @@ public class Days {
     @Column(name = "days_id")
     private Long id;
 
+    @Column(name = "day_name")
     private String dayName;
 }

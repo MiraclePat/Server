@@ -1,18 +1,18 @@
 package com.miraclepat.pat.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.miraclepat.days.entity.Days;
+import com.miraclepat.utils.entity.BaseTimeEntity;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
+@Table(indexes = {@Index(name = "pat_days_day_id_index", columnList = "days_id")})
 @Getter //필수
 @Setter //선택
 @ToString //나중에 나오는 필드들에 대해 문자열을 자동으로 만들어줌
 @NoArgsConstructor//빈생성자
-public class PatDays {
+public class PatDays extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //mysql
@@ -27,4 +27,8 @@ public class PatDays {
     @JoinColumn(name = "days_id")
     private Days days;
 
+    public PatDays(Pat pat, Days days) {
+        this.pat = pat;
+        this.days = days;
+    }
 }

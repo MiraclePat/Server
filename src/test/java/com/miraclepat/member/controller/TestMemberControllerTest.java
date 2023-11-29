@@ -169,9 +169,6 @@ class TestMemberControllerTest {
                                 parameterWithName("size").description("한 페이지당 보낼 항목 수").optional()
                                         .attributes(key("타입").value("int"),
                                                 key("예시").value("1")),
-                                parameterWithName("sort").description("정렬 조건").optional()
-                                        .attributes(key("타입").value("String"),
-                                                key("예시").value("혹시 몰라서 넣었습니다.")),
                                 parameterWithName("state").description("내가 참여한 팟 진행 현황").optional()
                                         .attributes(key("타입").value("String"),
                                                 key("예시").value("state=SCHEDULED -> 진행 예정인 팟 리스트 조회\n" +
@@ -189,6 +186,8 @@ class TestMemberControllerTest {
                                 fieldWithPath("content[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
                                 fieldWithPath("content[].location").type(JsonFieldType.STRING).description("주소"),
                                 fieldWithPath("content[].days").type(JsonFieldType.STRING).description("참여 가능 요일"),
+                                fieldWithPath("content[].state").type(JsonFieldType.STRING).description("팟 진행 상태: SCHEDULED(진행 예정), IN_PROGRESS(진행중), COMPLETED(완료)"),
+                                fieldWithPath("content[].isCompleted").type(JsonFieldType.BOOLEAN).description("당일 인증 데이터 있으면 true 없으면 false"),
                                 fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
@@ -212,20 +211,25 @@ class TestMemberControllerTest {
                                 parameterWithName("size").description("한 페이지당 보낼 항목 수")
                                         .attributes(key("타입").value("int"),
                                                 key("예시").value("1")).optional(),
-                                parameterWithName("sort").description("정렬 조건").optional()
+                                parameterWithName("state").description("내가 참여한 팟 진행 현황").optional()
                                         .attributes(key("타입").value("String"),
-                                                key("예시").value("혹시 몰라서 넣었습니다."))
+                                                key("예시").value("state=SCHEDULED -> 진행 예정인 팟 리스트 조회\n" +
+                                                        "state=IN_PROGRESS -> 진행중인 팟 리스트 조회\n" +
+                                                        "state=COMPLETED -> 종료된 팟 리스트 조회\n" +
+                                                        "null이면 다 조회 가능"))
                         ),
                         responseFields(
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
                                 fieldWithPath("content[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
                                 fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
-                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
+                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜 M월 d일"),
                                 fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
                                 fieldWithPath("content[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
                                 fieldWithPath("content[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원 수"),
                                 fieldWithPath("content[].location").type(JsonFieldType.STRING).description("주소"),
-                                fieldWithPath("content[].days").type(JsonFieldType.STRING).description("참여 가능 요일"),
+                                fieldWithPath("content[].days").type(JsonFieldType.STRING).description("참여 가능 요일: '월, 수, 금'"),
+                                fieldWithPath("content[].state").type(JsonFieldType.STRING).description("팟 진행 상태: SCHEDULED(진행 예정), IN_PROGRESS(진행중), COMPLETED(완료)"),
+                                fieldWithPath("content[].isCompleted").type(JsonFieldType.BOOLEAN).description("당일 인증 데이터 있으면 true 없으면 false"),
                                 fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
                         )
                 ));
@@ -251,22 +255,28 @@ class TestMemberControllerTest {
                                 fieldWithPath("category").type(JsonFieldType.STRING).description("카테고리"),
                                 fieldWithPath("patName").type(JsonFieldType.STRING).description("팟 이름"),
                                 fieldWithPath("location").type(JsonFieldType.STRING).description("위치"),
-                                fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작 날짜"),
-                                fieldWithPath("endDate").type(JsonFieldType.STRING).description("종료 날짜"),
+                                fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작 날짜: m월 d일"),
+                                fieldWithPath("endDate").type(JsonFieldType.STRING).description("종료 날짜: m월 d일"),
+                                fieldWithPath("modifiedStartDate").type(JsonFieldType.STRING).description("시작 날짜: m월 d일(요일)"),
+                                fieldWithPath("modifiedEndDate").type(JsonFieldType.STRING).description("종료 날짜:  m월 d일(요일)"),
                                 fieldWithPath("startTime").type(JsonFieldType.STRING).description("시작 시간"),
                                 fieldWithPath("endTime").type(JsonFieldType.STRING).description("종료 시간"),
-                                fieldWithPath("days").type(JsonFieldType.STRING).description("요일"),
+                                fieldWithPath("days").type(JsonFieldType.STRING).description("요일: '월, 화'"),
+                                fieldWithPath("dayList[]").type(JsonFieldType.ARRAY).description("요일: ['월요일', '화요일']"),
+                                fieldWithPath("patDetail").type(JsonFieldType.STRING).description("팟 내용 상세"),
                                 fieldWithPath("proofDetail").type(JsonFieldType.STRING).description("인증 상세"),
                                 fieldWithPath("bodyImg[]").type(JsonFieldType.ARRAY).description("본문 이미지 URL 리스트"),
                                 fieldWithPath("correctImg").type(JsonFieldType.STRING).description("정답 예시 이미지 URL"),
-                                fieldWithPath("incorrectImg[]").type(JsonFieldType.ARRAY).description("오답 예시 이미지 URL 리스트"),
+                                fieldWithPath("incorrectImg").type(JsonFieldType.STRING).description("오답 예시 이미지 URL 리스트"),
                                 fieldWithPath("realtime").type(JsonFieldType.BOOLEAN).description("실시간 제한 여부"),
                                 fieldWithPath("maxProof").type(JsonFieldType.NUMBER).description("최대 인증 수"),
                                 fieldWithPath("myProof").type(JsonFieldType.NUMBER).description("내 인증 수"),
                                 fieldWithPath("allProof").type(JsonFieldType.NUMBER).description("전체 인증 수"),
                                 fieldWithPath("allMaxProof").type(JsonFieldType.NUMBER).description("전체 최대 인증 수"),
                                 fieldWithPath("myFailProof").type(JsonFieldType.NUMBER).description("나의 실패한 인증 수"),
-                                fieldWithPath("allFailProof").type(JsonFieldType.NUMBER).description("전체 실패한 인증 수")
+                                fieldWithPath("allFailProof").type(JsonFieldType.NUMBER).description("전체 실패한 인증 수"),
+                                fieldWithPath("state").type(JsonFieldType.STRING).description("버튼 상태 설명: CANCELABLE(취소가능), NO_CANCELABLE(취소불가), IN_PROGRESS(진행중), COMPLETED(완료)"),
+                                fieldWithPath("isCompleted").type(JsonFieldType.BOOLEAN).description("당일 인증 유무: true(있음), false(없음)")
                         )
                 ));
     }

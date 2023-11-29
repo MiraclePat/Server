@@ -1,7 +1,7 @@
 package com.miraclepat.proof.controller;
 
+import com.miraclepat.proof.dto.ProofDto;
 import com.miraclepat.proof.dto.ProofListDto;
-import com.miraclepat.proof.entity.Proof;
 import com.miraclepat.utils.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +25,6 @@ public class TestProofController {
             @NotNull(message = "proofImg는 필수입니다.")
             @RequestPart("proofImg")MultipartFile proofImg
             ){
-
-        System.out.println("잘 들어옴");
-        //이미지 받아서 저장
-        if (proofImg.isEmpty()) {
-            throw new IllegalArgumentException("proofImg 파일이 비어있습니다.");
-        }
-
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -44,20 +37,14 @@ public class TestProofController {
             int size
             ){
 
-        List<Proof> list = new ArrayList<>();
+        List<ProofDto> list = new ArrayList<>();
 
         for(int i = 0; i<5;i++){
-            Proof proof = new Proof();
-
-            proof.setId(Long.valueOf(i));
-            proof.setProofImg(Constants.MY_PROOF);
-            proof.setOriImgName("이미지 이름"+i);
-
+            ProofDto proof = new ProofDto(Long.valueOf(i), Constants.MY_PROOF);
             list.add(proof);
-
         }
 
-        ProofListDto proofListDto = new ProofListDto(list);
+        ProofListDto proofListDto = new ProofListDto(list, true);
 
         return ResponseEntity.ok().body(proofListDto);
     }
@@ -72,20 +59,14 @@ public class TestProofController {
     ){
 
 
-        List<Proof> list = new ArrayList<>();
+        List<ProofDto> list = new ArrayList<>();
 
         for(int i = 0; i<5;i++){
-            Proof proof = new Proof();
-
-            proof.setId(Long.valueOf(i));
-            proof.setProofImg(Constants.ANOTHER_PROOF);
-            proof.setOriImgName("이미지 이름"+i);
-
+            ProofDto proof = new ProofDto(Long.valueOf(i), Constants.ANOTHER_PROOF);
             list.add(proof);
-
         }
 
-        ProofListDto proofListDto = new ProofListDto(list);
+        ProofListDto proofListDto = new ProofListDto(list, true);
 
         return ResponseEntity.ok().body(proofListDto);
     }

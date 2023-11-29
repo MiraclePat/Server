@@ -18,7 +18,6 @@ import java.util.List;
 @Builder
 @Getter
 @Setter //삭제
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member extends BaseModifiableEntity {
@@ -52,7 +51,6 @@ public class Member extends BaseModifiableEntity {
 
         member.setRole(Role.ROLE_USER);
         member.userCode = signupDto.getUserCode();
-        //member.setProfileImg(Constants.REP_IMG);
         //프로필 조회할 때 값이 null이면 기본 이미지를 주는 것으로.
 
         return member;

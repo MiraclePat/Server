@@ -21,19 +21,19 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,7 +53,7 @@ class TestPatControllerTest {
     @Test
     void 홈_팟_리스트_조회() throws Exception {
 
-        mockMvc.perform(get("/api/test/pats/home?sort=createdBy&category=환경"))
+        mockMvc.perform(get("/api/test/pats/home?category=환경"))
                 .andExpect(status().isOk())
                 .andDo(document("pat-getHomePatList",
                         preprocessRequest(prettyPrint()),   // (2)
@@ -107,9 +107,6 @@ class TestPatControllerTest {
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3)
                         requestParameters(  //쿼리 파라미터 설명
-                                parameterWithName("lastId").description("마지막 아이템의 id").optional()
-                                        .attributes(key("타입").value("Long"),
-                                                key("예시").value("1")),
                                 parameterWithName("size").description("몇 개씩 받을지").optional()
                                         .attributes(key("타입").value("int"),
                                                 key("예시").value("10")),
@@ -119,6 +116,12 @@ class TestPatControllerTest {
                                 parameterWithName("category").description("카테고리").optional()
                                         .attributes(key("타입").value("String"),
                                                 key("예시").value("환경")),
+                                parameterWithName("state").description("팟 진행 상태").optional()
+                                        .attributes(key("타입").value("String"),
+                                                key("예시").value("IN_PROGRESS")),
+                                parameterWithName("showFull").description("인원이 다 찬 방도 보여줄지?").optional()
+                                        .attributes(key("타입").value("boolean"),
+                                                key("예시").value("true")),
                                 parameterWithName("leftLongitude").description("좌측 경도")
                                         .attributes(key("타입").value("double"),
                                         key("예시").value("23.2222222")),
@@ -153,7 +156,6 @@ class TestPatControllerTest {
         MockMultipartFile repImg = new MockMultipartFile("repImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
         MockMultipartFile correctImg = new MockMultipartFile("correctImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
         MockMultipartFile incorrectImg = new MockMultipartFile("incorrectImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
-        MockMultipartFile incorrectImg2 = new MockMultipartFile("incorrectImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
         MockMultipartFile bodyImg = new MockMultipartFile("bodyImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
         MockMultipartFile bodyImg2 = new MockMultipartFile("bodyImg", "filename-1.txt", "image/jpeg", "some text".getBytes());
 
@@ -166,7 +168,6 @@ class TestPatControllerTest {
                         .file(repImg)
                         .file(correctImg)
                         .file(incorrectImg)
-                        .file(incorrectImg2)
                         .file(bodyImg)
                         .file(bodyImg2)
                         .file(pat)
@@ -185,7 +186,7 @@ class TestPatControllerTest {
                         requestParts(
                                 partWithName("repImg").description("이 필드는 MultipartFile 타입의 대표 이미지 파일을 받습니다."),
                                 partWithName("correctImg").description("이 필드는 MultipartFile 타입의 옳은 예시 이미지 파일을 받습니다."),
-                                partWithName("incorrectImg").description("이 필드는 MultipartFile 타입의 틀린 예시 이미지 파일 리스트 받습니다."),
+                                partWithName("incorrectImg").description("이 필드는 MultipartFile 타입의 틀린 예시 이미지 파일을 받습니다."),
                                 partWithName("bodyImg").description("이 필드는 MultipartFile 타입의 본문 이미지 파일 리스트를 받습니다."),
                                 partWithName("pat").description("팟 설정 내용")
                         )
@@ -194,7 +195,7 @@ class TestPatControllerTest {
     }
 
     @Test
-    void 팟_신청_상세페이지() throws Exception {
+    void 팟_상세페이지() throws Exception {
         objectMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
 
         mockMvc.perform(get("/api/test/pats/{pat-id}", 1))
@@ -211,28 +212,31 @@ class TestPatControllerTest {
                                 fieldWithPath("category").type(JsonFieldType.STRING).description("카테고리"),
                                 fieldWithPath("patName").type(JsonFieldType.STRING).description("팟 이름"),
                                 fieldWithPath("location").type(JsonFieldType.STRING).description("위치"),
-                                fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작 날짜"),
-                                fieldWithPath("endDate").type(JsonFieldType.STRING).description("종료 날짜"),
+                                fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작 날짜: m월 d일"),
+                                fieldWithPath("endDate").type(JsonFieldType.STRING).description("종료 날짜: m월 d일"),
+                                fieldWithPath("modifiedStartDate").type(JsonFieldType.STRING).description("시작 날짜: m월 d일(요일)"),
+                                fieldWithPath("modifiedEndDate").type(JsonFieldType.STRING).description("종료 날짜:  m월 d일(요일)"),
                                 fieldWithPath("startTime").type(JsonFieldType.STRING).description("시작 시간"),
                                 fieldWithPath("endTime").type(JsonFieldType.STRING).description("종료 시간"),
-                                fieldWithPath("days").type(JsonFieldType.STRING).description("요일"),
+                                fieldWithPath("dayList[]").type(JsonFieldType.ARRAY).description("요일"),
                                 fieldWithPath("proofDetail").type(JsonFieldType.STRING).description("인증 상세"),
                                 fieldWithPath("bodyImg[]").type(JsonFieldType.ARRAY).description("본문 이미지 URL 리스트"),
                                 fieldWithPath("correctImg").type(JsonFieldType.STRING).description("정답 예시 이미지 URL"),
-                                fieldWithPath("incorrectImg[]").type(JsonFieldType.ARRAY).description("오답 예시 이미지 URL 리스트"),
+                                fieldWithPath("incorrectImg").type(JsonFieldType.STRING).description("오답 예시 이미지 URL"),
                                 fieldWithPath("realtime").type(JsonFieldType.BOOLEAN).description("실시간 제한 여부"),
-
                                 fieldWithPath("patDetail").type(JsonFieldType.STRING).description("팟 상세 설명"),
                                 fieldWithPath("nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원"),
                                 fieldWithPath("maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원"),
-
-                                fieldWithPath("isWriter").type(JsonFieldType.BOOLEAN).description("해당 팟 작성자인지?")
+                                fieldWithPath("isWriter").type(JsonFieldType.BOOLEAN).description("해당 팟 작성자인지?"),
+                                fieldWithPath("isJoiner").type(JsonFieldType.BOOLEAN).description("해당 팟 참여자인지?"),
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
+                                fieldWithPath("profileImg").type(JsonFieldType.STRING).description("작성자 프로필 이미지"),
+                                fieldWithPath("state").type(JsonFieldType.STRING).description("버튼 상태 설명: CANCELABLE(취소가능), NO_CANCELABLE(취소불가), IN_PROGRESS(진행중), COMPLETED(완료)")
                         )
                 ));
     }
 
     //참여하기
-
     @Test
     void 팟_참여하기() throws Exception{
 
@@ -310,7 +314,7 @@ class TestPatControllerTest {
                                 partWithName("correctImg").description("이 필드는 MultipartFile 타입의 옳은 예시 이미지 파일을 받습니다."),
                                 partWithName("incorrectImg").description("이 필드는 MultipartFile 타입의 틀린 예시 이미지 파일 리스트 받습니다."),
                                 partWithName("bodyImg").description("이 필드는 MultipartFile 타입의 본문 이미지 파일 리스트를 받습니다."),
-                                partWithName("pat").description("팟 내용")
+                                partWithName("pat").description("팟 상세. 필드명 request 예시 참조")
                         )
                 ));
 
@@ -374,10 +378,10 @@ class TestPatControllerTest {
         createPatDto.setLongitude(126.9780);
         createPatDto.setLocation("서울특별시 중구 세종대로 110");
         createPatDto.setCategory("카테고리");
-        createPatDto.setStartTime("10:00");
-        createPatDto.setEndTime("18:00");
-        createPatDto.setStartDate("2023-01-01");
-        createPatDto.setEndDate("2023-12-31");
+        createPatDto.setStartTime(LocalTime.parse("10:00"));
+        createPatDto.setEndTime(LocalTime.parse("18:00"));
+        createPatDto.setStartDate(LocalDate.parse("2023-01-01"));
+        createPatDto.setEndDate(LocalDate.parse("2023-12-31"));
         createPatDto.setProofDetail("인증 방법 상세");
         List<String> day = new ArrayList<>();
         day.add("월요일");
