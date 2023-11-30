@@ -6,10 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -36,9 +33,13 @@ public class CreatePatDto {
     int maxPerson;
 
     //경도
+    @Min(-180)
+    @Max(180)
     Double longitude;
 
     //위도
+    @Min(-90)
+    @Max(90)
     Double latitude;
 
     //상세주소

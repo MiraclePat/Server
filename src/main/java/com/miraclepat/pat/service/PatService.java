@@ -78,10 +78,10 @@ public class PatService {
                 .build();
 
         //주소와 좌표가 있다면 설정
-        if (createPatDto.getLatitude() != null && createPatDto.getLongitude() != null
+        if (createPatDto.getLongitude() != null && createPatDto.getLatitude() != null
                 && !createPatDto.getLocation().equals("")
         ){
-            Point point = createPoint(createPatDto.getLatitude(), createPatDto.getLongitude());
+            Point point = createPoint(createPatDto.getLongitude(), createPatDto.getLatitude());
             pat.setLocationAndPoint(createPatDto.getLocation(), point);
         }
         pat.setDays(createDays(createPatDto.getDays()));
@@ -133,10 +133,10 @@ public class PatService {
         pat.updatePat(createPatDto, category, imgInfoList.get(0).get(0));
 
         //주소와 좌표가 있다면 설정
-        if (createPatDto.getLatitude() != null && createPatDto.getLongitude() != null
+        if (createPatDto.getLongitude() != null && createPatDto.getLatitude() != null
                 && !createPatDto.getLocation().equals("")
         ){
-            Point point = createPoint(createPatDto.getLatitude(), createPatDto.getLongitude());
+            Point point = createPoint(createPatDto.getLongitude(), createPatDto.getLatitude());
             pat.setLocationAndPoint(createPatDto.getLocation(), point);
         }
         pat.setDays(createDays(createPatDto.getDays()));
