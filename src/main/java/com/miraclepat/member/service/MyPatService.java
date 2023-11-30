@@ -130,6 +130,7 @@ public class MyPatService {
         switch (pat.getState()){
             case SCHEDULED -> {
                 try{
+                    validateOneDayDifference(pat.getStartDate());
                     myPatDetailDto.setState(ButtonState.CANCELABLE);
                 }catch (Exception e){
                     myPatDetailDto.setState(ButtonState.NO_CANCELABLE);
@@ -165,17 +166,19 @@ public class MyPatService {
     //조회 당일 기준으로 최대 인증 수
     private int countTodayMaxProof(List<String> days, LocalDate startDate){
         long daysBetween = ChronoUnit.DAYS.between(startDate, LocalDate.now())+1;  // 두 날짜 사이의 일 수
-        log.info("startDate: "+startDate);
-        log.info("LocalDate: "+LocalDate.now());
-        log.info("daysBetween: "+daysBetween);
-        log.info("요일: "+ days);
         // 정해진 기간 동안 days에 포함된 요일 수를 계산
         int count = (int) IntStream.range(0, (int) daysBetween)
                 .mapToObj(startDate::plusDays)
                 .filter(date -> days.contains(date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)))
                 .count();
 
-        log.info("todayMaxProof: "+count);
         return count;
+    }
+
+    private void validateOneDayDifference(LocalDate startDate){
+        long days = ChronoUnit.DAYS.between(LocalDate.now(), startDate);
+        if (days <= 1) {
+            throw new IllegalStateException("하루 전부터는 수정이 불가능합니다.");
+        }
     }
 }
