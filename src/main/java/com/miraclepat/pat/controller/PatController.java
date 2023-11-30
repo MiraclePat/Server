@@ -49,7 +49,7 @@ public class PatController {
             @RequestPart("pat")
             CreatePatDto createPatDto,
             @RequestPart("repImg")
-            MultipartFile repImg ,
+            MultipartFile repImg,
             @RequestPart("correctImg")
             MultipartFile correctImg,
             @RequestPart(value = "incorrectImg", required = false)
@@ -57,7 +57,7 @@ public class PatController {
             @Size(max = 5, message = "본문 이미지는 최대 5개까지 업로드할 수 있습니다.")
             @RequestPart(value = "bodyImg", required = false)
             List<MultipartFile> bodyImg
-    ){
+    ) {
         List<List<String>> imgInfoList = patImgService.uploadPatImg(repImg, correctImg, incorrectImg, bodyImg);
         patService.createPat(createPatDto, imgInfoList, 1L);
 
@@ -66,20 +66,24 @@ public class PatController {
 
     //상세보기
     @GetMapping("/{pat-id}")
-    public ResponseEntity getPatDetail(@PathVariable("pat-id") Long patId){
-        PatDetailDto detailDto = patService.detailPat(patId, 1L);
-        return ResponseEntity.ok().body(detailDto);
+    public ResponseEntity getPatDetail(@PathVariable("pat-id") Long patId) {
+        try {
+            PatDetailDto detailDto = patService.detailPat(patId, 1L);
+            return ResponseEntity.ok().body(detailDto);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     //참여하기
     @PostMapping("/{pat-id}")
-    public ResponseEntity joinPat(@PathVariable("pat-id") Long patId, Principal principal){
+    public ResponseEntity joinPat(@PathVariable("pat-id") Long patId, Principal principal) {
         try {
             patService.joinPat(patId, 2L);
-        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     //수정하기
@@ -89,7 +93,7 @@ public class PatController {
             @RequestPart("pat")
             CreatePatDto createPatDto,
             @RequestPart("repImg")
-            MultipartFile repImg ,
+            MultipartFile repImg,
             @RequestPart("correctImg")
             MultipartFile correctImg,
             @RequestPart(value = "incorrectImg", required = false)
@@ -98,36 +102,36 @@ public class PatController {
             @RequestPart(value = "bodyImg", required = false)
             List<MultipartFile> bodyImg,
             @PathVariable("pat-id") Long patId
-    ){
-        try{
+    ) {
+        try {
             List<List<String>> imgInfoList = patImgService.uploadPatImg(repImg, correctImg, incorrectImg, bodyImg);
-            patService.updatePat(createPatDto, imgInfoList,1L, patId);
-        }catch (Exception e){
+            patService.updatePat(createPatDto, imgInfoList, 1L, patId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.noContent().build();
     }
 
     //팟 삭제 -> leader만 시작 전에
     @DeleteMapping("/{pat-id}")
-    public ResponseEntity deletePat(@PathVariable("pat-id") Long patId){
+    public ResponseEntity deletePat(@PathVariable("pat-id") Long patId) {
         try {
             patService.deletePat(patId, 1L);
-        }catch (Exception e){
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.noContent().build();
     }
 
     //팟 가입 신청 취소
     @DeleteMapping("/{pat-id}/withdraw")
-    public ResponseEntity withdrawPat(@PathVariable("pat-id") Long patId){
+    public ResponseEntity withdrawPat(@PathVariable("pat-id") Long patId) {
         try {
             patService.withdrawPat(patId, 2L);
-        }catch (Exception e){
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.noContent().build();
     }
 
 }

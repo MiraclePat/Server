@@ -99,7 +99,7 @@ public class ProofService {
         State state = patRepository.findStateByPatId(patId)
                 .orElseThrow(() -> new NoSuchElementException("팟 상태를 확인해주세요."));
         if (state != State.IN_PROGRESS) {
-            throw new IllegalStateException("인증일이 아닙니다.");
+            throw new IllegalStateException("인증 진행중이 아닙니다.");
         }
     }
 
@@ -108,7 +108,7 @@ public class ProofService {
         String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         Long dayId = daysRepository.findIdByDayName(dayOfWeek);
         if (!patDaysRepository.existsByPatIdAndDaysId(patId, dayId)) {
-            throw new IllegalStateException("시작일이 아닙니다.");
+            throw new IllegalStateException("인증일이 아닙니다.");
         }
     }
 }

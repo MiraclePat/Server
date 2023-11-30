@@ -78,9 +78,9 @@ public class PatService {
                 .build();
 
         //주소와 좌표가 있다면 설정
-        if (createPatDto.getLatitude() != null
-                && createPatDto.getLatitude() != null
-                && createPatDto.getLongitude() != null){
+        if (createPatDto.getLatitude() != null && createPatDto.getLongitude() != null
+                && !createPatDto.getLocation().equals("")
+        ){
             Point point = createPoint(createPatDto.getLatitude(), createPatDto.getLongitude());
             pat.setLocationAndPoint(createPatDto.getLocation(), point);
         }
@@ -88,7 +88,6 @@ public class PatService {
         log.info("이미지 리스트를 설정합니다.");
         pat.setPatImgList(createPatImg(imgInfoList, pat));
         pat.setPatDaysList(createPatDays(createPatDto.getDays(), pat));
-        log.info("dd: "+pat.getPatDaysList().size());
 
         //리더는 자동으로 참여
         PatMember patMember = new PatMember(pat, member);
@@ -134,9 +133,9 @@ public class PatService {
         pat.updatePat(createPatDto, category, imgInfoList.get(0).get(0));
 
         //주소와 좌표가 있다면 설정
-        if (createPatDto.getLatitude() != null
-                && createPatDto.getLatitude() != null
-                && createPatDto.getLongitude() != null){
+        if (createPatDto.getLatitude() != null && createPatDto.getLongitude() != null
+                && !createPatDto.getLocation().equals("")
+        ){
             Point point = createPoint(createPatDto.getLatitude(), createPatDto.getLongitude());
             pat.setLocationAndPoint(createPatDto.getLocation(), point);
         }
@@ -179,11 +178,13 @@ public class PatService {
 
     //참여하기
     @Transactional
-    public void joinPat(Long patId, Long memberId){
+    public void joinPat(Long patId, Long memberId) throws Exception{
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
         Pat pat = patRepository.findById(patId)
                 .orElseThrow(() -> new IllegalArgumentException("팟 정보를 찾을 수 없습니다."));
+
+        validateJoinPatDate(patId);
 
         if(!patMemberRepository.existsByPatIdAndMemberId(patId, memberId)){
             if(pat.addPerson()){
@@ -219,7 +220,7 @@ public class PatService {
 
     //상세보기
     @Transactional(readOnly = true)
-    public PatDetailDto detailPat(Long patId, Long memberId){
+    public PatDetailDto detailPat(Long patId, Long memberId) throws Exception{
         Pat pat = patRepository.findById(patId)
                 .orElseThrow(() -> new IllegalArgumentException("팟 정보를 찾을 수 없습니다."));
         WriterInfoDto writerInfoDto = patRepository.findMemberInfoByPatId(patId)
@@ -374,7 +375,14 @@ public class PatService {
     private void validateMaxPersonChange(int nowPerson, int maxPerson){
         if (maxPerson < nowPerson){
             throw new IllegalArgumentException("최대 인원은 현재 참여자보다 많아야 합니다.");
+        }
+    }
 
+    private void validateJoinPatDate(Long patId){
+        State state = patRepository.findStateByPatId(patId)
+                .orElseThrow(() -> new IllegalArgumentException("팟의 진행 현황을 확인할 수 없습니다."));
+        if (state != State.SCHEDULED){
+            throw new IllegalArgumentException("팟이 진행되는 도중엔 참여가 불가능합니다.");
         }
     }
 
