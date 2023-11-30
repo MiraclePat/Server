@@ -15,7 +15,7 @@ import java.security.Principal;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/members/pats/{pat-id}/proof")
+@RequestMapping("/api/v1/members/pats/{pat-id}/proofs")
 public class ProofController {
 
     private final ProofService proofService;

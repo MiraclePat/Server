@@ -267,7 +267,7 @@ class TestMemberControllerTest {
                                 fieldWithPath("proofDetail").type(JsonFieldType.STRING).description("인증 상세"),
                                 fieldWithPath("bodyImg[]").type(JsonFieldType.ARRAY).description("본문 이미지 URL 리스트"),
                                 fieldWithPath("correctImg").type(JsonFieldType.STRING).description("정답 예시 이미지 URL"),
-                                fieldWithPath("incorrectImg").type(JsonFieldType.STRING).description("오답 예시 이미지 URL 리스트"),
+                                fieldWithPath("incorrectImg").type(JsonFieldType.STRING).description("오답 예시 이미지 URL"),
                                 fieldWithPath("realtime").type(JsonFieldType.BOOLEAN).description("실시간 제한 여부"),
                                 fieldWithPath("maxProof").type(JsonFieldType.NUMBER).description("최대 인증 수"),
                                 fieldWithPath("myProof").type(JsonFieldType.NUMBER).description("내 인증 수"),

@@ -312,7 +312,7 @@ class TestPatControllerTest {
                         requestParts(
                                 partWithName("repImg").description("이 필드는 MultipartFile 타입의 대표 이미지 파일을 받습니다."),
                                 partWithName("correctImg").description("이 필드는 MultipartFile 타입의 옳은 예시 이미지 파일을 받습니다."),
-                                partWithName("incorrectImg").description("이 필드는 MultipartFile 타입의 틀린 예시 이미지 파일 리스트 받습니다."),
+                                partWithName("incorrectImg").description("이 필드는 MultipartFile 타입의 틀린 예시 이미지 파일을 받습니다."),
                                 partWithName("bodyImg").description("이 필드는 MultipartFile 타입의 본문 이미지 파일 리스트를 받습니다."),
                                 partWithName("pat").description("팟 상세. 필드명 request 예시 참조")
                         )
