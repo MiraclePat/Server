@@ -107,7 +107,7 @@ class TestPatControllerTest {
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3)
                         requestParameters(  //쿼리 파라미터 설명
-                                parameterWithName("size").description("몇 개씩 받을지").optional()
+                                parameterWithName("size").description("화면에 출력할 팟 수").optional()
                                         .attributes(key("타입").value("int"),
                                                 key("예시").value("10")),
                                 parameterWithName("query").description("검색어").optional()
@@ -142,8 +142,7 @@ class TestPatControllerTest {
                                 fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
                                 fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
                                 fieldWithPath("content[].latitude").type(JsonFieldType.NUMBER).description("위도"),
-                                fieldWithPath("content[].longitude").type(JsonFieldType.NUMBER).description("경도"),
-                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부")
+                                fieldWithPath("content[].longitude").type(JsonFieldType.NUMBER).description("경도")
                         )
                 ));
 

@@ -81,15 +81,10 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
                         pat.longLat.isNotNull(),
                         pat.longLat.within(polygon))
                 .orderBy(pat.id.desc())
-                .limit(size+1)
+                .limit(size)
                 .fetch();
 
-        boolean hasNext = patDtoList.size() > size;
-        if (hasNext) {
-            patDtoList.remove(patDtoList.size() - 1);
-        }
-
-        PatListDto response = new PatListDto(patDtoList, hasNext);
+        PatListDto response = new PatListDto(patDtoList);
 
         return response;
     }

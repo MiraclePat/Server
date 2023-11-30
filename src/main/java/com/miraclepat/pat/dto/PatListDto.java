@@ -11,8 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PatListDto {
-
     private List<PatDto> content = new ArrayList<>();
-
-    private Boolean hasNext;
 }

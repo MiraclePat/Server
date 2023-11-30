@@ -119,7 +119,7 @@ public class TestPatController {
             list.add(pat);
         }
 
-        PatListDto patListResponse = new PatListDto(list, true);
+        PatListDto patListResponse = new PatListDto(list);
 
         return ResponseEntity.ok().body(patListResponse);
     }
