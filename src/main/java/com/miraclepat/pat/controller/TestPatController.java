@@ -5,7 +5,9 @@ import com.miraclepat.pat.constant.State;
 import com.miraclepat.pat.dto.*;
 import com.miraclepat.pat.entity.Pat;
 import com.miraclepat.utils.Constants;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,8 +97,6 @@ public class TestPatController {
             Double topLatitude
     ) {
 
-        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
-
         List<Category> c = new ArrayList<>();
 
         Category category0 = new Category(1L, "환경");
@@ -113,9 +113,12 @@ public class TestPatController {
 
         List<PatDto> list = new ArrayList<>();
 
+        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+        Point point = geometryFactory.createPoint(new Coordinate(127.2, 37.2));
+
         for (int i = 0; i < 5; i++) {
             PatDto pat = new PatDto(Long.valueOf(i), Constants.REP_IMG, "맵화면 예시" + i,
-                    LocalDate.now().plusDays(i), c.get(i).getCategoryName(), 127.2, 37.2);
+                    LocalDate.now().plusDays(i), c.get(i).getCategoryName(), point, 2, 10, "월, 수", "서울시");
             list.add(pat);
         }
 

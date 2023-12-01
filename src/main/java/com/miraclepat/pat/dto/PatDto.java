@@ -23,26 +23,23 @@ public class PatDto {
 
     String category;
 
+    //현재 인원, 최대 인원, days 추가
+    int nowPerson;
+
+    int maxPerson;
+
+    String days;
+
+    String location;
+
     //위도
     double latitude;
 
     //경도
     double longitude;
 
-
-    //testController
-    public PatDto(Long id, String repImg, String patName, LocalDate startDate, String category, double latitude, double longitude) {
-        this.id = id;
-        this.repImg = repImg;
-        this.patName = patName;
-        this.startDate = startDate;
-        this.category = category;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-
     public PatDto(Long id, String repImg, String patName, LocalDate startDate,
-                  String category, Point position) {
+                  String category, Point position, int nowPerson, int maxPerson, String days, String location) {
         this.id = id;
         this.repImg = repImg;
         this.patName = patName;
@@ -50,9 +47,13 @@ public class PatDto {
         this.category = category;
         this.latitude = position.getY();
         this.longitude = position.getX();
+        this.nowPerson = nowPerson;
+        this.maxPerson = maxPerson;
+        this.days = days;
+        this.location = location;
     }
 
-    public void setRepImg(String url){
+    public void setRepImg(String url) {
         this.repImg = url;
     }
 }

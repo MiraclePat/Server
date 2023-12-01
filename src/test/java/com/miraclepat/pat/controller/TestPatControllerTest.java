@@ -88,7 +88,7 @@ class TestPatControllerTest {
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
                                 fieldWithPath("content[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
                                 fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
-                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
+                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, M.d(E)"),
                                 fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
                                 fieldWithPath("content[].location").type(JsonFieldType.STRING).description("주소"),
                                 fieldWithPath("content[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원 수"),
@@ -139,10 +139,14 @@ class TestPatControllerTest {
                                 fieldWithPath("content[].id").type(JsonFieldType.NUMBER).description("팟 Id"),
                                 fieldWithPath("content[].repImg").type(JsonFieldType.STRING).description("대표 이미지 URL"),
                                 fieldWithPath("content[].patName").type(JsonFieldType.STRING).description("팟 제목"),
-                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, yyyy-mm-dd"),
+                                fieldWithPath("content[].startDate").type(JsonFieldType.STRING).description("팟 시작 날짜, M월 d일(E)"),
                                 fieldWithPath("content[].category").type(JsonFieldType.STRING).description("카테고리 명"),
                                 fieldWithPath("content[].latitude").type(JsonFieldType.NUMBER).description("위도"),
-                                fieldWithPath("content[].longitude").type(JsonFieldType.NUMBER).description("경도")
+                                fieldWithPath("content[].longitude").type(JsonFieldType.NUMBER).description("경도"),
+                                fieldWithPath("content[].nowPerson").type(JsonFieldType.NUMBER).description("현재 참여 인원"),
+                                fieldWithPath("content[].maxPerson").type(JsonFieldType.NUMBER).description("최대 참여 인원"),
+                                fieldWithPath("content[].days").type(JsonFieldType.STRING).description("인증 요일"),
+                                fieldWithPath("content[].location").type(JsonFieldType.STRING).description("주소")
                         )
                 ));
 

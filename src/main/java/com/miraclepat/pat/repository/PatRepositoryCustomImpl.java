@@ -72,7 +72,7 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
 
         List<PatDto> patDtoList = queryFactory
                 .select(Projections.constructor(PatDto.class, pat.id, pat.repImg, pat.patName, pat.startDate,
-                        pat.category.categoryName, pat.longLat))
+                        pat.category.categoryName, pat.longLat, pat.nowPerson, pat.maxPerson, pat.days, pat.location))
                 .from(pat)
                 .where(searchQuery(query),
                         searchCategory(categoryId),
