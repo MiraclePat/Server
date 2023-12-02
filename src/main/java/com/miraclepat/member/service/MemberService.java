@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class MemberService{
+public class MemberService {
     // 내 프로필 조회, 내 프로필 업데이트, 알람 정보업데이트
 
     private final MemberRepository memberRepository;
@@ -35,7 +35,7 @@ public class MemberService{
 
     //프로필 조회
     @Transactional(readOnly = true)
-    public ProfileDto getProfile(Long memberId){
+    public ProfileDto getProfile(Long memberId) {
         //닉네임, 프로필사진, 완료한 팟 수, 개설한 팟 수
         ProfileDto profileDto = memberRepository.findNicknameAndProfileImgById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원 정보를 찾을 수 없습니다."));
@@ -54,44 +54,42 @@ public class MemberService{
 
     //프로필 업데이트
     @Transactional
-    public void profileUpdate(MultipartFile image, String nickname, Long memberId){
+    public void profileUpdate(MultipartFile image, String nickname, Long memberId) {
         Member member = memberRepository.findById(1L).orElseThrow(EntityNotFoundException::new);
 
-        if(!memberRepository.existsByNickname(nickname)){
-            member.setNickname(nickname);
-        }else {
-            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
-        }
-
         //받은 이미지가 없다면 닉네임만 없데이트.
-        if (image!=null){
-            log.info("프로필 이미지를 확인합니다.");
+        if (image != null) {
             //현재 프로필 이미지가 존재한다면 삭제한다.
             String nowImg = member.getProfileImg();
 
-            log.info("nowImg: "+nowImg);
-            if(nowImg!=null){
+            if (nowImg != null) {
                 log.info("기존 프로필을 삭제합니다.");
                 fileService.deleteFile(nowImg);
             }
 
             String fileName = fileService.updateFile(image);
-            log.info("fileName: "+fileName);
-            log.info("getUrl: "+fileService.getUrl(fileName));
             member.updateProfileImg(fileName);
         }
+
+        if (member.getNickname().equals(nickname)) {
+            return;
+        }
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
+        }
+        member.setNickname(nickname);
     }
 
     //알람 업데이트
     @Transactional
-    public void pushUpdate(boolean push, Long id){
+    public void pushUpdate(boolean push, Long id) {
         Member member = memberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         member.updatePush(push);
     }
 
     //회원 탈퇴
     @Transactional
-    public void deleteMember(Long memberId){
+    public void deleteMember(Long memberId) {
         //firebase 탈퇴
         String userCode = memberRepository.findUserCodeById(1L);
         firebaseAuthHelper.deleteMember(userCode);
@@ -116,7 +114,7 @@ public class MemberService{
 
     }
 
-    private String getProfileImgUrl(String profileImg){
+    private String getProfileImgUrl(String profileImg) {
         // profileImg가 null이거나 빈 문자열일 경우 "마스코트"로 설정
         if (profileImg == null || profileImg.isEmpty()) {
             return fileService.getUrl("MiraclePat_mascot.jpg");

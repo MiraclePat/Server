@@ -5,7 +5,6 @@ import com.miraclepat.auth.dto.SignupDto;
 import com.miraclepat.auth.dto.TokenDto;
 import com.miraclepat.auth.service.AuthService;
 import com.miraclepat.auth.service.KakaoService;
-import com.miraclepat.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,16 +59,13 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity signup(@Valid @RequestBody SignupDto signupDto){
         //가입되지 않은 회원으로 로그인 실패 시 전달했던 카카오 유저 정보를 받는다.
-
         try{
             //회원가입 한다.
             authService.signup(signupDto);
         }catch (Exception e){
             //예외 처리
         }
-
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-
+    
 }

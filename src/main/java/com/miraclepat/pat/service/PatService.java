@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -55,7 +56,11 @@ public class PatService {
             CreatePatDto createPatDto,
             List<List<String>> imgInfoList,
             Long memberId
-    ){
+    ) {
+
+        validateTwoDayDifference(createPatDto.getStartDate(), "시작일은 오늘로부터 최소 이틀 이후여야 합니다.");
+        validateStartDateAndEndDate(createPatDto.getStartDate(), createPatDto.getEndDate());
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
         Category category = categoryRepository.findByCategoryName(createPatDto.getCategory());
@@ -80,7 +85,7 @@ public class PatService {
         //주소와 좌표가 있다면 설정
         if (createPatDto.getLongitude() != null && createPatDto.getLatitude() != null
                 && !createPatDto.getLocation().equals("")
-        ){
+        ) {
             Point point = createPoint(createPatDto.getLongitude(), createPatDto.getLatitude());
             pat.setLocationAndPoint(createPatDto.getLocation(), point);
         }
@@ -101,7 +106,6 @@ public class PatService {
         int maxProof = countMaxProof(createPatDto.getDays(), createPatDto.getStartDate(), createPatDto.getEndDate());
         PatProofInfo patProofInfo = new PatProofInfo(maxProof, pat);
         patProofInfoRepository.save(patProofInfo);
-
     }
 
     //팟 수정하기 pat, patMember, patImg, patDays, patProof
@@ -109,7 +113,7 @@ public class PatService {
     public void updatePat(
             CreatePatDto createPatDto,
             List<List<String>> imgInfoList,
-            Long memberId, Long patId) throws Exception{
+            Long memberId, Long patId) throws Exception {
         Pat pat = patRepository.findById(patId)
                 .orElseThrow(() -> new IllegalArgumentException("팟 정보를 찾을 수 없습니다."));
         Long writerId = patRepository.findMemberIdByPatId(patId)
@@ -119,7 +123,8 @@ public class PatService {
 
         //조건 검증
         validateMemberPermission(writerId, memberId);
-        validateOneDayDifference(pat.getStartDate());
+        validateTwoDayDifference(pat.getStartDate(), "시작일 하루 전부터는 수정이 불가능합니다.");
+        validateStartDateAndEndDate(createPatDto.getStartDate(), createPatDto.getEndDate());
         validateMaxPersonChange(pat.getNowPerson(), createPatDto.getMaxPerson());
 
         //삭제 예정 파일을 담아둔다.
@@ -135,7 +140,7 @@ public class PatService {
         //주소와 좌표가 있다면 설정
         if (createPatDto.getLongitude() != null && createPatDto.getLatitude() != null
                 && !createPatDto.getLocation().equals("")
-        ){
+        ) {
             Point point = createPoint(createPatDto.getLongitude(), createPatDto.getLatitude());
             pat.setLocationAndPoint(createPatDto.getLocation(), point);
         }
@@ -157,13 +162,13 @@ public class PatService {
 
     //팟 삭제. pat, patMember, patImg, patDays, patProof
     @Transactional
-    public void deletePat(Long patId, Long memberId) throws Exception{
-        Pat pat=patRepository.findById(patId)
+    public void deletePat(Long patId, Long memberId) throws Exception {
+        Pat pat = patRepository.findById(patId)
                 .orElseThrow(() -> new IllegalArgumentException("팟 정보를 찾을 수 없습니다."));
 
         Long writerId = patRepository.findMemberIdByPatId(patId).orElseThrow(() -> new UsernameNotFoundException("작성자를 찾을 수 없습니다."));
         validateMemberPermission(writerId, memberId);
-        validateOneDayDifference(pat.getStartDate());
+        validateTwoDayDifference(pat.getStartDate(), "시작일 하루 전부터는 삭제가 불가능합니다.");
 
         //patMember도 삭제한다. -> 참여자가 있으면 삭제 못하게도 할 수 있을 것 같다.
         List<Long> ids = patMemberRepository.findIdsByPatId(patId);
@@ -178,7 +183,7 @@ public class PatService {
 
     //참여하기
     @Transactional
-    public void joinPat(Long patId, Long memberId) throws Exception{
+    public void joinPat(Long patId, Long memberId) throws Exception {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new UsernameNotFoundException("회원 정보를 찾을 수 없습니다."));
         Pat pat = patRepository.findById(patId)
@@ -186,21 +191,21 @@ public class PatService {
 
         validateJoinPatDate(patId);
 
-        if(!patMemberRepository.existsByPatIdAndMemberId(patId, memberId)){
-            if(pat.addPerson()){
+        if (!patMemberRepository.existsByPatIdAndMemberId(patId, memberId)) {
+            if (pat.addPerson()) {
                 PatMember patMember = new PatMember(pat, member);
                 patMemberRepository.save(patMember);
-            }else {
+            } else {
                 throw new IllegalArgumentException("최대 인원입니다.");
             }
-        }else {
+        } else {
             throw new IllegalArgumentException("이미 팟에 참여하셨습니다.");
         }
     }
 
     //참여 취소
     @Transactional
-    public void withdrawPat(Long patId, Long memberId) throws Exception{
+    public void withdrawPat(Long patId, Long memberId) throws Exception {
         Pat pat = patRepository.findById(patId)
                 .orElseThrow(() -> new IllegalArgumentException("팟을 찾을 수 없습니다."));
         Long writerId = patRepository.findMemberIdByPatId(patId)
@@ -208,25 +213,27 @@ public class PatService {
         Long id = patMemberRepository.findIdByPatIdAndMemberId(patId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("참여중이 아닙니다."));
 
-        validateOneDayDifference(pat.getStartDate());
+        validateTwoDayDifference(pat.getStartDate(), "시작일 하루 전부터는 참여 취소가 불가능합니다.");
 
-        if(writerId != memberId){
+        if (writerId != memberId) {
             pat.subPerson();
             patMemberRepository.deleteById(id);
-        }else {
+        } else {
             //리더는 탈퇴할 수 없음.
-            throw new IllegalArgumentException("리더는 탈퇴 불가능합니다.");}
+            throw new IllegalArgumentException("리더는 탈퇴 불가능합니다.");
+        }
     }
 
     //상세보기
     @Transactional(readOnly = true)
-    public PatDetailDto detailPat(Long patId, Long memberId) throws Exception{
+    public PatDetailDto detailPat(Long patId, Long memberId) throws Exception {
         Pat pat = patRepository.findById(patId)
                 .orElseThrow(() -> new IllegalArgumentException("팟 정보를 찾을 수 없습니다."));
         WriterInfoDto writerInfoDto = patRepository.findMemberInfoByPatId(patId)
                 .orElse(new WriterInfoDto(0L, "탈퇴한 회원입니다.", "MiraclePat_mascot.jpg")); //id, nickname, profile
 
-        if (writerInfoDto.getProfileImg().isEmpty()){ //프로필이 없다면 마스코트를 보여줌
+        //프로필이 없다면 마스코트를 보여줌
+        if (writerInfoDto.getProfileImg() == null || writerInfoDto.getProfileImg().isEmpty()) {
             writerInfoDto.setProfileImg("MiraclePat_mascot.jpg");
         }
 
@@ -236,7 +243,8 @@ public class PatService {
                 fileService.getUrl(writerInfoDto.getProfileImg()));
 
         for (PatImg patImg : pat.getPatImgList()) {
-            patDetailDto.setImg(fileService.getUrl(patImg.getImgName()), patImg.getImgType());}
+            patDetailDto.setImg(fileService.getUrl(patImg.getImgName()), patImg.getImgType());
+        }
 
         if (memberId != null) { //로그인 한 사용자가 접근했을 경우
             boolean isWriter = (writerInfoDto.getId() == memberId);
@@ -245,13 +253,15 @@ public class PatService {
         }
 
         //팟 State에 따른 ButtonState 설정
-        switch (pat.getState()){
+        switch (pat.getState()) {
             case SCHEDULED -> {
-                try{
-                    validateOneDayDifference(pat.getStartDate());
+                try {
+                    validateTwoDayDifference(pat.getStartDate(), "");
                     patDetailDto.setState(ButtonState.CANCELABLE);
-                }catch (Exception e){
-                    patDetailDto.setState(ButtonState.NO_CANCELABLE);}}
+                } catch (Exception e) {
+                    patDetailDto.setState(ButtonState.NO_CANCELABLE);
+                }
+            }
             case IN_PROGRESS -> patDetailDto.setState(ButtonState.IN_PROGRESS);
             case COMPLETED -> patDetailDto.setState(ButtonState.COMPLETED);
         }
@@ -261,13 +271,11 @@ public class PatService {
 
     //홈화면 리스트 조회
     @Transactional(readOnly = true)
-    public HomePatListDto getHomePatList(HomePatSearchDto homePatSearchDto){
+    public HomePatListDto getHomePatList(HomePatSearchDto homePatSearchDto) {
 
         Long categoryId = categoryRepository.findIdByCategoryName(homePatSearchDto.getCategory());
         HomePatListDto homePatListDto = patRepository.getHomePatList(homePatSearchDto.getLastId(), homePatSearchDto.getSize(), homePatSearchDto.getSort(),
                 homePatSearchDto.getQuery(), categoryId, homePatSearchDto.isShowFull(), homePatSearchDto.getState());
-
-        log.info(homePatListDto.getContent().toString());
 
         List<HomePatDto> homePatList = homePatListDto.getContent();
         for (HomePatDto homePat : homePatList) {
@@ -278,7 +286,7 @@ public class PatService {
 
     //맵화면 리스트 조회
     @Transactional(readOnly = true)
-    public PatListDto getMapPatList(MapPatSearchDto mapPatSearchDto){
+    public PatListDto getMapPatList(MapPatSearchDto mapPatSearchDto) {
         Long categoryId = categoryRepository.findIdByCategoryName(mapPatSearchDto.getCategory());
 
         PatListDto patListDto = patRepository.getMapPatList(mapPatSearchDto.getSize(), mapPatSearchDto.getQuery(), categoryId,
@@ -292,10 +300,9 @@ public class PatService {
             patDto.setRepImg(fileService.getUrl(patDto.getRepImg()));  // 필드 값을 변경
         }
         return patListDto;
-
     }
 
-    private String createDays(List<String> dayList){
+    private String createDays(List<String> dayList) {
         String days = "";
 
         switch (dayList.size()) {
@@ -323,19 +330,19 @@ public class PatService {
         return days;
     }
 
-    private List<PatDays> createPatDays(List<String> dayList, Pat pat){
+    private List<PatDays> createPatDays(List<String> dayList, Pat pat) {
         List<PatDays> daysList = new ArrayList<>();
-        for (String day: dayList) {
+        for (String day : dayList) {
             PatDays patDays = new PatDays(pat, daysRepository.findByDayName(day));
             daysList.add(patDays);
         }
         return daysList;
     }
 
-    private List<PatImg> createPatImg(List<List<String>> imgInfoList, Pat pat){
+    private List<PatImg> createPatImg(List<List<String>> imgInfoList, Pat pat) {
         List<PatImg> patImgList = new ArrayList<>();
         //PatImg 생성
-        for (List<String> image: imgInfoList
+        for (List<String> image : imgInfoList
         ) {
             PatImg patImg = PatImg.builder()
                     .imgName(image.get(0))
@@ -348,8 +355,8 @@ public class PatService {
         return patImgList;
     }
 
-    private int countMaxProof(List<String> days, LocalDate startDate, LocalDate endDate){
-        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate)+1;  // 두 날짜 사이의 일 수
+    private int countMaxProof(List<String> days, LocalDate startDate, LocalDate endDate) {
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate) + 1;  // 두 날짜 사이의 일 수
 
         // 정해진 기간 동안 days에 포함된 요일 수를 계산
         int count = (int) IntStream.range(0, (int) daysBetween)
@@ -359,34 +366,41 @@ public class PatService {
         return count;
     }
 
-    private void validateOneDayDifference(LocalDate startDate){
+    private void validateTwoDayDifference(LocalDate startDate, String errorMessage) {
         long days = ChronoUnit.DAYS.between(LocalDate.now(), startDate);
         if (days <= 1) {
-            throw new IllegalStateException("하루 전부터는 수정이 불가능합니다.");
+            throw new IllegalStateException("startDate: " + errorMessage);
         }
     }
 
-    private void validateMemberPermission(Long writerId, Long memberId){
-        if (writerId != memberId){
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "사용자가 일치하지 않습니다.");
+    private void validateStartDateAndEndDate(LocalDate startDate, LocalDate endDate) {
+        long days = ChronoUnit.DAYS.between(startDate, endDate);
+        if (days < 1) {
+            throw new IllegalStateException("endDate: 종료일은 시작일 이후로 설정해주세요.");
         }
     }
 
-    private void validateMaxPersonChange(int nowPerson, int maxPerson){
-        if (maxPerson < nowPerson){
-            throw new IllegalArgumentException("최대 인원은 현재 참여자보다 많아야 합니다.");
+    private void validateMemberPermission(Long writerId, Long memberId) {
+        if (writerId != memberId) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "memberId: 사용자가 일치하지 않습니다.");
         }
     }
 
-    private void validateJoinPatDate(Long patId){
+    private void validateMaxPersonChange(int nowPerson, int maxPerson) {
+        if (maxPerson < nowPerson) {
+            throw new IllegalArgumentException("maxPerson: 최대 인원은 현재 참여자와 같거나 많아야 합니다.");
+        }
+    }
+
+    private void validateJoinPatDate(Long patId) {
         State state = patRepository.findStateByPatId(patId)
-                .orElseThrow(() -> new IllegalArgumentException("팟의 진행 현황을 확인할 수 없습니다."));
-        if (state != State.SCHEDULED){
-            throw new IllegalArgumentException("팟이 진행되는 도중엔 참여가 불가능합니다.");
+                .orElseThrow(() -> new IllegalArgumentException("state: 팟의 진행 현황을 확인할 수 없습니다."));
+        if (state != State.SCHEDULED) {
+            throw new IllegalArgumentException("state: 팟이 진행되는 도중엔 참여가 불가능합니다.");
         }
     }
 
-    private Point createPoint(double longitude, double latitude){
+    private Point createPoint(double longitude, double latitude) {
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
         return geometryFactory.createPoint(new Coordinate(longitude, latitude));
     }
