@@ -14,6 +14,6 @@ public class ProofDto {
     }
 
     public void setProofImg(String url) {
-        this.proofImg = proofImg;
+        this.proofImg = url;
     }
 }
