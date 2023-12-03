@@ -24,7 +24,8 @@ public class PatImgService {
         List<List<String>> imgInfoList = new ArrayList<>();
         imgInfoList.add(savePatImg(repImg, ImgType.REPRESENTATIVE));
         imgInfoList.add(savePatImg(correctImg, ImgType.CORRECT));
-        imgInfoList.add(savePatImg(incorrectImg, ImgType.INCORRECT));
+        if (incorrectImg != null){
+            imgInfoList.add(savePatImg(incorrectImg, ImgType.INCORRECT));}
         if (bodyImg != null){
             imgInfoList.addAll(savePatImg(bodyImg, ImgType.BODY));}
 
