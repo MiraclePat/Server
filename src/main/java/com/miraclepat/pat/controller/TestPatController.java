@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -29,6 +30,13 @@ import java.util.List;
 @RequestMapping("/api/test/pats")
 public class TestPatController {
     //홈화면 리스트, 맵화면 리스트, 팟 상세보기, 팟 생성, 수정, 삭제, 참여, 삭제, 팟 탈퇴
+
+    @GetMapping("/home/banner")
+    //홈 화면
+    public ResponseEntity<HomeBannerDto> getHomeBanner(Principal principal) {
+        HomeBannerDto homeBannerDto = new HomeBannerDto(1L, "홈 배너 test", LocalDate.now().minusDays(5));
+        return ResponseEntity.ok().body(homeBannerDto);
+    }
 
     @GetMapping("/home")
     //홈 화면

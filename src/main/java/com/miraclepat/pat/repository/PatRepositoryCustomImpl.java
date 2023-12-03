@@ -4,10 +4,8 @@ import com.miraclepat.member.dto.MyPatDto;
 import com.miraclepat.member.dto.MyPatListDto;
 import com.miraclepat.pat.constant.SortType;
 import com.miraclepat.pat.constant.State;
-import com.miraclepat.pat.dto.HomePatDto;
-import com.miraclepat.pat.dto.HomePatListDto;
-import com.miraclepat.pat.dto.PatDto;
-import com.miraclepat.pat.dto.PatListDto;
+import com.miraclepat.pat.dto.*;
+import com.miraclepat.pat.entity.QPatDays;
 import com.miraclepat.utils.helper.GeometryHelper;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -23,8 +21,8 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.miraclepat.pat.entity.QPat.pat;
 import static com.miraclepat.category.entity.QCategory.category;
+import static com.miraclepat.pat.entity.QPat.pat;
 
 @Slf4j
 public class PatRepositoryCustomImpl implements PatRepositoryCustom {
@@ -35,6 +33,23 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
     public PatRepositoryCustomImpl(EntityManager em) {
         queryFactory = new JPAQueryFactory(em);
         geometryHelper = new GeometryHelper();
+    }
+
+    @Override
+    public List<HomeBannerDto> getTodayProofPatList(List<Long> patIds, Long todayId) {
+
+        List<HomeBannerDto> bannerList = queryFactory
+                .select(Projections.constructor(HomeBannerDto.class, pat.id, pat.patName, pat.startDate))
+                .from(pat)
+                .join(pat.patDaysList, QPatDays.patDays)
+                .where(pat.id.in(patIds),
+                        pat.state.eq(State.IN_PROGRESS),
+                        QPatDays.patDays.days.id.eq(todayId),
+                        checkEndTime()
+                        )
+                .fetch();
+
+        return bannerList;
     }
 
     @Override
@@ -59,8 +74,6 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
         if (hasNext) {
             homePatList.remove(homePatList.size() - 1);
         }
-
-        System.out.println("homePatList: " + homePatList);
 
         HomePatListDto response = new HomePatListDto(homePatList, hasNext);
         return response;
@@ -241,15 +254,10 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
                 .fetchOne();
     }
 
-    private BooleanExpression positionWithinPolygon(Double leftLongitude, Double rightLongitude, Double bottomLatitude, Double topLatitude){
-        String polygonText = String.format(
-                "POLYGON((%f %f, %f %f, %f %f, %f %f, %f %f))",
-                leftLongitude, topLatitude, rightLongitude, topLatitude, rightLongitude, bottomLatitude, leftLongitude, bottomLatitude, leftLongitude, topLatitude
-        );
-        log.info("********************getMap-polygonText: "+polygonText);
-        BooleanExpression condition = Expressions
-                .booleanTemplate("ST_Within(pat.longLat, ST_GeomFromText('{0}', 4326))", polygonText);
+    private BooleanExpression checkEndTime(){
+        LocalTime midnight = LocalTime.MIDNIGHT;
+        LocalTime nowTime = LocalTime.now();
 
-        return condition;
+        return pat.endTime.eq(midnight).or(pat.endTime.goe(nowTime));
     }
 }

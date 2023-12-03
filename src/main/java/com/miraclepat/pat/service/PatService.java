@@ -11,6 +11,7 @@ import com.miraclepat.pat.constant.State;
 import com.miraclepat.pat.dto.*;
 import com.miraclepat.pat.entity.*;
 import com.miraclepat.pat.repository.*;
+import com.miraclepat.proof.repository.ProofRepository;
 import com.miraclepat.utils.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -48,6 +51,7 @@ public class PatService {
     private final PatImgRepository patImgRepository;
     private final PatMemberRepository patMemberRepository;
     private final MemberRepository memberRepository;
+    private final ProofRepository proofRepository;
     private final FileService fileService;
 
     //팟 생성
@@ -269,6 +273,31 @@ public class PatService {
         return patDetailDto;
     }
 
+    //홈 배너
+    @Transactional(readOnly = true)
+    public HomeBannerDto getHomeBanner(Long memberId) {
+        HomeBannerDto homeBannerDto = new HomeBannerDto();
+        List<Long> patIds = patMemberRepository.findJoinPatIdsByMemberId(memberId);
+        if (patIds.isEmpty()) {
+            return homeBannerDto;
+        }
+
+        LocalDate today = LocalDate.now();
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
+        long dayOfWeekValue = dayOfWeek.getValue();
+        List<HomeBannerDto> bannerDtoList = patRepository.getTodayProofPatList(patIds, dayOfWeekValue);
+
+        //인증 내역이 없어야한다.
+        bannerDtoList.removeIf(dto -> isTodayProof(dto.getId(), memberId));
+        if (bannerDtoList.isEmpty()) {
+            return homeBannerDto;
+        }
+        //랜덤
+        homeBannerDto = bannerDtoList.get(ThreadLocalRandom.current().nextInt(bannerDtoList.size()));
+
+        return homeBannerDto;
+    }
+
     //홈화면 리스트 조회
     @Transactional(readOnly = true)
     public HomePatListDto getHomePatList(HomePatSearchDto homePatSearchDto) {
@@ -398,6 +427,12 @@ public class PatService {
         if (state != State.SCHEDULED) {
             throw new IllegalArgumentException("state: 팟이 진행되는 도중엔 참여가 불가능합니다.");
         }
+    }
+
+    private boolean isTodayProof(Long patId, Long memberId){
+        Long patMemberId = patMemberRepository.findIdByPatIdAndMemberId(patId, memberId)
+                .orElseThrow(() -> new NoSuchElementException("팟 참여 정보를 찾을 수 없습니다."));
+        return proofRepository.existsTodayProof(patMemberId, LocalDate.now());
     }
 
     private Point createPoint(double longitude, double latitude) {

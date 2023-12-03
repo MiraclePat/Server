@@ -51,6 +51,22 @@ class TestPatControllerTest {
     ObjectMapper objectMapper;
 
     @Test
+    void 홈_배너() throws Exception {
+
+        mockMvc.perform(get("/api/test/pats/home/banner")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"))
+                .andExpect(status().isOk())
+                .andDo(document("pat-getHomeBanner",
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("팟 Id/넘겨줄게 없다면 null"),
+                                fieldWithPath("patName").type(JsonFieldType.STRING).description("팟 제목/넘겨줄게 없다면 null"),
+                                fieldWithPath("date").type(JsonFieldType.STRING).description("D+몇 일/넘겨줄게 없다면 null")
+                        )
+                ));
+    }
+
+    @Test
     void 홈_팟_리스트_조회() throws Exception {
 
         mockMvc.perform(get("/api/test/pats/home?category=환경"))

@@ -24,6 +24,13 @@ public class PatController {
     private final PatService patService;
     private final PatImgService patImgService;
 
+    @GetMapping("/home/banner")
+    //홈 화면
+    public ResponseEntity<HomeBannerDto> getHomeBanner(Principal principal) {
+        HomeBannerDto homeBannerDto = patService.getHomeBanner(1L);
+        return ResponseEntity.ok().body(homeBannerDto);
+    }
+
     @GetMapping("/home")
     //홈 화면
     public ResponseEntity<HomePatListDto> getPatList(
@@ -66,7 +73,7 @@ public class PatController {
 
     //상세보기
     @GetMapping("/{pat-id}")
-    public ResponseEntity getPatDetail(@PathVariable("pat-id") Long patId) {
+    public ResponseEntity getPatDetail(@PathVariable("pat-id") Long patId, Principal principal) {
         try {
             PatDetailDto detailDto = patService.detailPat(patId, 1L);
             return ResponseEntity.ok().body(detailDto);
@@ -114,7 +121,7 @@ public class PatController {
 
     //팟 삭제 -> leader만 시작 전에
     @DeleteMapping("/{pat-id}")
-    public ResponseEntity deletePat(@PathVariable("pat-id") Long patId) {
+    public ResponseEntity deletePat(@PathVariable("pat-id") Long patId, Principal principal) {
         try {
             patService.deletePat(patId, 1L);
             return ResponseEntity.noContent().build();
@@ -125,7 +132,7 @@ public class PatController {
 
     //팟 가입 신청 취소
     @DeleteMapping("/{pat-id}/withdraw")
-    public ResponseEntity withdrawPat(@PathVariable("pat-id") Long patId) {
+    public ResponseEntity withdrawPat(@PathVariable("pat-id") Long patId, Principal principal) {
         try {
             patService.withdrawPat(patId, 2L);
             return ResponseEntity.noContent().build();
