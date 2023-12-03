@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.miraclepat.pat.entity.QPat.pat;
+import static com.miraclepat.category.entity.QCategory.category;
 
 @Slf4j
 public class PatRepositoryCustomImpl implements PatRepositoryCustom {
@@ -44,6 +45,7 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
                 .select(Projections.constructor(HomePatDto.class, pat.id, pat.repImg, pat.patName, pat.startDate,
                         pat.category.categoryName, pat.location, pat.nowPerson, pat.maxPerson))
                 .from(pat)
+                .join(pat.category, category)
                 .where(searchStateEq(state),
                         searchCategory(categoryId),
                         filterFullPersonPat(showFull),
@@ -74,6 +76,7 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
                 .select(Projections.constructor(PatDto.class, pat.id, pat.repImg, pat.patName, pat.startDate,
                         pat.category.categoryName, pat.longLat, pat.nowPerson, pat.maxPerson, pat.days, pat.location))
                 .from(pat)
+                .join(pat.category, category)
                 .where(searchQuery(query),
                         searchCategory(categoryId),
                         searchStateEq(state),
@@ -99,6 +102,7 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
                         pat.maxPerson, pat.location, pat.days,
                         pat.state, Expressions.constant(false)))
                 .from(pat)
+                .join(pat.category, category)
                 .where(pat.id.in(ids),
                         searchStateEq(state),
                         dynamicPredicateByLastId(lastId, null))
@@ -125,6 +129,7 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
                         pat.maxPerson, pat.location, pat.days,
                         pat.state, Expressions.constant(false)))
                 .from(pat)
+                .join(pat.category, category)
                 .where(pat.id.in(ids),
                         searchStateEq(state),
                         dynamicPredicateByLastId(lastId, null))
