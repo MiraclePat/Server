@@ -57,27 +57,23 @@ public class MemberService {
     public void profileUpdate(MultipartFile image, String nickname, Long memberId) {
         Member member = memberRepository.findById(1L).orElseThrow(EntityNotFoundException::new);
 
+        if (!member.getNickname().equals(nickname) && memberRepository.existsByNickname(nickname)) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
+        }
+        member.setNickname(nickname);
+
         //받은 이미지가 없다면 닉네임만 없데이트.
         if (image != null) {
             //현재 프로필 이미지가 존재한다면 삭제한다.
             String nowImg = member.getProfileImg();
 
             if (nowImg != null) {
-                log.info("기존 프로필을 삭제합니다.");
                 fileService.deleteFile(nowImg);
             }
 
             String fileName = fileService.updateFile(image);
             member.updateProfileImg(fileName);
         }
-
-        if (member.getNickname().equals(nickname)) {
-            return;
-        }
-        if (memberRepository.existsByNickname(nickname)) {
-            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
-        }
-        member.setNickname(nickname);
     }
 
     //알람 업데이트
@@ -92,7 +88,7 @@ public class MemberService {
     public void deleteMember(Long memberId) {
         //firebase 탈퇴
         String userCode = memberRepository.findUserCodeById(1L);
-        firebaseAuthHelper.deleteMember(userCode);
+        firebaseAuthHelper.deleteUser(userCode);
 
         //pat의 작성자를 null로 변경
         List<Long> ids = patRepository.findOpenPatIdsByMemberId(memberId);
@@ -111,7 +107,6 @@ public class MemberService {
 
         //member 삭제
         memberRepository.deleteById(memberId);
-
     }
 
     private String getProfileImgUrl(String profileImg) {

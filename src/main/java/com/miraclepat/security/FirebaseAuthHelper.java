@@ -27,15 +27,6 @@ public class FirebaseAuthHelper {
         }
     }
 
-    public void withdrawFirebaseUser(String userCode){
-        try {
-            firebaseAuth.deleteUser(userCode);
-        } catch (Exception e) {
-            //예외 발생 처리
-            System.out.println("삭제실패");
-        }
-    }
-
     public String createFirebaseToken(String userCode) {
 
         try{
@@ -56,7 +47,7 @@ public class FirebaseAuthHelper {
         }
     }
 
-    public void deleteMember(String userCode) {
+    public void deleteUser(String userCode) {
         try{
             firebaseAuth.deleteUser(userCode);
         }catch (FirebaseAuthException e){
