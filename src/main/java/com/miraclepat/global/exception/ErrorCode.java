@@ -1,0 +1,35 @@
+package com.miraclepat.global.exception;
+
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@Getter
+public enum ErrorCode {
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, -10000, "Invalid request"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, -10001, "Unauthorized"),
+    FORBIDDEN(HttpStatus.FORBIDDEN, -10002, "Forbidden"),
+    NO_SUCH_ELEMENT(HttpStatus.NOT_FOUND, -10003, "No such element"),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, -10004, "Internal server error"),
+    UNREGISTERED_USER(HttpStatus.UNAUTHORIZED, -10005, "Unregistered user"),
+    EXIST_RESOURCE(HttpStatus.CONFLICT, -10006, "Exist resource"),
+    NOT_FOUND_DEFAULT_RESOURCE(HttpStatus.INTERNAL_SERVER_ERROR, -10007, "Not found default resource"),
+    PAYLOAD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, -10008, "Payload too large"),
+    INVALID_FIREBASE_ID_TOKEN(HttpStatus.UNAUTHORIZED, -11000, "Invalid Firebase ID token"),
+    FIREBASE_USER_CREATION_FAIL(HttpStatus.CONFLICT, -11001, "Firebase user creation fail"),
+    FIREBASE_CUSTOM_TOKEN_CREATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, -11002, "Firebase custom token creation fail"),
+    FIREBASE_USER_WITHDRAW_FAIL(HttpStatus.NOT_FOUND, -11003, "Firebase user withdraw fail(USER_NOT_FOUND)"),
+    OBJECT_STORAGE_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, -12000, "Object storage exception"),
+    KAKAO_CLIENT_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, -13000, "Kakao client exception");
+
+    private final HttpStatus httpStatus;
+
+    private final int code;
+
+    private final String message;
+
+    ErrorCode(HttpStatus httpStatus, int code, String message) {
+        this.httpStatus = httpStatus;
+        this.code = code;
+        this.message = message;
+    }
+}
