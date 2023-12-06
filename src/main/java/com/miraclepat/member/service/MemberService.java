@@ -91,7 +91,8 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long memberId) {
         //firebase 탈퇴
-        String userCode = memberRepository.findUserCodeById(1L);
+        String userCode = memberRepository.findUserCodeById(1L)
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
         firebaseAuthHelper.deleteUser(userCode);
 
         //pat의 작성자를 null로 변경

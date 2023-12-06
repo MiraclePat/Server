@@ -21,19 +21,19 @@ public class MapPatSearchDto {
     private State state;
     private boolean showFull = false;
 
-    @Min(-180)
-    @Max(180)
+    @Min(value = -180, message = "경도는 -180 이상이어야 합니다.")
+    @Max(value = 180, message = "경도는 180 이하여야 합니다.")
     private Double leftLongitude = 10.0;
 
-    @Min(-180)
-    @Max(180)
+    @Min(value = -180, message = "경도는 -180 이상이어야 합니다.")
+    @Max(value = 180, message = "경도는 180 이하여야 합니다.")
     private Double rightLongitude = 80.0;
 
-    @Min(-90)
-    @Max(90)
+    @Min(value = -90, message = "위도는 -90 이상이어야 합니다.")
+    @Max(value = 90, message = "위도는 90 이하여야 합니다.")
     private Double bottomLatitude = 10.0;
 
-    @Min(-90)
-    @Max(90)
+    @Min(value = -90, message = "위도는 -90 이상이어야 합니다.")
+    @Max(value = 90, message = "위도는 90 이하여야 합니다.")
     private Double topLatitude = 80.0;
 }

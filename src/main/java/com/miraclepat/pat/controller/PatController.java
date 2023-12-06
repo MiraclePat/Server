@@ -6,6 +6,7 @@ import com.miraclepat.pat.service.PatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,8 @@ public class PatController {
     @GetMapping("/home")
     //홈 화면
     public ResponseEntity<HomePatListDto> getPatList(
-            @ModelAttribute HomePatSearchDto homePatSearchDto
+            @Valid
+            @ModelAttribute HomePatSearchDto homePatSearchDto, BindingResult bindingResult
     ) {
         HomePatListDto homePatListDto = patService.getHomePatList(homePatSearchDto);
         return ResponseEntity.ok().body(homePatListDto);
@@ -43,7 +45,8 @@ public class PatController {
     @GetMapping("/map")
     //맵 화면
     public ResponseEntity<PatListDto> getPatList(
-            @ModelAttribute MapPatSearchDto mapPatSearchDto
+            @Valid
+            @ModelAttribute MapPatSearchDto mapPatSearchDto, BindingResult bindingResult
     ) {
         PatListDto PatListDto = patService.getMapPatList(mapPatSearchDto);
         return ResponseEntity.ok(PatListDto);

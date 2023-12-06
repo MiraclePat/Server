@@ -24,7 +24,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<ProfileDto> findNicknameAndProfileImgById(@Param("id") Long id);
 
     @Query("SELECT m.userCode FROM Member m WHERE m.id = :id")
-    String findUserCodeById(@Param("id") Long id);
+    Optional<String> findUserCodeById(@Param("id") Long id);
 
 
 }
