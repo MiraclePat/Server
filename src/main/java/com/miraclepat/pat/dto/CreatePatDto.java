@@ -19,7 +19,7 @@ public class CreatePatDto {
 
     //팟 제목
     @NotBlank(message = "제목을 입력해주세요.")
-    @Size(min = 2, max = 20,message = "2-20자 사이로 작성해주세요.")
+    @Size(min = 2, max = 20,message = "2-15자 사이로 작성해주세요.")
     String patName;
 
     //팟 상세내용
@@ -29,17 +29,18 @@ public class CreatePatDto {
 
     //최대 인원
     @NotNull(message = "최대 참여 인원을 지정해주세요.")
+    @Min(value = 1, message = "최소 인원은 1명입니다.")
     @Max( value = 10000, message = "최대 인원은 10000명입니다.")
     int maxPerson;
 
     //경도
-    @Min(-180)
-    @Max(180)
+    @Min(value = -180, message = "경도는 -180 이상이어야 합니다.")
+    @Max(value = 180, message = "경도는 180 이하여야 합니다.")
     Double longitude;
 
     //위도
-    @Min(-90)
-    @Max(90)
+    @Min(value = -90, message = "위도는 -90 이상이어야 합니다.")
+    @Max(value = 90, message = "위도는 90 이하여야 합니다.")
     Double latitude;
 
     //상세주소

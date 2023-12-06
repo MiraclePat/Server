@@ -31,10 +31,10 @@ public class PatDetailDto {
 
     private String location;
 
-    @JsonFormat(pattern = "M월 d일")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
-    @JsonFormat(pattern = "M월 d일")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
     @JsonFormat(pattern = "M월 d일(E)")
@@ -46,7 +46,7 @@ public class PatDetailDto {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
-    @JsonFormat(pattern = "HH:mn")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     private List<String> dayList = new ArrayList<>();
