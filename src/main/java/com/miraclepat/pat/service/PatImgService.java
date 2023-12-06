@@ -1,5 +1,6 @@
 package com.miraclepat.pat.service;
 
+import com.miraclepat.global.exception.ErrorMessage;
 import com.miraclepat.pat.constant.ImgType;
 import com.miraclepat.utils.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -19,24 +20,27 @@ public class PatImgService {
             MultipartFile repImg,
             MultipartFile correctImg,
             MultipartFile incorrectImg,
-            List<MultipartFile> bodyImg){
+            List<MultipartFile> bodyImg) {
         //이미지 업로드
         List<List<String>> imgInfoList = new ArrayList<>();
         imgInfoList.add(savePatImg(repImg, ImgType.REPRESENTATIVE));
         imgInfoList.add(savePatImg(correctImg, ImgType.CORRECT));
-        if (incorrectImg != null){
-            imgInfoList.add(savePatImg(incorrectImg, ImgType.INCORRECT));}
-        if (bodyImg != null){
-            imgInfoList.addAll(savePatImg(bodyImg, ImgType.BODY));}
+        if (incorrectImg != null) {
+            imgInfoList.add(savePatImg(incorrectImg, ImgType.INCORRECT));
+        }
+        if (bodyImg != null) {
+            imgInfoList.addAll(savePatImg(bodyImg, ImgType.BODY));
+        }
 
         return imgInfoList;
     }
 
     //팟 이미지 저장
-    private List<String> savePatImg(MultipartFile image, ImgType imgType){
+    private List<String> savePatImg(MultipartFile image, ImgType imgType) {
         List<String> result = new ArrayList<>();
         if (image.getOriginalFilename() == null) {
-            throw new IllegalArgumentException("파일 원본 이름은 필수 값입니다.");}
+            throw new IllegalArgumentException(ErrorMessage.NO_FILE_NAME);
+        }
 
         String fileName = fileService.updateFile(image);
         result.add(fileName);
@@ -52,7 +56,8 @@ public class PatImgService {
 
         for (MultipartFile file : images) {
             if (file.getOriginalFilename() == null) {
-                throw new IllegalArgumentException("파일 원본 이름은 필수 값입니다.");}
+                throw new IllegalArgumentException(ErrorMessage.NO_FILE_NAME);
+            }
 
             String fileName = fileService.updateFile(file);
 

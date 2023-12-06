@@ -1,6 +1,8 @@
 package com.miraclepat.auth.service;
 
 import com.miraclepat.auth.dto.KakaoUserInfo;
+import com.miraclepat.global.exception.CustomException;
+import com.miraclepat.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -25,25 +27,23 @@ public class KakaoService {
                 .build();
     }
 
-    public KakaoUserInfo getKakaoUserInfo(String token){
+    public KakaoUserInfo getKakaoUserInfo(String token) {
 
-        try{
+        try {
             //WebClient로 카카오 서버에 연결
             //액세스 토큰으로 사용자 정보를 받아온다.
-            System.out.println("getKakaoUserInfo - Start");
             KakaoUserInfo kakaoUserInfo = webClient.get()
-                .uri("/v2/user/me")
-                .header("Authorization", "Bearer "+token)
-                .retrieve()//응답값을 받는다.
-                .bodyToMono(KakaoUserInfo.class)//응답값이 KakaoUserInfo에 자동으로 매칭된다.
-                .block();
+                    .uri("/v2/user/me")
+                    .header("Authorization", "Bearer " + token)
+                    .retrieve()//응답값을 받는다.
+                    .bodyToMono(KakaoUserInfo.class)//응답값이 KakaoUserInfo에 자동으로 매칭된다.
+                    .block();
 
             return kakaoUserInfo;
 
-        } catch (Exception e){
-            //사용자 정보를 제대로 받아오지 못하는 경우 에러 메시지를 반환
-            System.out.println("사용자 정보를 제대로 받아오지 못함: "+e);
-            return null;
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.KAKAO_CLIENT_EXCEPTION,
+                    e.getMessage());
         }
     }
 

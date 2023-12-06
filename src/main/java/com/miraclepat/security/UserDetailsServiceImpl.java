@@ -1,5 +1,6 @@
 package com.miraclepat.security;
 
+import com.miraclepat.global.exception.ErrorMessage;
 import com.miraclepat.member.entity.Member;
 import com.miraclepat.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Component
@@ -19,10 +21,12 @@ import java.util.Collections;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Member member = memberRepository.findByUserCode(username);
+        Member member = memberRepository.findByUserCode(username)
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
 
         if (member == null) { //만약 찾을 수 없으면 예외처리
             throw new UsernameNotFoundException(username);

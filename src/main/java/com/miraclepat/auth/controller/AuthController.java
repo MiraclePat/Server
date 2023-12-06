@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 
 @Validated
 @RestController
@@ -27,7 +28,6 @@ public class AuthController {
 
     @Autowired
     KakaoService kakaoService;
-
     @Autowired
     AuthService authService;
 
@@ -35,20 +35,16 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity login(
             @Valid
-            @RequestBody TokenDto tokenDto){
+            @RequestBody TokenDto tokenDto) {
         //카카오 액세스 토큰을 받는다.
-
         //카카오 서비스에서 사용자 정보를 받아온다.
         KakaoUserInfo kakaoUserInfo = kakaoService.getKakaoUserInfo(tokenDto.getToken());
 
-        System.out.println("kakaoUserInfo: "+kakaoUserInfo.getUserCode());
-
-        try{
+        try {
             //받아온 정보로 회원 검색을 한다. 가입된 정보가 있다면 로그인 토큰을 반환한다.
             TokenDto tokenDtoResponse = authService.kakaoLogin(kakaoUserInfo);
             return ResponseEntity.ok(tokenDtoResponse);
-
-        }catch (Exception e){
+        } catch (NoSuchElementException e) {
             //AuthService에서 던진 예외처리
             //가입된 정보가 없다면 401 상태코드와 함께 카카오에서 받아온 유저 정보를 반환한다.
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(kakaoUserInfo);
@@ -57,15 +53,11 @@ public class AuthController {
 
     //회원가입
     @PostMapping("/signup")
-    public ResponseEntity signup(@Valid @RequestBody SignupDto signupDto){
+    public ResponseEntity signup(@Valid @RequestBody SignupDto signupDto) {
         //가입되지 않은 회원으로 로그인 실패 시 전달했던 카카오 유저 정보를 받는다.
-        try{
-            //회원가입 한다.
-            authService.signup(signupDto);
-        }catch (Exception e){
-            //예외 처리
-        }
+        //회원가입 한다.
+        authService.signup(signupDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-    
+
 }

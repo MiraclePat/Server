@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
 import java.security.Principal;
 
 @Validated
@@ -23,19 +22,14 @@ public class ProofController {
     //인증하기
     @PostMapping
     public ResponseEntity proof(
-            @PathVariable("pat-id")Long patId,
-            @NotNull(message = "proofImg는 필수입니다.")
+            @PathVariable("pat-id") Long patId,
             @RequestPart("proofImg") MultipartFile proofImg,
             Principal principal
-    ){
+    ) {
         if (proofImg.isEmpty()) {
-            throw new IllegalArgumentException("proofImg 파일이 비어있습니다.");
+            throw new IllegalArgumentException("파일이 비어있습니다.");
         }
-        try {
-            proofService.proof(patId, 1L, proofImg);
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        proofService.proof(patId, 1L, proofImg);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -49,7 +43,7 @@ public class ProofController {
             @RequestParam(name = "size", required = false, defaultValue = "10")
             int size,
             Principal principal
-    ){
+    ) {
         ProofListDto proofListDto = proofService.getMyProof(lastId, size, patId, 1L);
         return ResponseEntity.ok(proofListDto);
     }
@@ -64,7 +58,7 @@ public class ProofController {
             @RequestParam(name = "size", required = false, defaultValue = "10")
             int size,
             Principal principal
-    ){
+    ) {
         ProofListDto proofListDto = proofService.getAnotherProof(lastId, size, patId, 1L);
         return ResponseEntity.ok(proofListDto);
     }

@@ -74,23 +74,15 @@ public class PatController {
     //상세보기
     @GetMapping("/{pat-id}")
     public ResponseEntity getPatDetail(@PathVariable("pat-id") Long patId, Principal principal) {
-        try {
-            PatDetailDto detailDto = patService.detailPat(patId, 1L);
-            return ResponseEntity.ok().body(detailDto);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        PatDetailDto detailDto = patService.detailPat(patId, 1L);
+        return ResponseEntity.ok().body(detailDto);
     }
 
     //참여하기
     @PostMapping("/{pat-id}")
     public ResponseEntity joinPat(@PathVariable("pat-id") Long patId, Principal principal) {
-        try {
-            patService.joinPat(patId, 2L);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        patService.joinPat(patId, 2L);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     //수정하기
@@ -110,35 +102,23 @@ public class PatController {
             List<MultipartFile> bodyImg,
             @PathVariable("pat-id") Long patId
     ) {
-        try {
-            List<List<String>> imgInfoList = patImgService.uploadPatImg(repImg, correctImg, incorrectImg, bodyImg);
-            patService.updatePat(createPatDto, imgInfoList, 1L, patId);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        List<List<String>> imgInfoList = patImgService.uploadPatImg(repImg, correctImg, incorrectImg, bodyImg);
+        patService.updatePat(createPatDto, imgInfoList, 1L, patId);
+        return ResponseEntity.noContent().build();
     }
 
     //팟 삭제 -> leader만 시작 전에
     @DeleteMapping("/{pat-id}")
     public ResponseEntity deletePat(@PathVariable("pat-id") Long patId, Principal principal) {
-        try {
-            patService.deletePat(patId, 1L);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        patService.deletePat(patId, 1L);
+        return ResponseEntity.noContent().build();
     }
 
     //팟 가입 신청 취소
     @DeleteMapping("/{pat-id}/withdraw")
     public ResponseEntity withdrawPat(@PathVariable("pat-id") Long patId, Principal principal) {
-        try {
-            patService.withdrawPat(patId, 2L);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        patService.withdrawPat(patId, 2L);
+        return ResponseEntity.noContent().build();
     }
 
 }

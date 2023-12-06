@@ -1,5 +1,8 @@
 package com.miraclepat.member.service;
 
+import com.miraclepat.global.exception.CustomException;
+import com.miraclepat.global.exception.ErrorCode;
+import com.miraclepat.global.exception.ErrorMessage;
 import com.miraclepat.member.dto.ProfileDto;
 import com.miraclepat.member.entity.Member;
 import com.miraclepat.member.repository.MemberRepository;
@@ -16,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -38,7 +40,7 @@ public class MemberService {
     public ProfileDto getProfile(Long memberId) {
         //닉네임, 프로필사진, 완료한 팟 수, 개설한 팟 수
         ProfileDto profileDto = memberRepository.findNicknameAndProfileImgById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
         profileDto.setProfileImg(getProfileImgUrl(profileDto.getProfileImg()));
 
         //완료한 팟 수 -> patMember에서 memberId로 참여한 팟 id 먼저 받기 -> 팟에서 state:Completed인거 count
@@ -55,10 +57,11 @@ public class MemberService {
     //프로필 업데이트
     @Transactional
     public void profileUpdate(MultipartFile image, String nickname, Long memberId) {
-        Member member = memberRepository.findById(1L).orElseThrow(EntityNotFoundException::new);
+        Member member = memberRepository.findById(1L)
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
 
         if (!member.getNickname().equals(nickname) && memberRepository.existsByNickname(nickname)) {
-            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
+            throw new CustomException(ErrorCode.EXIST_RESOURCE, ErrorMessage.EXIST_NICKNAME);
         }
         member.setNickname(nickname);
 
@@ -78,8 +81,9 @@ public class MemberService {
 
     //알람 업데이트
     @Transactional
-    public void pushUpdate(boolean push, Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public void pushUpdate(boolean push, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
         member.updatePush(push);
     }
 

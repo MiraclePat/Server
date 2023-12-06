@@ -1,6 +1,7 @@
 package com.miraclepat.pat.repository;
 
 import com.miraclepat.pat.constant.State;
+import com.miraclepat.pat.dto.PatTimeDto;
 import com.miraclepat.pat.dto.WriterInfoDto;
 import com.miraclepat.pat.entity.Pat;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PatRepository extends JpaRepository<Pat, Long>,
-        QuerydslPredicateExecutor<Pat>, PatRepositoryCustom{
+        QuerydslPredicateExecutor<Pat>, PatRepositoryCustom {
     Optional<Pat> findById(Long id);
 
     @Query("SELECT COUNT(p) FROM Pat p WHERE p.member.id = :memberId")
@@ -34,4 +35,10 @@ public interface PatRepository extends JpaRepository<Pat, Long>,
 
     @Query("SELECT p.id FROM Pat p WHERE p.member.id = :memberId")
     List<Long> findOpenPatIdsByMemberId(@Param("memberId") Long memberId);
+
+    @Query("SELECT new com.miraclepat.pat.dto.PatTimeDto(p.startTime, p.endTime) " +
+            "FROM Pat p " +
+            "WHERE p.id = :id")
+    Optional<PatTimeDto> getPatTimes(@Param("id") Long id);
+
 }

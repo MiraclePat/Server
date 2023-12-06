@@ -1,5 +1,8 @@
 package com.miraclepat.member.service;
 
+import com.miraclepat.global.exception.CustomException;
+import com.miraclepat.global.exception.ErrorCode;
+import com.miraclepat.global.exception.ErrorMessage;
 import com.miraclepat.member.dto.MyPatDetailDto;
 import com.miraclepat.member.dto.MyPatDto;
 import com.miraclepat.member.dto.MyPatListDto;
@@ -44,16 +47,16 @@ public class MyPatService {
 
     //내가 참여한 팟 리스트 가져오기
     @Transactional(readOnly = true)
-    public MyPatListDto getJoinPatList(MyPatSearchDto myPatSearchDto, Long memberId){
+    public MyPatListDto getJoinPatList(MyPatSearchDto myPatSearchDto, Long memberId) {
         //내가 참여한 팟 id 리스트 가져오기
         List<Long> ids = patMemberRepository.findJoinPatIdsByMemberId(memberId);
-        if (!ids.isEmpty()){
+        if (!ids.isEmpty()) {
             MyPatListDto myPatListDto = patRepository.getJoinPatList(ids, myPatSearchDto.getLastId(),
                     myPatSearchDto.getSize(), myPatSearchDto.getState());
 
             //팟 리스트에서 당일 인증 정보가 있는지 검사하기: state = IN_PROGRESS 일 때만
             //인증 정보가 있다면 isCompleted를 true로 변경한다. (기본 false)
-            if (myPatSearchDto.getState() == State.IN_PROGRESS){
+            if (myPatSearchDto.getState() == State.IN_PROGRESS) {
                 for (MyPatDto myPatDto : myPatListDto.getContent()) {
                     myPatDto.setCompleted(checkTodayProof(myPatDto.getId(), memberId));
                 }
@@ -66,15 +69,15 @@ public class MyPatService {
 
     //내가 오픈한 팟 리스트 가져오기
     @Transactional(readOnly = true)
-    public MyPatListDto getOpenPatList(MyPatSearchDto myPatSearchDto, Long memberId){
+    public MyPatListDto getOpenPatList(MyPatSearchDto myPatSearchDto, Long memberId) {
         List<Long> ids = patRepository.findOpenPatIdsByMemberId(memberId);
 
-        if (!ids.isEmpty()){
+        if (!ids.isEmpty()) {
             MyPatListDto myPatListDto = patRepository.getOpenPatList(ids, myPatSearchDto.getLastId(),
                     myPatSearchDto.getSize(), myPatSearchDto.getState());
 
             for (MyPatDto myPatDto : myPatListDto.getContent()) {
-                if (myPatDto.getState() == State.IN_PROGRESS){
+                if (myPatDto.getState() == State.IN_PROGRESS) {
                     myPatDto.setCompleted(checkTodayProof(myPatDto.getId(), memberId));
                 }
             }
@@ -86,13 +89,13 @@ public class MyPatService {
 
     //내가 참여한 팟 상세(인증탭)
     @Transactional(readOnly = true)
-    public MyPatDetailDto getJoinPatDetail(Long patId, Long memberId){
+    public MyPatDetailDto getJoinPatDetail(Long patId, Long memberId) {
         Pat pat = patRepository.findById(patId)
-                .orElseThrow(() -> new NoSuchElementException("팟 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
         PatProofInfo patProofInfo = patProofInfoRepository.findByPatId(patId)
-                .orElseThrow(() -> new NoSuchElementException("팟 info를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
         PatMember patMember = patMemberRepository.findByPatIdAndMemberId(patId, memberId)
-                .orElseThrow(() -> new NoSuchElementException("팟 가입 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.FORBIDDEN, ErrorMessage.NOT_JOIN_PAT));
 
         List<String> dayList = pat.getPatDaysList().stream()
                 .map(patDays -> patDays.getDays().getDayName())
@@ -127,12 +130,11 @@ public class MyPatService {
                 .build();
 
         //ButtonState 설정
-        switch (pat.getState()){
+        switch (pat.getState()) {
             case SCHEDULED -> {
-                try{
-                    validateOneDayDifference(pat.getStartDate());
+                if (validateOneDayDifference(pat.getStartDate())) {
                     myPatDetailDto.setState(ButtonState.CANCELABLE);
-                }catch (Exception e){
+                } else {
                     myPatDetailDto.setState(ButtonState.NO_CANCELABLE);
                 }
             }
@@ -142,30 +144,30 @@ public class MyPatService {
 
         //이미지 url 적용
         for (PatImg patImg : pat.getPatImgList()) {
-            myPatDetailDto.setImg(fileService.getUrl(patImg.getImgName()), patImg.getImgType());}
+            myPatDetailDto.setImg(fileService.getUrl(patImg.getImgName()), patImg.getImgType());
+        }
 
         return myPatDetailDto;
     }
 
     //진행중인 팟의 당일 인증 여부를 확인
-    private boolean checkTodayProof(Long patId, Long memberId){
+    private boolean checkTodayProof(Long patId, Long memberId) {
         LocalDate today = LocalDate.now();
         Long id = patMemberRepository.findIdByPatIdAndMemberId(patId, memberId)
-                .orElseThrow(() -> new NoSuchElementException("참여 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.FORBIDDEN, ErrorMessage.NOT_JOIN_PAT));
         return proofRepository.existsTodayProof(id, today);
     }
 
     //repImg의 url을 설정
-    private void setRepImgUrl(MyPatListDto myPatListDto){
+    private void setRepImgUrl(MyPatListDto myPatListDto) {
         for (MyPatDto myPatDto : myPatListDto.getContent()) {
             myPatDto.setRepImg(fileService.getUrl(myPatDto.getRepImg()));
-            System.out.println("***********:"+myPatDto.getRepImg());
         }
     }
 
     //조회 당일 기준으로 최대 인증 수
-    private int countTodayMaxProof(List<String> days, LocalDate startDate){
-        long daysBetween = ChronoUnit.DAYS.between(startDate, LocalDate.now())+1;  // 두 날짜 사이의 일 수
+    private int countTodayMaxProof(List<String> days, LocalDate startDate) {
+        long daysBetween = ChronoUnit.DAYS.between(startDate, LocalDate.now()) + 1;  // 두 날짜 사이의 일 수
         // 정해진 기간 동안 days에 포함된 요일 수를 계산
         int count = (int) IntStream.range(0, (int) daysBetween)
                 .mapToObj(startDate::plusDays)
@@ -175,10 +177,11 @@ public class MyPatService {
         return count;
     }
 
-    private void validateOneDayDifference(LocalDate startDate){
+    private boolean validateOneDayDifference(LocalDate startDate) {
         long days = ChronoUnit.DAYS.between(LocalDate.now(), startDate);
         if (days <= 1) {
-            throw new IllegalStateException("하루 전부터는 수정이 불가능합니다.");
+            return false;
         }
+        return true;
     }
 }
