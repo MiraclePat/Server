@@ -215,8 +215,6 @@ class TestPatControllerTest {
 
     @Test
     void 팟_상세페이지() throws Exception {
-        objectMapper.configure(MapperFeature.AUTO_DETECT_IS_GETTERS, false);
-
         mockMvc.perform(get("/api/test/pats/{pat-id}", 1))
                 .andExpect(status().isOk())
                 .andDo(document("pat-getPatDetail",
@@ -231,8 +229,8 @@ class TestPatControllerTest {
                                 fieldWithPath("category").type(JsonFieldType.STRING).description("카테고리"),
                                 fieldWithPath("patName").type(JsonFieldType.STRING).description("팟 이름"),
                                 fieldWithPath("location").type(JsonFieldType.STRING).description("위치"),
-                                fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작 날짜: m월 d일"),
-                                fieldWithPath("endDate").type(JsonFieldType.STRING).description("종료 날짜: m월 d일"),
+                                fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작 날짜: yyyy-MM-dd"),
+                                fieldWithPath("endDate").type(JsonFieldType.STRING).description("종료 날짜: yyyy-MM-dd"),
                                 fieldWithPath("modifiedStartDate").type(JsonFieldType.STRING).description("시작 날짜: m월 d일(요일)"),
                                 fieldWithPath("modifiedEndDate").type(JsonFieldType.STRING).description("종료 날짜:  m월 d일(요일)"),
                                 fieldWithPath("startTime").type(JsonFieldType.STRING).description("시작 시간"),
