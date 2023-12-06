@@ -6,6 +6,7 @@
 :toclevels: 2
 :sectlinks:
 
+include::code.adoc[]
 include::auth.adoc[]
 include::member.adoc[]
 include::pat.adoc[]
