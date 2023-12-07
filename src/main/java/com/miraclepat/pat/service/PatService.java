@@ -280,6 +280,10 @@ public class PatService {
     @Transactional(readOnly = true)
     public HomeBannerDto getHomeBanner(Long memberId) {
         HomeBannerDto homeBannerDto = new HomeBannerDto();
+        if (memberId == null) {
+            return homeBannerDto;
+        }
+
         List<Long> patIds = patMemberRepository.findJoinPatIdsByMemberId(memberId);
         if (patIds.isEmpty()) {
             return homeBannerDto;

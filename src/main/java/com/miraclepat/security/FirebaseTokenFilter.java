@@ -46,7 +46,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             String requestUri = request.getRequestURI();
             boolean isGetMethod = request.getMethod().equals("GET");
             boolean isAuthHeaderEmpty = request.getHeader(HttpHeaders.AUTHORIZATION) == null;
-            boolean isStartsWithPatsOrBanner = requestUri.startsWith("/api/v1/pats/") || requestUri.startsWith("/api/v1/home/banner");
+            boolean isStartsWithPatsOrBanner = requestUri.startsWith("/api/v1/pats/");
 
             if (!(isGetMethod && isAuthHeaderEmpty && isStartsWithPatsOrBanner)) {
                 try {
@@ -69,7 +69,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
     private boolean permitUri(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        if (uri.equals("/api/v1/home/banner")) {
+        if (uri.equals("/api/v1/pats/home/banner")) {
             log.info("허용되지 않은 URI");
             return false;
         }
