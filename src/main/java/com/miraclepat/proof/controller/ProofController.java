@@ -29,7 +29,8 @@ public class ProofController {
         if (proofImg.isEmpty()) {
             throw new IllegalArgumentException("파일이 비어있습니다.");
         }
-        proofService.proof(patId, 1L, proofImg);
+        Long memberId = Long.valueOf(principal.getName());
+        proofService.proof(patId, memberId, proofImg);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -44,7 +45,8 @@ public class ProofController {
             int size,
             Principal principal
     ) {
-        ProofListDto proofListDto = proofService.getMyProof(lastId, size, patId, 1L);
+        Long memberId = Long.valueOf(principal.getName());
+        ProofListDto proofListDto = proofService.getMyProof(lastId, size, patId, memberId);
         return ResponseEntity.ok(proofListDto);
     }
 
@@ -59,7 +61,8 @@ public class ProofController {
             int size,
             Principal principal
     ) {
-        ProofListDto proofListDto = proofService.getAnotherProof(lastId, size, patId, 1L);
+        Long memberId = Long.valueOf(principal.getName());
+        ProofListDto proofListDto = proofService.getAnotherProof(lastId, size, patId, memberId);
         return ResponseEntity.ok(proofListDto);
     }
 }

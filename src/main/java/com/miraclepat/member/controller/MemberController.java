@@ -28,7 +28,8 @@ public class MemberController {
     //내 정보 가져오기
     @GetMapping("/me")
     public ResponseEntity getProfile(Principal principal) {
-        ProfileDto profileDto = memberService.getProfile(1L);
+        Long memberId = Long.valueOf(principal.getName());
+        ProfileDto profileDto = memberService.getProfile(memberId);
         return ResponseEntity.ok(profileDto);
     }
 
@@ -38,14 +39,16 @@ public class MemberController {
             @RequestPart(name = "image", required = false) MultipartFile image,
             @RequestPart(name = "nickname") String nickname,
             Principal principal) {
-        memberService.profileUpdate(image, nickname, 1L);
+        Long memberId = Long.valueOf(principal.getName());
+        memberService.profileUpdate(image, nickname, memberId);
         return ResponseEntity.noContent().build();
     }
 
     //내 알람 정보 업데이트 -> 쿼리 파라미터로 받는다.
     @PatchMapping("/me/push")
     public ResponseEntity updatePush(@RequestParam("push") boolean push, Principal principal) {
-        memberService.pushUpdate(push, 1L);
+        Long memberId = Long.valueOf(principal.getName());
+        memberService.pushUpdate(push, memberId);
         return ResponseEntity.noContent().build();
     }
 
@@ -53,21 +56,24 @@ public class MemberController {
     //patMember 삭제, proof 삭제,
     @DeleteMapping("/delete")
     public ResponseEntity deleteMember(Principal principal) {
-        memberService.deleteMember(1L);
+        Long memberId = Long.valueOf(principal.getName());
+        memberService.deleteMember(memberId);
         return ResponseEntity.noContent().build();
     }
 
     //내가 참여한 팟 리스트
     @GetMapping("/pats")
     public ResponseEntity getJoinPatList(@ModelAttribute MyPatSearchDto myPatSearchDto, Principal principal) {
-        MyPatListDto myPatListDto = myPatService.getJoinPatList(myPatSearchDto, 1L);
+        Long memberId = Long.valueOf(principal.getName());
+        MyPatListDto myPatListDto = myPatService.getJoinPatList(myPatSearchDto, memberId);
         return ResponseEntity.ok(myPatListDto);
     }
 
     //내가 개설한 팟 리스트 -> 내가 참여한 팟 목록 내용과 같음
     @GetMapping("/pats/open")
     public ResponseEntity getOpenPatList(@ModelAttribute MyPatSearchDto myPatSearchDto, Principal principal) {
-        MyPatListDto myPatListDto = myPatService.getOpenPatList(myPatSearchDto, 1L);
+        Long memberId = Long.valueOf(principal.getName());
+        MyPatListDto myPatListDto = myPatService.getOpenPatList(myPatSearchDto, memberId);
         return ResponseEntity.ok(myPatListDto);
 
     }
@@ -76,7 +82,8 @@ public class MemberController {
     @GetMapping("/pats/{pat-id}")
     public ResponseEntity getJoinPatDetail(@PathVariable("pat-id") Long patId, Principal principal) {
         //내 인증 사진, 다른 사람 인증 사진은 proofController로
-        MyPatDetailDto myPatDetailDto = myPatService.getJoinPatDetail(patId, 1L);
+        Long memberId = Long.valueOf(principal.getName());
+        MyPatDetailDto myPatDetailDto = myPatService.getJoinPatDetail(patId, memberId);
         return ResponseEntity.ok(myPatDetailDto);
     }
 

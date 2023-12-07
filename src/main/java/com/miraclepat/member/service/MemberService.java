@@ -57,7 +57,7 @@ public class MemberService {
     //프로필 업데이트
     @Transactional
     public void profileUpdate(MultipartFile image, String nickname, Long memberId) {
-        Member member = memberRepository.findById(1L)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
 
         if (!member.getNickname().equals(nickname) && memberRepository.existsByNickname(nickname)) {
@@ -91,7 +91,7 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long memberId) {
         //firebase 탈퇴
-        String userCode = memberRepository.findUserCodeById(1L)
+        String userCode = memberRepository.findUserCodeById(memberId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
         firebaseAuthHelper.deleteUser(userCode);
 

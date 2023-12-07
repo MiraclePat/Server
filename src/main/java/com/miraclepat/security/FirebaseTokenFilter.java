@@ -24,9 +24,9 @@ import java.util.List;
 public class FirebaseTokenFilter extends OncePerRequestFilter {
 
     //비회원은 조회(GET)만 가능하다.
-    public static List<String> PERMIT_URI= Arrays.asList(
+    public static List<String> PERMIT_URI = Arrays.asList(
             "/api/v1/auth", "/api/v1/pats/home", "/api/v1/pats/map",
-            "/api/test/", "/docs/", "/");
+            "/api/test/", "/docs/");
     private static final String BEARER = "Bearer ";
 
     private UserDetailsServiceImpl userDetailsService;
@@ -42,10 +42,13 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         if (!permitUri(request)) {
-            //신청 페이지를 로그인 상태로 보면 유저임을 검증한다.
-            if (!(request.getMethod().equals("GET")
-                    && request.getRequestURI().startsWith("/api/v1/pats/")
-                    && request.getHeader(HttpHeaders.AUTHORIZATION) ==null )){
+            //팟 상세 페이지와 배너를 로그인 한 상태로 보면 토큰 검증
+            String requestUri = request.getRequestURI();
+            boolean isGetMethod = request.getMethod().equals("GET");
+            boolean isAuthHeaderEmpty = request.getHeader(HttpHeaders.AUTHORIZATION) == null;
+            boolean isStartsWithPatsOrBanner = requestUri.startsWith("/api/v1/pats/") || requestUri.startsWith("/api/v1/home/banner");
+
+            if (!(isGetMethod && isAuthHeaderEmpty && isStartsWithPatsOrBanner)) {
                 try {
                     String firebaseToken = request.getHeader(HttpHeaders.AUTHORIZATION);
                     String idToken = getIdTokenByFirebaseToken(firebaseToken);
@@ -64,15 +67,19 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean permitUri(HttpServletRequest request){
-        for (String patterns : PERMIT_URI) {
-            if (request.getRequestURI().startsWith(patterns)) {
-                log.info("허용된 URI");
-                return true;
-            }
+    private boolean permitUri(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        if (uri.equals("/api/v1/home/banner")) {
+            log.info("허용되지 않은 URI");
+            return false;
         }
-        log.info("허용되지 않은 URI");
-        return false;
+        boolean isPermitUri = PERMIT_URI.stream().anyMatch(uri::startsWith);
+        if (isPermitUri) {
+            log.info("허용된 URI");
+        } else {
+            log.info("허용되지 않은 URI");
+        }
+        return isPermitUri;
     }
 
     private String getIdTokenByFirebaseToken(String firebaseToken) {
@@ -83,7 +90,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     }
 
     private void setErrorResponse(HttpServletResponse response, Exception ex) throws IOException {
-        log.error("[FirebaseTokenFilter]: "+ex);
+        log.error("[FirebaseTokenFilter]: " + ex);
         response.setStatus(HttpStatus.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
@@ -92,7 +99,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
         objectMapper.writeValue(response.getOutputStream(), errorResponse());
     }
 
-    private ErrorResponse errorResponse(){
+    private ErrorResponse errorResponse() {
         return ErrorResponse.of(ErrorCode.INVALID_FIREBASE_ID_TOKEN,
                 ErrorCode.INVALID_FIREBASE_ID_TOKEN.getMessage());
     }

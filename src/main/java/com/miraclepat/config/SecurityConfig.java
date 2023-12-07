@@ -1,22 +1,17 @@
 package com.miraclepat.config;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.miraclepat.security.CustomAuthenticationEntryPoint;
 import com.miraclepat.security.FirebaseAuthHelper;
 import com.miraclepat.security.FirebaseTokenFilter;
 import com.miraclepat.security.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /*
@@ -25,17 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-/*
 @RequiredArgsConstructor
-@Component
-*/
-public class SecurityConfig{
+public class SecurityConfig {
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    private FirebaseAuthHelper firebaseAuthHelper;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final FirebaseAuthHelper firebaseAuthHelper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -50,13 +39,11 @@ public class SecurityConfig{
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
-                .antMatchers("/api/v1/pats/home", "/api/v1/pats/map").permitAll()
+                .antMatchers("/api/v1/pats/home", "/api/v1/pats/home/banner", "/api/v1/pats/map").permitAll()
                 .antMatchers("/**/index.html").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/v1/pats/{pat-id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/pats/{pat-id}").permitAll()
 
                 .antMatchers("/api/test/**").permitAll()
-
-                .antMatchers("/**").permitAll()
 
                 .and()
                 .authorizeRequests()
