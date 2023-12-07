@@ -1,8 +1,8 @@
 package com.miraclepat.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseToken;
+import com.miraclepat.global.exception.ErrorCode;
+import com.miraclepat.global.exception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +55,6 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(user, "", user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } catch (RuntimeException ex) {
-                    log.info("토큰 에러: "+ex);
                     setErrorResponse(response, ex);
                     return;
                 }
@@ -84,13 +83,17 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     }
 
     private void setErrorResponse(HttpServletResponse response, Exception ex) throws IOException {
-        log.error("FirebaseTokenFilter Error: "+ex);
+        log.error("[FirebaseTokenFilter]: "+ex);
         response.setStatus(HttpStatus.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         //errorMessage를 담아 보낸다.
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getOutputStream(), "예외처리 이후 추가");
+        objectMapper.writeValue(response.getOutputStream(), errorResponse());
     }
 
+    private ErrorResponse errorResponse(){
+        return ErrorResponse.of(ErrorCode.INVALID_FIREBASE_ID_TOKEN,
+                ErrorCode.INVALID_FIREBASE_ID_TOKEN.getMessage());
+    }
 }

@@ -1,6 +1,8 @@
 package com.miraclepat.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miraclepat.global.exception.ErrorCode;
+import com.miraclepat.global.exception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +27,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(response.getOutputStream(), "인증 에러");
+        objectMapper.writeValue(response.getOutputStream(), errorResponse());
+    }
+
+    private ErrorResponse errorResponse() {
+        return ErrorResponse.of(ErrorCode.UNAUTHORIZED, ErrorCode.UNAUTHORIZED.getMessage());
     }
 }
