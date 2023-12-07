@@ -43,9 +43,9 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
 
         if (!permitUri(request)) {
             //신청 페이지를 로그인 상태로 보면 유저임을 검증한다.
-            if (request.getMethod().equals("GET")
+            if (!(request.getMethod().equals("GET")
                     && request.getRequestURI().startsWith("/api/v1/pats/")
-                    && request.getHeader(HttpHeaders.AUTHORIZATION) !=null ){
+                    && request.getHeader(HttpHeaders.AUTHORIZATION) ==null )){
                 try {
                     String firebaseToken = request.getHeader(HttpHeaders.AUTHORIZATION);
                     String idToken = getIdTokenByFirebaseToken(firebaseToken);
