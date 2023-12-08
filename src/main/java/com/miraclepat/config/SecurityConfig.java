@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/pats/home", "/api/v1/pats/home/banner", "/api/v1/pats/map").permitAll()
-                .antMatchers("/**/index.html").permitAll()
+                .antMatchers("/**/index.html", "/favicon.ico").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/pats/{pat-id}").permitAll()
 
                 .antMatchers("/api/test/**").permitAll()
