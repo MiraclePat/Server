@@ -222,6 +222,9 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
             case HOT:
                 // 참여자가 많은 것부터 정렬
                 return Arrays.asList(pat.nowPerson.desc(), pat.id.desc());
+            case RANDOM:
+                //랜덤
+                return Arrays.asList(Expressions.numberTemplate(Double.class, "function('rand')").asc());
             default:
                 return Arrays.asList(pat.startDate.asc(), pat.id.desc());
         }
@@ -229,7 +232,7 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
 
     //id
     private BooleanExpression dynamicPredicateByLastId(Long lastId, SortType sortType) {
-        if (lastId == null) {
+        if (lastId == null | sortType == SortType.RANDOM) {
             return null;
         }
         if (sortType == null) {

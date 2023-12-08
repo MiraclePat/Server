@@ -83,7 +83,7 @@ class TestPatControllerTest {
                                                 key("예시").value("10")),
                                 parameterWithName("sort").description("정렬 기준").optional()
                                         .attributes(key("타입").value("String"),
-                                                key("예시").value("HOT / LATEST")),
+                                                key("예시").value("HOT / LATEST / RANDOM")),
                                 parameterWithName("query").description("검색어").optional()
                                         .attributes(key("타입").value("String"),
                                                 key("예시").value("쓰레기")),

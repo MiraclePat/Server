@@ -3,7 +3,8 @@ package com.miraclepat.pat.constant;
 public enum SortType {
 
     HOT("인기순"),
-    LATEST("최신순");
+    LATEST("최신순"),
+    RANDOM("랜덤");
 
     private String description;
 
