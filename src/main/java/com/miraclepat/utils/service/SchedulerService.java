@@ -21,4 +21,12 @@ public class SchedulerService {
         //진행예정 -> 진행중
         patRepository.updatePatStateInProgress();
     }
+
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * *") //매일 자정
+    public void midnight(){
+        //pat state update
+        //진행중 -> 진행완료 endTime 이 00:00 인 경우를 관리
+        patRepository.updatePatStateCompleteMidnight();
+    }
 }

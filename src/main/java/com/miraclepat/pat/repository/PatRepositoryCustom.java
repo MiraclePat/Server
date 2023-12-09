@@ -23,6 +23,8 @@ public interface PatRepositoryCustom {
 
     MyPatListDto getOpenPatList(List<Long> ids, Long lastId, int size, State state);
 
+    Long updatePatStateCompleteMidnight();
+
     Long updatePatStateComplete();
 
     Long updatePatStateInProgress();
