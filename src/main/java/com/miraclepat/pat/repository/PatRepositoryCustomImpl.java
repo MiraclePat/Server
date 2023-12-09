@@ -184,14 +184,14 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
         return queryFactory.update(pat)
                 .set(pat.state, State.IN_PROGRESS)
                 .where(pat.state.eq(State.SCHEDULED),
-                        pat.startDate.eq(today).and(pat.startTime.lt(nowTime)))
+                        pat.startDate.eq(today).and(pat.startTime.loe(nowTime)))
                 .execute();
     }
 
     //endTime 이 지금 시간 이전인 팟 상태를 변경(자정 제외)
     private BooleanExpression beforeNowNotMidnight(LocalDate today, LocalTime nowTime) {
         return pat.endDate.eq(today)
-                .and(pat.endTime.lt(nowTime))
+                .and(pat.endTime.loe(nowTime))
                 .and(pat.endTime.notIn(LocalTime.MIDNIGHT));
     }
 
