@@ -61,7 +61,7 @@ class TestPatControllerTest {
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("팟 Id/넘겨줄게 없다면 null"),
                                 fieldWithPath("patName").type(JsonFieldType.STRING).description("팟 제목/넘겨줄게 없다면 null"),
-                                fieldWithPath("date").type(JsonFieldType.STRING).description("D+몇 일/넘겨줄게 없다면 null")
+                                fieldWithPath("date").type(JsonFieldType.STRING).description("D+며칠/넘겨줄게 없다면 null")
                         )
                 ));
     }
