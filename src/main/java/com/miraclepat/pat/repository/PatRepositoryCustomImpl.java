@@ -163,13 +163,14 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
     public Long updatePatStateComplete() {
         //LocalDate, LocalTime을 기준으로 상태를 update 한다.
         //State가 진행중: 오늘이 endDate 이고, endTime이 지났다면 진행중 -> 완료
+        //endDate의 endTime 00:00은 다음날 00:00로 인식
         LocalDate today = LocalDate.now();
         LocalTime nowTime = LocalTime.now();
 
         return queryFactory.update(pat)
                 .set(pat.state, State.COMPLETED)
                 .where(pat.state.eq(State.IN_PROGRESS),
-                        pat.endDate.eq(today).and(pat.endTime.lt(nowTime)))
+                        beforeNowNotMidnight(today, nowTime).or(midnightYesterday(today)))
                 .execute();
     }
 
@@ -185,6 +186,19 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
                 .where(pat.state.eq(State.SCHEDULED),
                         pat.startDate.eq(today).and(pat.startTime.lt(nowTime)))
                 .execute();
+    }
+
+    //endTime 이 지금 시간 이전인 팟 상태를 변경(자정 제외)
+    private BooleanExpression beforeNowNotMidnight(LocalDate today, LocalTime nowTime) {
+        return pat.endDate.eq(today)
+                .and(pat.endTime.lt(nowTime))
+                .and(pat.endTime.notIn(LocalTime.MIDNIGHT));
+    }
+
+    //전날 00:00을 completed로 변경
+    private BooleanExpression midnightYesterday(LocalDate today) {
+        return pat.endDate.eq(today.minusDays(-1))
+                .and(pat.endTime.eq(LocalTime.MIDNIGHT));
     }
 
     //방 진행 상태
