@@ -197,7 +197,7 @@ public class PatRepositoryCustomImpl implements PatRepositoryCustom {
 
     //전날 00:00을 completed로 변경
     private BooleanExpression midnightYesterday(LocalDate today) {
-        return pat.endDate.eq(today.minusDays(-1))
+        return pat.endDate.eq(today.minusDays(1))
                 .and(pat.endTime.eq(LocalTime.MIDNIGHT));
     }
 
