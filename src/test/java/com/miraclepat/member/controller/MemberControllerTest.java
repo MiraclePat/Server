@@ -1,12 +1,21 @@
 package com.miraclepat.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miraclepat.member.dto.*;
+import com.miraclepat.member.service.MemberService;
+import com.miraclepat.member.service.MyPatService;
+import com.miraclepat.pat.constant.ButtonState;
+import com.miraclepat.pat.constant.ImgType;
+import com.miraclepat.pat.constant.State;
 import org.apache.http.HttpHeaders;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -16,7 +25,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -28,11 +46,11 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = TestMemberController.class,
+@WebMvcTest(value = MemberController.class,
         excludeAutoConfiguration = SecurityAutoConfiguration.class
 )
 @AutoConfigureRestDocs
-class TestMemberControllerTest {
+class MemberControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,10 +58,30 @@ class TestMemberControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @MockBean
+    MemberService memberService;
+
+    @MockBean
+    MyPatService myPatService;
+
+    private Principal mockPrincipal;
+
+    @BeforeEach
+    void setup() {
+        mockPrincipal = Mockito.mock(Principal.class);
+        given(mockPrincipal.getName()).willReturn("1");
+    }
+
     @Test
     void 프로필_조회() throws Exception {
-        mockMvc.perform(get("/api/test/members/me")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"))
+
+        ProfileDto profileDto = new ProfileDto("프로필 img url", "닉네임", 3, 1);
+        given(memberService.getProfile(Mockito.any(Long.class)))
+                .willReturn(profileDto);
+
+        mockMvc.perform(get("/api/v1/members/me")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                        .principal(mockPrincipal))
                 .andExpect(status().isOk())
                 .andDo(document("member-getProfile",
                         preprocessRequest(prettyPrint()),   // (2)
@@ -61,14 +99,16 @@ class TestMemberControllerTest {
     }
 
     @Test
-    void 내_프로필_업데이트()throws Exception{
+    void 내_프로필_업데이트() throws Exception {
 
-        MockMultipartFile file1 = new MockMultipartFile("image", "filename-1.txt", "image/png", "some text".getBytes());
+        MockMultipartFile file1 = new MockMultipartFile("image", "filename-1.png", "image/png", "image".getBytes());
         MockMultipartFile nickname = new MockMultipartFile("nickname", "", "text/plain", "닉네임".getBytes());
+
+        doNothing().when(memberService).profileUpdate(Mockito.any(MultipartFile.class), Mockito.any(String.class), Mockito.any(Long.class));
 
         MockMultipartHttpServletRequestBuilder builder =
                 RestDocumentationRequestBuilders.
-                        multipart("/api/test/members/me");
+                        multipart("/api/v1/members/me");
 
         builder.with(new RequestPostProcessor() {
             @Override
@@ -79,12 +119,13 @@ class TestMemberControllerTest {
         });
 
         ResultActions result = mockMvc.perform(builder
-                        .file(file1)
-                        .file(nickname)
+                .file(file1)
+                .file(nickname)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                .principal(mockPrincipal));
 
         result.andExpect(status().isNoContent())
                 .andDo(document("member-updateProfile",
@@ -102,37 +143,44 @@ class TestMemberControllerTest {
 
     @Test
     void 알람_정보_업데이트() throws Exception {
-        ResultActions result = mockMvc.perform(patch("/api/test/members/me/push?push=true")
+
+        doNothing().when(memberService).pushUpdate(Mockito.any(boolean.class), Mockito.any(Long.class));
+
+        ResultActions result = mockMvc.perform(patch("/api/v1/members/me/push?push=true")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                .principal(mockPrincipal));
 
         result.andExpect(status().isNoContent())
                 .andDo(document("member-updatePush",
-                        preprocessRequest(prettyPrint()),   // (2)
-                        preprocessResponse(prettyPrint()),  // (3),,
-                        requestHeaders(
-                                headerWithName("Authorization").description("유효한 토큰")
-                        ),
-                        requestParameters(
-                                parameterWithName("push").description("알림을 받을지 말지. 받는다 true 안받는다 false").optional()
-                                        .attributes(key("타입").value("boolean"),
-                                                key("예시").value("true"))
+                                preprocessRequest(prettyPrint()),   // (2)
+                                preprocessResponse(prettyPrint()),  // (3),,
+                                requestHeaders(
+                                        headerWithName("Authorization").description("유효한 토큰")
+                                ),
+                                requestParameters(
+                                        parameterWithName("push").description("알림을 받을지 말지. 받는다 true 안받는다 false").optional()
+                                                .attributes(key("타입").value("boolean"),
+                                                        key("예시").value("true"))
+                                )
                         )
-                )
                 );
 
     }
 
     @Test
-    void 회원_탈퇴() throws Exception{
+    void 회원_탈퇴() throws Exception {
 
-        ResultActions result = mockMvc.perform(delete("/api/test/members/me")
+        doNothing().when(memberService).deleteMember(Mockito.any(Long.class));
+
+        ResultActions result = mockMvc.perform(delete("/api/v1/members/me")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                .principal(mockPrincipal));
 
         result
                 .andExpect(status().isNoContent())
@@ -148,11 +196,16 @@ class TestMemberControllerTest {
     @Test
     void 참여한_진행예정_or_진행중인_or_완료한_팟_리스트_조회() throws Exception {
 
-        ResultActions result = mockMvc.perform(get("/api/test/members/pats")
+        MyPatListDto myPatListDto = new MyPatListDto(getMyPatDtoList(), true);
+        given(myPatService.getJoinPatList(Mockito.any(MyPatSearchDto.class), Mockito.any(Long.class)))
+                .willReturn(myPatListDto);
+
+        ResultActions result = mockMvc.perform(get("/api/v1/members/pats")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                .principal(mockPrincipal));
 
         result
                 .andExpect(status().isOk())
@@ -195,8 +248,14 @@ class TestMemberControllerTest {
 
     @Test
     void 내가_개설한_팟_리스트_조회() throws Exception {
-        mockMvc.perform(get("/api/test/members/pats/open?lastId=1")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"))
+
+        MyPatListDto myPatListDto = new MyPatListDto(getMyPatDtoList(), true);
+        given(myPatService.getOpenPatList(Mockito.any(MyPatSearchDto.class), Mockito.any(Long.class)))
+                .willReturn(myPatListDto);
+
+        mockMvc.perform(get("/api/v1/members/pats/open?lastId=1")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                        .principal(mockPrincipal))
                 .andExpect(status().isOk())
                 .andDo(document("member-getOpenPatList",
                         preprocessRequest(prettyPrint()),   // (2)
@@ -237,8 +296,14 @@ class TestMemberControllerTest {
 
     @Test
     void 참여한_팟_상세조회() throws Exception {
-        mockMvc.perform(get("/api/test/members/pats/{pat-id}", 1)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer testToken"))
+
+        MyPatDetailDto myPatDetailDto = getMyPatDetailDto();
+        given(myPatService.getJoinPatDetail(Mockito.any(Long.class), Mockito.any(Long.class)))
+                .willReturn(myPatDetailDto);
+
+        mockMvc.perform(get("/api/v1/members/pats/{pat-id}", 1)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                        .principal(mockPrincipal))
                 .andExpect(status().isOk())
                 .andDo(document("member-getJoinPatDetail",
                         preprocessRequest(prettyPrint()),   // (2)
@@ -279,6 +344,57 @@ class TestMemberControllerTest {
                                 fieldWithPath("isCompleted").type(JsonFieldType.BOOLEAN).description("당일 인증 유무: true(있음), false(없음)")
                         )
                 ));
+    }
+
+    List<MyPatDto> getMyPatDtoList() {
+        List<MyPatDto> content = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            LocalDate date = LocalDate.now();
+            State state = State.SCHEDULED;
+            content.add(new MyPatDto((long) i, "대표이미지 url", "팟 이름입니다.", date, "기타",
+                    3, 10, "강남", "월, 수, 금", state, false));
+        }
+        return content;
+    }
+
+    MyPatDetailDto getMyPatDetailDto() {
+
+        List<String> dayList = new ArrayList<>();
+        dayList.add("월요일");
+        dayList.add("금요일");
+
+        MyPatDetailDto myPatDetailDto = MyPatDetailDto.builder()
+                .patId(1L)
+                .category("기타")
+                .patName("팟 상세 이름입니다.")
+                .location("")
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(5))
+                .modifiedStartDate(LocalDate.now())
+                .modifiedEndDate(LocalDate.now().plusDays(5))
+                .startTime(LocalTime.now())
+                .endTime(LocalTime.now().plusHours(1))
+                .days("월, 금")
+                .dayList(dayList)
+                .patDetail("팟 상세 페이지 디테일 내용입니다.")
+                .proofDetail("팟 상세 페이지 인증 디테일 내용입니다.")
+                .realtime(true)
+                .maxProof(2)
+                .myProof(1)
+                .allProof(4)
+                .allMaxProof(4)
+                .myFailProof(1)
+                .allFailProof(1)
+                .completed(true)
+                .build();
+
+        myPatDetailDto.setState(ButtonState.CANCELABLE);
+        myPatDetailDto.setImg("대표 이미지 url", ImgType.REPRESENTATIVE);
+        myPatDetailDto.setImg("옳은 예시 이미지 url", ImgType.CORRECT);
+        myPatDetailDto.setImg("틀린 예시 이미지 url", ImgType.INCORRECT);
+        myPatDetailDto.setImg("본문 이미지 url", ImgType.BODY);
+
+        return myPatDetailDto;
     }
 
 }

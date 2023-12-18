@@ -1,11 +1,18 @@
 package com.miraclepat.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.miraclepat.auth.dto.KakaoUserInfo;
+import com.miraclepat.auth.dto.SignupDto;
+import com.miraclepat.auth.dto.TokenDto;
+import com.miraclepat.auth.service.AuthService;
+import com.miraclepat.auth.service.KakaoService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,17 +21,18 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = TestAuthController.class,
-        excludeAutoConfiguration = SecurityAutoConfiguration.class
-)
+@WebMvcTest(value = AuthController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class)
 @AutoConfigureRestDocs
-class TestAuthControllerTest {
+class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,13 +40,26 @@ class TestAuthControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @MockBean
+    KakaoService kakaoService;
+    @MockBean
+    AuthService authService;
+
     @Test
     void 로그인_성공() throws Exception {
 
         Map<String, Object> map = new HashMap<>();
         map.put("token", "12kk34");
 
-        ResultActions result = mockMvc.perform(post("/api/test/auth/login")
+        KakaoUserInfo kakaoUserInfo = new KakaoUserInfo();
+        TokenDto tokenDto = new TokenDto("토큰");
+
+        given(kakaoService.getKakaoUserInfo(Mockito.any(String.class)))
+                .willReturn(kakaoUserInfo);
+        given(authService.kakaoLogin(Mockito.any(KakaoUserInfo.class)))
+                .willReturn(tokenDto);
+
+        ResultActions result = mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
@@ -64,7 +85,9 @@ class TestAuthControllerTest {
         Map<String, Object> map = new HashMap<>();
         map.put("id", "1234");
 
-        ResultActions result = mockMvc.perform(post("/api/test/auth/signup")
+        doNothing().when(authService).signup(Mockito.any(SignupDto.class));
+
+        ResultActions result = mockMvc.perform(post("/api/v1/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
