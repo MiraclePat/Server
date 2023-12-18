@@ -18,6 +18,9 @@ endif::[]
 .http-request
 include::{snippets}/pat-getHomeBanner/http-request.adoc[]
 
+.Request-headers
+include::{snippets}/pat-getHomeBanner/request-headers.adoc[]
+
 .Response-field
 include::{snippets}/pat-getHomeBanner/response-fields.adoc[]
 
@@ -70,6 +73,9 @@ include::{snippets}/pat-createPat/http-response.adoc[]
 
 .http-request
 include::{snippets}/pat-getPatDetail/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/pat-getPatDetail/request-headers.adoc[]
 
 .Path-parameters
 include::{snippets}/pat-getPatDetail/path-parameters.adoc[]
