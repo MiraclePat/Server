@@ -43,8 +43,6 @@ public class SecurityConfig {
                 .antMatchers("/**/index.html", "/favicon.ico").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/pats/{pat-id}").permitAll()
 
-                .antMatchers("/api/test/**").permitAll()
-
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()

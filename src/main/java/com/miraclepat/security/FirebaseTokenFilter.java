@@ -26,7 +26,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     //비회원은 조회(GET)만 가능하다.
     public static List<String> PERMIT_URI = Arrays.asList(
             "/api/v1/auth", "/api/v1/pats/home", "/api/v1/pats/map",
-            "/api/test/", "/docs/", "/favicon.ico");
+            "/docs/", "/favicon.ico");
     private static final String BEARER = "Bearer ";
 
     private UserDetailsServiceImpl userDetailsService;
