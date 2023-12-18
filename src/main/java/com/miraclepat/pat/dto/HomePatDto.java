@@ -1,8 +1,6 @@
 package com.miraclepat.pat.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.miraclepat.pat.entity.Pat;
-import com.miraclepat.utils.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,18 +29,6 @@ public class HomePatDto {
     int nowPerson;
 
     int maxPerson;
-
-
-    public HomePatDto(Pat pat){
-        this.id = pat.getId();
-        this.patName = pat.getPatName();
-        this.category = pat.getCategory().getCategoryName();
-        this.location = pat.getLocation();
-        this.repImg = Constants.REP_IMG;
-        this.startDate = pat.getStartDate();
-        this.nowPerson = pat.getNowPerson();
-        this.maxPerson = pat.getMaxPerson();
-    }
 
     public void setRepImg(String url){
         this.repImg = url;

@@ -3,8 +3,6 @@ package com.miraclepat.member.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.miraclepat.pat.constant.State;
-import com.miraclepat.pat.entity.Pat;
-import com.miraclepat.utils.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,20 +30,6 @@ public class MyPatDto {
 
     @JsonProperty("isCompleted")
     boolean completed = false; //당일의 인증 데이터가 있는가?
-
-
-    public MyPatDto(Pat pat){
-        this.id = pat.getId();
-        this.patName = pat.getPatName();
-        this.category = pat.getCategory().getCategoryName();
-        this.location = pat.getLocation();
-        this.startDate = pat.getStartDate();
-        this.nowPerson = pat.getNowPerson();
-        this.maxPerson = pat.getMaxPerson();
-        this.days = pat.getDays();
-        this.repImg = Constants.REP_IMG;
-        this.state = pat.getState();
-    }
 
     public void setCompleted(boolean isCompleted){
         this.completed = isCompleted;

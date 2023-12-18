@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.miraclepat.pat.constant.ButtonState;
 import com.miraclepat.pat.constant.ImgType;
-import com.miraclepat.pat.entity.Pat;
-import com.miraclepat.utils.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -94,45 +92,6 @@ public class MyPatDetailDto {
     @JsonProperty("isCompleted")
     @Builder.Default
     boolean completed = false; //당일의 인증 데이터가 있는가?
-
-    //testController용
-    public MyPatDetailDto(Pat pat){
-        this.patId = pat.getId();
-        this.patName = pat.getPatName();
-        this.patDetail = pat.getPatDetail();
-        this.repImg = Constants.REP_IMG;
-        this.startDate = pat.getStartDate();
-        this.location = pat.getLocation();
-        this.category = pat.getCategory().getCategoryName();
-        this.startTime = pat.getStartTime();
-        this.endTime = pat.getEndTime();
-        this.endDate = pat.getEndDate();
-        this.modifiedStartDate = pat.getStartDate();
-        this.modifiedEndDate = pat.getEndDate();
-        this.days = pat.getDays();
-        this.proofDetail = pat.getProofDetail();
-        this.realtime = pat.isRealtime();
-        this.maxProof = 15;
-        this.allMaxProof = 75;
-        this.dayList = new ArrayList<>();
-        this.dayList.add("월요일");
-        this.dayList.add("금요일");
-
-        this.myProof = 5;
-        this.myFailProof = 3;
-        this.dayList.add("월요일");
-        this.dayList.add("금요일");
-        this.allProof =30;
-        this.allFailProof = 10;
-        this.state = ButtonState.IN_PROGRESS;
-
-        this.bodyImg = new ArrayList<>();
-        for(int i=0; i<4; i++){
-            bodyImg.add(Constants.BODY_IMG);
-        }
-        incorrectImg=Constants.INCORRECT_IMG;
-        correctImg=Constants.CORRECT_IMG;
-    }
 
     public void setImg(String img, ImgType type){
         if (type == ImgType.REPRESENTATIVE){

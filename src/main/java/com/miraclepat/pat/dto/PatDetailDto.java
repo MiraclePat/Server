@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.miraclepat.pat.constant.ButtonState;
 import com.miraclepat.pat.constant.ImgType;
 import com.miraclepat.pat.entity.Pat;
-import com.miraclepat.utils.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -85,40 +84,6 @@ public class PatDetailDto {
     //버튼 활성화 상태. "CANCELABLE": 변경 가능, "NO_CANCELABLE": 변경 불가,
     // "IN_PROGRESS": 진행중, "COMPLETED": 진행 완료
     private ButtonState state;
-
-    //testController용
-    public PatDetailDto(Pat pat){
-        this.patId = pat.getId();
-        this.patName = pat.getPatName();
-        this.patDetail = pat.getPatDetail();
-        this.repImg = Constants.REP_IMG;
-        this.nowPerson = pat.getNowPerson();
-        this.maxPerson = pat.getMaxPerson();
-        this.location = pat.getLocation();
-        this.category = pat.getCategory().getCategoryName();
-        this.startDate = pat.getStartDate();
-        this.endDate = pat.getEndDate();
-        this.modifiedStartDate = pat.getStartDate();
-        this.modifiedEndDate = pat.getEndDate();
-        this.startTime = pat.getStartTime();
-        this.endTime = pat.getEndTime();
-        this.dayList.add("월요일");
-        this.dayList.add("금요일");
-        this.proofDetail = pat.getProofDetail();
-        this.realtime = pat.isRealtime();
-
-        this.nickname = "도전자0";
-        this.profileImg = Constants.CORRECT_IMG;
-
-        for(int i=0; i<4; i++){
-            bodyImg.add(Constants.BODY_IMG);
-        }
-        incorrectImg = Constants.INCORRECT_IMG;
-        correctImg=Constants.CORRECT_IMG;
-        //this.maxProof = pat.getMaxProof();
-
-        this.state = ButtonState.CANCELABLE;
-    }
 
     public void setPat(Pat pat){
         this.patId = pat.getId();
