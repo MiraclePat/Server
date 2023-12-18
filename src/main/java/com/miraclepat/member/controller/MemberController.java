@@ -54,7 +54,7 @@ public class MemberController {
 
     //회원 탈퇴
     //patMember 삭제, proof 삭제,
-    @DeleteMapping("/delete")
+    @DeleteMapping("/me")
     public ResponseEntity deleteMember(Principal principal) {
         Long memberId = Long.valueOf(principal.getName());
         memberService.deleteMember(memberId);
