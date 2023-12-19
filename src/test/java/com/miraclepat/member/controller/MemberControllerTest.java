@@ -31,7 +31,9 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -40,8 +42,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -99,16 +100,14 @@ class MemberControllerTest {
     }
 
     @Test
-    void 내_프로필_업데이트() throws Exception {
+    void 내_프로필_이미지_업데이트() throws Exception {
 
-        MockMultipartFile file1 = new MockMultipartFile("image", "filename-1.png", "image/png", "image".getBytes());
-        MockMultipartFile nickname = new MockMultipartFile("nickname", "", "text/plain", "닉네임".getBytes());
-
-        doNothing().when(memberService).profileUpdate(Mockito.any(MultipartFile.class), Mockito.any(String.class), Mockito.any(Long.class));
+        MockMultipartFile image = new MockMultipartFile("image", "filename-1.jpeg", "image/jpeg", "image".getBytes());
+        doNothing().when(memberService).profileImageUpdate(Mockito.any(MultipartFile.class), Mockito.any(Long.class));
 
         MockMultipartHttpServletRequestBuilder builder =
                 RestDocumentationRequestBuilders.
-                        multipart("/api/v1/members/me");
+                        multipart("/api/v1/members/me/profile-image");
 
         builder.with(new RequestPostProcessor() {
             @Override
@@ -119,8 +118,7 @@ class MemberControllerTest {
         });
 
         ResultActions result = mockMvc.perform(builder
-                .file(file1)
-                .file(nickname)
+                .file(image)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .characterEncoding("UTF-8")
                 .accept(MediaType.APPLICATION_JSON)
@@ -128,15 +126,43 @@ class MemberControllerTest {
                 .principal(mockPrincipal));
 
         result.andExpect(status().isNoContent())
-                .andDo(document("member-updateProfile",
+                .andDo(document("member-updateProfileImage",
                         preprocessRequest(prettyPrint()),   // (2)
                         preprocessResponse(prettyPrint()),  // (3),,
                         requestHeaders(
                                 headerWithName("Authorization").description("유효한 토큰")
                         ),
                         requestParts(
-                                partWithName("image").description("이 필드는 MultipartFile 타입의 이미지 파일을 받습니다."),
-                                partWithName("nickname").description("변경 닉네임")
+                                partWithName("image").description("이 필드는 MultipartFile 타입의 이미지 파일을 받습니다.")
+                        )
+                ));
+    }
+
+    @Test
+    void 내_프로필_닉네임_업데이트() throws Exception {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("nickname", "변경닉네임");
+
+        doNothing().when(memberService).nicknameUpdate(Mockito.any(String.class), Mockito.any(Long.class));
+
+        ResultActions result = mockMvc.perform(patch("/api/v1/members/me/profile-nickname")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(map))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer testToken")
+                .principal(mockPrincipal));
+
+        result.andExpect(status().isNoContent())
+                .andDo(document("member-updateProfileNickname",
+                        preprocessRequest(prettyPrint()),   // (2)
+                        preprocessResponse(prettyPrint()),  // (3),,
+                        requestHeaders(
+                                headerWithName("Authorization").description("유효한 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("nickname").description("변경 닉네임").type(JsonFieldType.STRING)
                         )
                 ));
     }

@@ -24,6 +24,7 @@ public class ErrorMessage {
 
     // Member
     public static final String EXIST_NICKNAME = "이미 존재하는 닉네임입니다.";
+    public static final String EMPTY_FILE = "이미지가 비어있습니다.";
 
     // Pat
     public static final String START_DATE_MINIMUM_TWO_DAYS_LATER = "시작일은 오늘로부터 최소 이틀 이후여야 합니다.";

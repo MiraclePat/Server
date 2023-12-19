@@ -33,14 +33,23 @@ public class MemberController {
         return ResponseEntity.ok(profileDto);
     }
 
-    //내 정보 업데이트
-    @PatchMapping("/me")
-    public ResponseEntity updateProfile(
-            @RequestPart(name = "image", required = false) MultipartFile image,
-            @RequestPart(name = "nickname") String nickname,
+    //내 프로필 사진 업데이트
+    @PatchMapping("/me/profile-image")
+    public ResponseEntity updateProfileImage(
+            @RequestPart(name = "image") MultipartFile image,
             Principal principal) {
         Long memberId = Long.valueOf(principal.getName());
-        memberService.profileUpdate(image, nickname, memberId);
+        memberService.profileImageUpdate(image, memberId);
+        return ResponseEntity.noContent().build();
+    }
+
+    //내 닉네임 업데이트
+    @PatchMapping("/me/profile-nickname")
+    public ResponseEntity updateNickname(
+            @RequestBody String nickname,
+            Principal principal) {
+        Long memberId = Long.valueOf(principal.getName());
+        memberService.nicknameUpdate(nickname, memberId);
         return ResponseEntity.noContent().build();
     }
 

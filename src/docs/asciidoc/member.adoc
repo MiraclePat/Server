@@ -27,22 +27,36 @@ include::{snippets}/member-getProfile/response-fields.adoc[]
 .http-response
 include::{snippets}/member-getProfile/http-response.adoc[]
 
-=== 내 프로필 업데이트
+=== 내 프로필 이미지 업데이트
 
 .http-request
-include::{snippets}/member-updateProfile/http-request.adoc[]
+include::{snippets}/member-updateProfileImage/http-request.adoc[]
 
 .Request-headers
-include::{snippets}/member-updateProfile/request-headers.adoc[]
+include::{snippets}/member-updateProfileImage/request-headers.adoc[]
 
 .Request-parts
-include::{snippets}/member-updateProfile/request-parts.adoc[]
-
-.Request-field
-include::{snippets}/member-updateProfile/request-fields.adoc[]
+include::{snippets}/member-updateProfileImage/request-parts.adoc[]
 
 .http-response
-include::{snippets}/member-updateProfile/http-response.adoc[]
+include::{snippets}/member-updateProfileImage/http-response.adoc[]
+
+=== 내 프로필 닉네임 업데이트
+
+.http-request
+include::{snippets}/member-updateProfileNickname/http-request.adoc[]
+
+.Request-headers
+include::{snippets}/member-updateProfileNickname/request-headers.adoc[]
+
+.Request-parts
+include::{snippets}/member-updateProfileNickname/request-parts.adoc[]
+
+.Request-field
+include::{snippets}/member-updateProfileNickname/request-fields.adoc[]
+
+.http-response
+include::{snippets}/member-updateProfileNickname/http-response.adoc[]
 
 === 알람 정보 업데이트
 

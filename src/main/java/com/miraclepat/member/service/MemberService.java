@@ -56,17 +56,11 @@ public class MemberService {
 
     //프로필 업데이트
     @Transactional
-    public void profileUpdate(MultipartFile image, String nickname, Long memberId) {
+    public void profileImageUpdate(MultipartFile image, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
 
-        if (!member.getNickname().equals(nickname) && memberRepository.existsByNickname(nickname)) {
-            throw new CustomException(ErrorCode.EXIST_RESOURCE, ErrorMessage.EXIST_NICKNAME);
-        }
-        member.setNickname(nickname);
-
-        //받은 이미지가 없다면 닉네임만 없데이트.
-        if (image != null) {
+        if (image != null && !image.isEmpty()) {
             //현재 프로필 이미지가 존재한다면 삭제한다.
             String nowImg = member.getProfileImg();
 
@@ -76,7 +70,21 @@ public class MemberService {
 
             String fileName = fileService.updateFile(image);
             member.updateProfileImg(fileName);
+        }else {
+            throw new IllegalArgumentException(ErrorMessage.EMPTY_FILE);
         }
+    }
+
+    //닉네임 업데이트
+    @Transactional
+    public void nicknameUpdate(String nickname, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
+
+        if (!member.getNickname().equals(nickname) && memberRepository.existsByNickname(nickname)) {
+            throw new CustomException(ErrorCode.EXIST_RESOURCE, ErrorMessage.EXIST_NICKNAME);
+        }
+        member.setNickname(nickname);
     }
 
     //알람 업데이트
