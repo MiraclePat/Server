@@ -512,16 +512,6 @@ class PatControllerTest {
         return patDetailDto;
     }
 
-    private List<PatDays> createPatDays(List<String> dayList, Pat pat) {
-
-        List<PatDays> daysList = new ArrayList<>();
-        PatDays patDays1 = new PatDays(pat, null);
-        PatDays patDays2 = new PatDays(pat, null);
-        daysList.add(patDays1);
-        daysList.add(patDays2);
-        return daysList;
-    }
-
     List<HomePatDto> getHomePatDtoList() {
         List<HomePatDto> content = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
