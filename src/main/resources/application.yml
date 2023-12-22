@@ -12,10 +12,8 @@ spring:
       - db
       - key
 
-spring.config.import: classpath:application-key.yml
-
 server:
-  port: 80
+  port: 8080
 
 logging:
   level:
