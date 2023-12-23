@@ -2,17 +2,10 @@ package com.miraclepat.member.entity;
 
 import com.miraclepat.member.constant.Role;
 import com.miraclepat.auth.dto.SignupDto;
-import com.miraclepat.pat.entity.Pat;
-import com.miraclepat.pat.entity.PatMember;
-import com.miraclepat.proof.entity.Proof;
-import com.miraclepat.utils.Constants;
 import com.miraclepat.utils.entity.BaseModifiableEntity;
-import com.miraclepat.utils.entity.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder
