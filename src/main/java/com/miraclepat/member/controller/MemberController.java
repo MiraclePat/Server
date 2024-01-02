@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Map;
 
 @Validated
 @RestController
@@ -46,9 +47,10 @@ public class MemberController {
     //내 닉네임 업데이트
     @PatchMapping("/me/profile-nickname")
     public ResponseEntity updateNickname(
-            @RequestBody String nickname,
+            @RequestBody Map<String, String> nicknameMap,
             Principal principal) {
         Long memberId = Long.valueOf(principal.getName());
+        String nickname = nicknameMap.get("nickname");
         memberService.nicknameUpdate(nickname, memberId);
         return ResponseEntity.noContent().build();
     }
