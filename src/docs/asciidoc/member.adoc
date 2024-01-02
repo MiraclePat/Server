@@ -49,9 +49,6 @@ include::{snippets}/member-updateProfileNickname/http-request.adoc[]
 .Request-headers
 include::{snippets}/member-updateProfileNickname/request-headers.adoc[]
 
-.Request-parts
-include::{snippets}/member-updateProfileNickname/request-parts.adoc[]
-
 .Request-field
 include::{snippets}/member-updateProfileNickname/request-fields.adoc[]
 
@@ -65,6 +62,9 @@ include::{snippets}/member-updatePush/http-request.adoc[]
 
 .Request-headers
 include::{snippets}/member-updatePush/request-headers.adoc[]
+
+.Request-parameters
+include::{snippets}/member-updatePush/request-parameters.adoc[]
 
 .http-response
 include::{snippets}/member-updatePush/http-response.adoc[]
