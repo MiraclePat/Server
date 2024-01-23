@@ -26,7 +26,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     //비회원은 조회(GET)만 가능하다.
     public static List<String> PERMIT_URI = Arrays.asList(
             "/api/v1/auth", "/api/v1/pats/home", "/api/v1/pats/map",
-            "/docs/", "/favicon.ico");
+            "/docs/", "/privacy/", "/favicon.ico");
     private static final String BEARER = "Bearer ";
 
     private UserDetailsServiceImpl userDetailsService;
@@ -48,6 +48,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
             boolean isAuthHeaderEmpty = request.getHeader(HttpHeaders.AUTHORIZATION) == null;
             boolean isStartsWithPatsOrBanner = requestUri.startsWith("/api/v1/pats/");
 
+            //팟을 구경하는 경우(uri: /api/v1/pats/~, method: get)는 토큰이 없는 경우 그냥 통과
             if (!(isGetMethod && isAuthHeaderEmpty && isStartsWithPatsOrBanner)) {
                 try {
                     String firebaseToken = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -83,6 +84,9 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
     }
 
     private String getIdTokenByFirebaseToken(String firebaseToken) {
+        if(firebaseToken == null){
+            throw new IllegalArgumentException("인증 토큰이 없습니다.");
+        }
         if (!firebaseToken.startsWith(BEARER)) {
             throw new IllegalArgumentException(firebaseToken + ": Bearer 형식의 토큰이 아닙니다");
         }
