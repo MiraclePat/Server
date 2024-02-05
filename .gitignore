@@ -39,5 +39,8 @@ out/
 
 Constants.java
 src/main/resources/miracle-pat-firebase-adminsdk.json
-application-*.yml
+application-dbaws.yml
+application-dblocal.yml
+application-key.yml
+application-keyaws.yml
 /admin/

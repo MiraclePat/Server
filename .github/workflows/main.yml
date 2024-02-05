@@ -26,15 +26,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # yml 파일 생성(1) - db
-      - name: make application-db.yml
-        run: |
-          cd ./src/main/resources
-          touch ./application-db.yml
-          echo "${{ secrets.APPLICATION_DB }}" > ./application-db.yml
-        shell: bash
-
-      # yml 파일 생성(2) -key
+      # yml 파일 생성(1) -key
       - name: make application-key.yml
         run: |
           cd ./src/main/resources
@@ -49,12 +41,25 @@ jobs:
           name: "miracle-pat-firebase-adminsdk.json"
           json: ${{ secrets.FIREBASE_SDK }}
           dir: 'src/main/resources/'
-          
+
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3306
+          container port: 3306
+          mysql database: 'board'
+          mysql user: 'test'
+          mysql password: ${{ secrets.PASSWORD }}
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
       
       - name: Build with Gradle
+        env:
+          DATASOURCE: jdbc:mysql://localhost:3306/board
+          USERNAME: 'test'
+          PASSWORD: ${{ secrets.PASSWORD }
         run: ./gradlew build
         shell: bash
         
