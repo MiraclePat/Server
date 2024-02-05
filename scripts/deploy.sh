@@ -19,4 +19,6 @@ else
 fi
 
 echo "> Deploy - $JAR_PATH "
+
+source ~/.bash_profile
 nohup java -jar $JAR_PATH > output.log 2> error.log &
