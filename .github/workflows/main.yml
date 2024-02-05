@@ -59,7 +59,7 @@ jobs:
         env:
           DATASOURCE: jdbc:mysql://localhost:3306/board
           USERNAME: 'test'
-          PASSWORD: ${{ secrets.PASSWORD }
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: ./gradlew build
         shell: bash
         
