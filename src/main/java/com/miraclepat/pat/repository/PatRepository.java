@@ -1,5 +1,6 @@
 package com.miraclepat.pat.repository;
 
+import com.miraclepat.global.exception.ErrorMessage;
 import com.miraclepat.pat.constant.State;
 import com.miraclepat.pat.dto.PatTimeDto;
 import com.miraclepat.pat.dto.WriterInfoDto;
@@ -10,11 +11,16 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public interface PatRepository extends JpaRepository<Pat, Long>,
         QuerydslPredicateExecutor<Pat>, PatRepositoryCustom {
-    Optional<Pat> findById(Long id);
+    //Optional<Pat> findById(Long id);
+    default Pat getById(Long id) {
+        return findById(id)
+                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+    }
 
     @Query("SELECT COUNT(p) FROM Pat p WHERE p.member.id = :memberId")
     int countByMemberId(Long memberId);

@@ -106,8 +106,7 @@ public class MemberService {
         //pat의 작성자를 null로 변경
         List<Long> ids = patRepository.findOpenPatIdsByMemberId(memberId);
         for (Long patId : ids) {
-            Pat pat = patRepository.findById(patId)
-                    .orElseThrow();
+            Pat pat = patRepository.getById(patId);
             pat.deleteMember();
         }
 

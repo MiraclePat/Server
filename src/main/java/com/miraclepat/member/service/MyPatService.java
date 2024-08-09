@@ -90,8 +90,7 @@ public class MyPatService {
     //내가 참여한 팟 상세(인증탭)
     @Transactional(readOnly = true)
     public MyPatDetailDto getJoinPatDetail(Long patId, Long memberId) {
-        Pat pat = patRepository.findById(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+        Pat pat = patRepository.getById(patId);
         PatProofInfo patProofInfo = patProofInfoRepository.findByPatId(patId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
         PatMember patMember = patMemberRepository.findByPatIdAndMemberId(patId, memberId)

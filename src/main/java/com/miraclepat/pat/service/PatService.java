@@ -119,8 +119,7 @@ public class PatService {
             List<List<String>> imgInfoList,
             Long memberId, Long patId
     ) {
-        Pat pat = patRepository.findById(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+        Pat pat = patRepository.getById(patId);
         PatProofInfo patProofInfo = patProofInfoRepository.findByPatId(patId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
         Long writerId = patRepository.findMemberIdByPatId(patId)
@@ -170,8 +169,7 @@ public class PatService {
     //팟 삭제. pat, patMember, patImg, patDays, patProof
     @Transactional
     public void deletePat(Long patId, Long memberId) {
-        Pat pat = patRepository.findById(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+        Pat pat = patRepository.getById(patId);
 
         Long writerId = patRepository.findMemberIdByPatId(patId).orElse(0L);
         validateMemberPermission(writerId, memberId);
@@ -193,8 +191,7 @@ public class PatService {
     public void joinPat(Long patId, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
-        Pat pat = patRepository.findById(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+        Pat pat = patRepository.getById(patId);
 
         validateJoinPatDate(patId);
 
@@ -213,8 +210,7 @@ public class PatService {
     //참여 취소
     @Transactional
     public void withdrawPat(Long patId, Long memberId) {
-        Pat pat = patRepository.findById(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+        Pat pat = patRepository.getById(patId);
         Long writerId = patRepository.findMemberIdByPatId(patId)
                 .orElse(0L);
         Long id = patMemberRepository.findIdByPatIdAndMemberId(patId, memberId)
@@ -234,8 +230,7 @@ public class PatService {
     //상세보기
     @Transactional(readOnly = true)
     public PatDetailDto detailPat(Long patId, Long memberId) {
-        Pat pat = patRepository.findById(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+        Pat pat = patRepository.getById(patId);
         WriterInfoDto writerInfoDto = patRepository.findMemberInfoByPatId(patId)
                 .orElse(new WriterInfoDto(0L, "탈퇴한 회원입니다.", "MiraclePat_mascot.jpg")); //id, nickname, profile
 
