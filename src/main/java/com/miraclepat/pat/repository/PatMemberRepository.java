@@ -22,9 +22,6 @@ public interface PatMemberRepository extends JpaRepository<PatMember, Long> {
     @Query("SELECT pm.id FROM PatMember pm WHERE pm.member.id = :MemberId")
     List<Long> findIdsByMemberId(@Param("MemberId") Long MemberId);
 
-    @Query("SELECT pm FROM PatMember pm WHERE pm.pat.id = :patId")
-    List<PatMember> findByPatId(@Param("patId") Long patId);
-
     @Query("SELECT CASE WHEN COUNT(pm) > 0 THEN true ELSE false END " +
             "FROM PatMember pm " +
             "WHERE pm.pat.id = :patId AND pm.member.id = :memberId")
