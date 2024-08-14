@@ -213,14 +213,14 @@ public class PatService {
         Pat pat = patRepository.getById(patId);
         Long writerId = patRepository.findMemberIdByPatId(patId)
                 .orElse(0L);
-        Long id = patMemberRepository.findIdByPatIdAndMemberId(patId, memberId)
+        PatMember patMember = patMemberRepository.findByPatIdAndMemberId(patId, memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FORBIDDEN, ErrorMessage.NOT_JOIN_PAT));
 
         validateTwoDayDifference(pat.getStartDate(), ErrorMessage.CANNOT_ONE_DAY_BEFORE_START);
 
         if (writerId != memberId) {
             pat.subPerson();
-            patMemberRepository.deleteById(id);
+            patMemberRepository.delete(patMember);
         } else {
             //리더는 탈퇴할 수 없음.
             throw new CustomException(ErrorCode.FORBIDDEN, ErrorMessage.WRITER_UNABLE_TO_LEAVE);

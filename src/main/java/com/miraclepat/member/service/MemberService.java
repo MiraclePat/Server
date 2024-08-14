@@ -98,10 +98,9 @@ public class MemberService {
     //회원 탈퇴
     @Transactional
     public void deleteMember(Long memberId) {
-        //firebase 탈퇴
-        String userCode = memberRepository.findUserCodeById(memberId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
-        firebaseAuthHelper.deleteUser(userCode);
+        String userCode = member.getUserCode();
 
         //pat의 작성자를 null로 변경
         List<Long> ids = patRepository.findOpenPatIdsByMemberId(memberId);
@@ -117,8 +116,10 @@ public class MemberService {
             patMember.deleteMember();
         }
 
+        //firebase 탈퇴
+        firebaseAuthHelper.deleteUser(userCode);
         //member 삭제
-        memberRepository.deleteById(memberId);
+        memberRepository.delete(member);
     }
 
     private String getProfileImgUrl(String profileImg) {
