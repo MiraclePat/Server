@@ -177,7 +177,7 @@ public class PatService {
 
         //patMember도 삭제한다. -> 참여자가 있으면 삭제 못하게도 할 수 있을 것 같다.
         List<Long> ids = patMemberRepository.findIdsByPatId(patId);
-        patMemberRepository.deleteAllById(ids);
+        patMemberRepository.deleteAllByIdInBatch(ids);
 
         //팟의 인증 정보 삭제
         Long id = patProofInfoRepository.findIdByPatId(patId);
