@@ -66,8 +66,7 @@ public class PatService {
         validateStartDateAndEndDate(createPatDto.getStartDate(), createPatDto.getEndDate());
         validateTime(createPatDto.getStartTime(), createPatDto.getEndTime());
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
+        Member member = memberRepository.getById(memberId);
         Category category = categoryRepository.findByCategoryName(createPatDto.getCategory());
 
         //팟 생성
@@ -189,8 +188,7 @@ public class PatService {
     //참여하기
     @Transactional
     public void joinPat(Long patId, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
+        Member member = memberRepository.getById(memberId);
         Pat pat = patRepository.getById(patId);
 
         validateJoinPatDate(patId);

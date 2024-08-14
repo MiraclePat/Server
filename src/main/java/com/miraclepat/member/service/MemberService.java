@@ -57,8 +57,7 @@ public class MemberService {
     //프로필 업데이트
     @Transactional
     public void profileImageUpdate(MultipartFile image, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
+        Member member = memberRepository.getById(memberId);
 
         if (image != null && !image.isEmpty()) {
             //현재 프로필 이미지가 존재한다면 삭제한다.
@@ -78,8 +77,7 @@ public class MemberService {
     //닉네임 업데이트
     @Transactional
     public void nicknameUpdate(String nickname, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
+        Member member = memberRepository.getById(memberId);
 
         if (!member.getNickname().equals(nickname) && memberRepository.existsByNickname(nickname)) {
             throw new CustomException(ErrorCode.EXIST_RESOURCE, ErrorMessage.EXIST_NICKNAME);
@@ -90,16 +88,14 @@ public class MemberService {
     //알람 업데이트
     @Transactional
     public void pushUpdate(boolean push, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
+        Member member = memberRepository.getById(memberId);
         member.updatePush(push);
     }
 
     //회원 탈퇴
     @Transactional
     public void deleteMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_MEMBER_INFO));
+        Member member = memberRepository.getById(memberId);
         String userCode = member.getUserCode();
 
         //pat의 작성자를 null로 변경
