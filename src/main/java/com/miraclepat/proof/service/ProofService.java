@@ -5,7 +5,8 @@ import com.miraclepat.global.exception.CustomException;
 import com.miraclepat.global.exception.ErrorCode;
 import com.miraclepat.global.exception.ErrorMessage;
 import com.miraclepat.pat.constant.State;
-import com.miraclepat.pat.dto.PatTimeDto;
+import com.miraclepat.pat.entity.Pat;
+import com.miraclepat.pat.entity.PatDays;
 import com.miraclepat.pat.entity.PatMember;
 import com.miraclepat.pat.entity.PatProofInfo;
 import com.miraclepat.pat.repository.PatDaysRepository;
@@ -24,10 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +44,12 @@ public class ProofService {
     public void proof(Long patId, Long memberId, MultipartFile image) {
         PatMember patMember = patMemberRepository.findByPatIdAndMemberId(patId, memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FORBIDDEN, ErrorMessage.NOT_JOIN_PAT));
-        PatProofInfo patProofInfo = patProofInfoRepository.findByPatId(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+        PatProofInfo patProofInfo = patProofInfoRepository.getByPatId(patId);
+        Pat pat = patProofInfo.getPat();
 
-        validatePatState(patId);
-        validateProofDate(patId);
-        validateProofTime(patId);
+        validatePatState(pat.getState());
+        validateProofDate(pat.getPatDaysList());
+        validateProofTime(pat.getStartTime(), pat.getEndTime());
         checkTodayProof(patMember.getId());
 
         String fileName = fileService.updateFile(image);
@@ -103,37 +101,33 @@ public class ProofService {
     }
 
     //팟 상태가 진행중인지 검증
-    private void validatePatState(Long patId) {
-        State state = patRepository.findStateByPatId(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+    private void validatePatState(State state) {
         if (state != State.IN_PROGRESS) {
             throw new IllegalStateException(ErrorMessage.NOT_IN_PROGRESS);
         }
     }
 
     //오늘이 인증 요일인지 검증
-    private void validateProofDate(Long patId) {
+    private void validateProofDate(List<PatDays> dayList) {
         LocalDate today = LocalDate.now();
-        String dayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        Long dayId = daysRepository.findIdByDayName(dayOfWeek);
-        if (!patDaysRepository.existsByPatIdAndDaysId(patId, dayId)) {
+        int dayOfWeek = today.getDayOfWeek().getValue();
+        boolean exists = dayList.stream().anyMatch(o -> o.getDays().getId() == dayOfWeek);
+        if (!exists) {
             throw new IllegalStateException(ErrorMessage.NOT_PROOF_DAY);
         }
     }
 
     //인증 시간 검증 -현재 인증 시간이 startTime과 endTime 사이에 있는지 검사한다.
-    private void validateProofTime(Long patId) {
+    private void validateProofTime(LocalTime starTime, LocalTime endTime) {
         LocalTime nowTime = LocalTime.now();
-        PatTimeDto patTimeDto = patRepository.getPatTimes(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
 
         //endTime이 자정인 경우 startTime 으로만 판단
-        if (patTimeDto.getEndTime() == LocalTime.MIDNIGHT) {
-            if (nowTime.isBefore(patTimeDto.getStarTime())) {
+        if (endTime == LocalTime.MIDNIGHT) {
+            if (nowTime.isBefore(starTime)) {
                 throw new IllegalStateException(ErrorMessage.NOT_PROOF_TIME);
             }
         } else {
-            if (nowTime.isBefore(patTimeDto.getStarTime()) || nowTime.isAfter(patTimeDto.getEndTime())) {
+            if (nowTime.isBefore(starTime) || nowTime.isAfter(endTime)) {
                 throw new IllegalStateException(ErrorMessage.NOT_PROOF_TIME);
             }
         }

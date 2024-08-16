@@ -118,9 +118,8 @@ public class PatService {
             List<List<String>> imgInfoList,
             Long memberId, Long patId
     ) {
-        Pat pat = patRepository.getById(patId);
-        PatProofInfo patProofInfo = patProofInfoRepository.findByPatId(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+        PatProofInfo patProofInfo = patProofInfoRepository.getByPatId(patId);
+        Pat pat = patProofInfo.getPat();
         Long writerId = patRepository.findMemberIdByPatId(patId)
                 .orElse(0L);
 
@@ -191,7 +190,7 @@ public class PatService {
         Member member = memberRepository.getById(memberId);
         Pat pat = patRepository.getById(patId);
 
-        validateJoinPatDate(patId);
+        validateJoinPatDate(pat.getState());
 
         if (!patMemberRepository.existsByPatIdAndMemberId(patId, memberId)) {
             if (pat.addPerson()) {
@@ -429,9 +428,7 @@ public class PatService {
         }
     }
 
-    private void validateJoinPatDate(Long patId) {
-        State state = patRepository.findStateByPatId(patId)
-                .orElseThrow(() -> new NoSuchElementException(ErrorMessage.NOT_EXIST_PAT));
+    private void validateJoinPatDate(State state) {
         if (state != State.SCHEDULED) {
             throw new IllegalStateException(ErrorMessage.JOIN_ONLY_SCHEDULED);
         }

@@ -2,7 +2,6 @@ package com.miraclepat.pat.repository;
 
 import com.miraclepat.global.exception.ErrorMessage;
 import com.miraclepat.pat.constant.State;
-import com.miraclepat.pat.dto.PatTimeDto;
 import com.miraclepat.pat.dto.WriterInfoDto;
 import com.miraclepat.pat.entity.Pat;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,9 +30,6 @@ public interface PatRepository extends JpaRepository<Pat, Long>,
     @Query("SELECT p.member.id FROM Pat p WHERE p.id = :id")
     Optional<Long> findMemberIdByPatId(@Param("id") Long id);
 
-    @Query("SELECT p.state FROM Pat p WHERE p.id = :id")
-    Optional<State> findStateByPatId(@Param("id") Long id);
-
     @Query("SELECT new com.miraclepat.pat.dto.WriterInfoDto(m.id, m.nickname, m.profileImg) " +
             "FROM Pat p join p.member m " +
             "WHERE p.id = :id")
@@ -41,10 +37,5 @@ public interface PatRepository extends JpaRepository<Pat, Long>,
 
     @Query("SELECT p.id FROM Pat p WHERE p.member.id = :memberId")
     List<Long> findOpenPatIdsByMemberId(@Param("memberId") Long memberId);
-
-    @Query("SELECT new com.miraclepat.pat.dto.PatTimeDto(p.startTime, p.endTime) " +
-            "FROM Pat p " +
-            "WHERE p.id = :id")
-    Optional<PatTimeDto> getPatTimes(@Param("id") Long id);
 
 }
