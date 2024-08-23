@@ -23,7 +23,8 @@ public class PatDays extends BaseTimeEntity {
     @JoinColumn(name = "pat_id")
     private Pat pat;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    //LAZY의 경우, Pat에서 요일 데이터에 접근할 때 N+1문제 발생
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "days_id")
     private Days days;
 
